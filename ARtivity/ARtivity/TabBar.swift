@@ -26,6 +26,8 @@ class TabBar: UITabBarController {
         let navVC = UINavigationController(rootViewController: eventVC)
 //        present(navVC, animated: true)
 
+        let isGuide = UserDefaults.standard.bool(forKey: "isGuide")
+        
         eventVC.tabBarItem = UITabBarItem(title: "eventText",
                                           image: UIImage(systemName: "message"),
                                           selectedImage: UIImage(systemName: "message.fill"))
@@ -38,7 +40,11 @@ class TabBar: UITabBarController {
         profileVC.tabBarItem = UITabBarItem(title: "profileText",
                                             image: UIImage(systemName: "person"),
                                             selectedImage: UIImage(systemName: "person.fill"))
-        viewControllers = [navVC, mapVC, addVC, profileVC]
+//        if isGuide {
+            viewControllers = [navVC, mapVC, addVC, profileVC]
+//        } else {
+//            viewControllers = [navVC, mapVC, profileVC]
+//        }
         selectedIndex = 0
     }
 }
