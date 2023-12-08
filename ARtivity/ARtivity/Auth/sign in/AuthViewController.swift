@@ -215,14 +215,15 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
     }
 
     func processingResult(error: String?) {
-        let tabBar = TabBar()
-
+//        let tabBar = TabBar()
+        let vc = EventsViewController()
         buttonSignIn.loadingStop()
         buttonSignIn.isEnabled = true
         buttonSignUp.isEnabled = true
 
         if error == nil {
-            self.present(tabBar, animated: true, completion: nil)
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true, completion: nil)
         } else {
             let alert = UIAlertController(title: "error",
                                           message: error, preferredStyle: .alert)

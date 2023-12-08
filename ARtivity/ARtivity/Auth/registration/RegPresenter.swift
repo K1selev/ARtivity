@@ -44,7 +44,7 @@ class RegPresenter: RegScreenPresenter {
                return
            }
 
-           self?.confirmationByMail()
+//           self?.confirmationByMail()
            self?.saveProfile(email: email) { success in
                if success {
                    //                    self.dismiss(animated: true, completion: nil)
@@ -74,41 +74,41 @@ class RegPresenter: RegScreenPresenter {
        }
    }
 
-   func confirmationByMail() {
+//   func confirmationByMail() {
+//
+//       self.verificationTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(checkIfTheEmailIsVerified), userInfo: nil, repeats: true)
+//
+//       guard let user = Auth.auth().currentUser else {
+//           return
+//       }
+//
+//       user.reload { (error) in
+//           if user.isEmailVerified == true {
+//               self.view.processingResult(error: nil)
+//           } else {
+//               user.sendEmailVerification { (error) in
+//                   guard error == nil else {
+//                       print(error!.localizedDescription)
+//                       return
+//                   }
+//                   self.view.processingResult(error: CauseOfError.inactiveAccount.localizedDescription)
+//               }
+//           }
+//       }
+//   }
 
-       self.verificationTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(checkIfTheEmailIsVerified), userInfo: nil, repeats: true)
-
-       guard let user = Auth.auth().currentUser else {
-           return
-       }
-
-       user.reload { (error) in
-           if user.isEmailVerified == true {
-               self.view.processingResult(error: nil)
-           } else {
-               user.sendEmailVerification { (error) in
-                   guard error == nil else {
-                       print(error!.localizedDescription)
-                       return
-                   }
-                   self.view.processingResult(error: CauseOfError.inactiveAccount.localizedDescription)
-               }
-           }
-       }
-   }
-
-   @objc func checkIfTheEmailIsVerified() {
-       Auth.auth().currentUser?.reload(completion: { (error) in
-           if error == nil {
-               if Auth.auth().currentUser!.isEmailVerified {
-                   self.verificationTimer?.invalidate()     // Kill the timer
-                   self.view.processingResult(error: nil)
-               } else {
-                   self.view.processingResult(error: CauseOfError.inactiveAccount.localizedDescription)
-               }
-           } else {
-               print("\n\nerror\n\n")
-           }
-       })
-   }
+//   @objc func checkIfTheEmailIsVerified() {
+//       Auth.auth().currentUser?.reload(completion: { (error) in
+//           if error == nil {
+//               if Auth.auth().currentUser!.isEmailVerified {
+//                   self.verificationTimer?.invalidate()     // Kill the timer
+//                   self.view.processingResult(error: nil)
+//               } else {
+//                   self.view.processingResult(error: CauseOfError.inactiveAccount.localizedDescription)
+//               }
+//           } else {
+//               print("\n\nerror\n\n")
+//           }
+//       })
+//   }
 }

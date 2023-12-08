@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -13,6 +14,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        FirebaseApp.configure()
+        let authListener = Auth.auth().addStateDidChangeListener { _, user in
+            
+            if user != nil {
+
+                print("user!.uid: \(user!.uid)")
+                UserService.observeUserProfile(user!.uid) { userProfile in
+                    UserService.currentUserProfile = userProfile
+                }
+                //
+                UserDefaults.standard.set(true, forKey: "isLogin")
+            } else {
+
+                UserService.currentUserProfile = nil
+
+                UserDefaults.standard.set(false, forKey: "isLogin")
+            }
+        }
         // Override point for customization after application launch.
         return true
     }

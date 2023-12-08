@@ -212,17 +212,15 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
     }
 
     func processingResult(error: String?) {
-        let tabBar = TabBar()
-
+//        let tabBar = TabBar()
+        let vc = EventsViewController()
         backButton.isEnabled = true
         continueButton.isEnabled = true
         continueButton.loadingStop()
 
         if error == nil {
-            self.present(tabBar, animated: true, completion: nil)
-//            let vc = MailConfirmation()
-//            vc.modalPresentationStyle = .fullScreen
-//            self.present(vc, animated: true, completion: nil)
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true, completion: nil)
         } else {
             let alert = UIAlertController(title: "Error",
                                           message: error,

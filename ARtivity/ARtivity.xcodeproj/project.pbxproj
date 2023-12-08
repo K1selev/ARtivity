@@ -15,6 +15,16 @@
 		A53248772B159A83008AD9DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A53248752B159A83008AD9DF /* LaunchScreen.storyboard */; };
 		A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A532487E2B159AD5008AD9DF /* TabBar.swift */; };
 		A53248822B159D10008AD9DF /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A53248812B159D10008AD9DF /* SnapKit */; };
+		A5327BA72B224AE200E40ABE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A5327BA62B224AE100E40ABE /* GoogleService-Info.plist */; };
+		A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BA82B224D1200E40ABE /* EventsViewController.swift */; };
+		A5327BAB2B224E0C00E40ABE /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BAA2B224E0C00E40ABE /* AppHeaderView.swift */; };
+		A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BAC2B2254BB00E40ABE /* EventsTableViewCell.swift */; };
+		A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BAE2B2258DA00E40ABE /* EventsModel.swift */; };
+		A5327BB12B22604900E40ABE /* DatabaseRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB02B22604900E40ABE /* DatabaseRepresentation.swift */; };
+		A5327BB42B2260BA00E40ABE /* EventAuthorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB32B2260BA00E40ABE /* EventAuthorModel.swift */; };
+		A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB52B2276A900E40ABE /* LoadingCell.swift */; };
+		A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB92B230CC900E40ABE /* DatabaseManager.swift */; };
+		A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BBB2B2312CD00E40ABE /* ImageService.swift */; };
 		A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED52B17300C00B0151A /* AuthViewController.swift */; };
 		A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED82B17356F00B0151A /* CustomButton.swift */; };
 		A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */; };
@@ -53,6 +63,16 @@
 		A53248762B159A83008AD9DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A53248782B159A83008AD9DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A532487E2B159AD5008AD9DF /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		A5327BA62B224AE100E40ABE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A5327BA82B224D1200E40ABE /* EventsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViewController.swift; sourceTree = "<group>"; };
+		A5327BAA2B224E0C00E40ABE /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
+		A5327BAC2B2254BB00E40ABE /* EventsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTableViewCell.swift; sourceTree = "<group>"; };
+		A5327BAE2B2258DA00E40ABE /* EventsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsModel.swift; sourceTree = "<group>"; };
+		A5327BB02B22604900E40ABE /* DatabaseRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseRepresentation.swift; sourceTree = "<group>"; };
+		A5327BB32B2260BA00E40ABE /* EventAuthorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventAuthorModel.swift; sourceTree = "<group>"; };
+		A5327BB52B2276A900E40ABE /* LoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCell.swift; sourceTree = "<group>"; };
+		A5327BB92B230CC900E40ABE /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		A5327BBB2B2312CD00E40ABE /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A5D2EED52B17300C00B0151A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A5D2EED82B17356F00B0151A /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -125,10 +145,13 @@
 				A53248752B159A83008AD9DF /* LaunchScreen.storyboard */,
 				A53248782B159A83008AD9DF /* Info.plist */,
 				A532487E2B159AD5008AD9DF /* TabBar.swift */,
+				A5327BA62B224AE100E40ABE /* GoogleService-Info.plist */,
 				A5D2EEFB2B175E5700B0151A /* CauseOfError.swift */,
 				A5D2EEFD2B17993C00B0151A /* UserService.swift */,
 				A5D2EEFF2B17997400B0151A /* UserProfile.swift */,
 				A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */,
+				A5327BB22B22605000E40ABE /* Model */,
+				A5327BB92B230CC900E40ABE /* DatabaseManager.swift */,
 			);
 			path = ARtivity;
 			sourceTree = "<group>";
@@ -160,8 +183,22 @@
 		A53248862B159D3F008AD9DF /* Events */ = {
 			isa = PBXGroup;
 			children = (
+				A5327BA82B224D1200E40ABE /* EventsViewController.swift */,
+				A5327BAC2B2254BB00E40ABE /* EventsTableViewCell.swift */,
+				A5327BAE2B2258DA00E40ABE /* EventsModel.swift */,
+				A5327BB52B2276A900E40ABE /* LoadingCell.swift */,
+				A5327BBB2B2312CD00E40ABE /* ImageService.swift */,
 			);
 			path = Events;
+			sourceTree = "<group>";
+		};
+		A5327BB22B22605000E40ABE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A5327BB02B22604900E40ABE /* DatabaseRepresentation.swift */,
+				A5327BB32B2260BA00E40ABE /* EventAuthorModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		A5D2EED72B17355700B0151A /* Custom */ = {
@@ -169,6 +206,7 @@
 			children = (
 				A5D2EED82B17356F00B0151A /* CustomButton.swift */,
 				A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */,
+				A5327BAA2B224E0C00E40ABE /* AppHeaderView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -280,6 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248772B159A83008AD9DF /* LaunchScreen.storyboard in Resources */,
+				A5327BA72B224AE200E40ABE /* GoogleService-Info.plist in Resources */,
 				A53248742B159A83008AD9DF /* Assets.xcassets in Resources */,
 				A53248722B159A82008AD9DF /* Main.storyboard in Resources */,
 			);
@@ -293,20 +332,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */,
+				A5327BAB2B224E0C00E40ABE /* AppHeaderView.swift in Sources */,
+				A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */,
 				A5D2EEDD2B173B7800B0151A /* AuthPresenter.swift in Sources */,
 				A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */,
 				A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */,
+				A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */,
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
 				A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */,
 				A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */,
 				A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */,
+				A5327BB12B22604900E40ABE /* DatabaseRepresentation.swift in Sources */,
 				A5D2EF002B17997400B0151A /* UserProfile.swift in Sources */,
+				A5327BB42B2260BA00E40ABE /* EventAuthorModel.swift in Sources */,
 				A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */,
+				A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */,
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
+				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
 				A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */,
+				A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */,
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,
+				A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

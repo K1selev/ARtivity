@@ -17,11 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         let vc: UIViewController
-//        if isLogin {
-//            vc = TabBar()
-//        } else {
+        if isLogin {
+            vc = EventsViewController()
+        } else {
             vc = AuthViewController()
-//        }
+        }
         window.rootViewController = UINavigationController(rootViewController: vc)
         self.window = window
         window.makeKeyAndVisible()
