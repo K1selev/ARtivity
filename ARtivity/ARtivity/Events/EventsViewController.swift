@@ -11,7 +11,7 @@ import Firebase
 
 class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var topView = AppHeaderView()
+    var topView = AppMainHeaderView()
     private var hasFetched = false
     var tableView: UITableView!
     var cellHeights: [IndexPath: CGFloat] = [:]
@@ -84,6 +84,10 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         buttonNewPost.titleLabel?.textColor = .white
         buttonNewPost.layer.cornerRadius = 16
         buttonNewPost.isHidden = true
+        
+        topView.isUserInteractionEnabled = true
+        topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
+                                      for:.touchUpInside)
 
         beginBatchFetch()
 
@@ -93,7 +97,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func makeConstraints() {
         topView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(58)
+            make.top.equalToSuperview().offset(68)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.height.equalTo(50)
@@ -219,9 +223,9 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let post = posts[indexPath.row]
-        print("SELECTED POST: \(post.eventId)")
-        let vc = ViewController()
-//        vc.post = post
+        print("SELECTED POST: \(post.eventId ?? "")")
+        let vc = EventViewController()
+        vc.post = post
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
@@ -290,6 +294,17 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let handle = postListenerHandle {
             newPostsQuery.removeObserver(withHandle: handle)
             postListenerHandle = nil
+        }
+    }
+    @objc func buttonProfileClicked()
+    {
+        let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
+        if isLogin {
+            print("already loged in")
+        } else {
+            let vc = AuthViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
         }
     }
 }

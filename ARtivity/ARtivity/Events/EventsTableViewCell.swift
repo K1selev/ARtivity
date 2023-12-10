@@ -108,9 +108,9 @@ class EventsTableViewCell: UITableViewCell {
                 
                 self.eventImageView.image = nil
                 ImageService.getImage(withURL: imagesUrl!) { image, url in
-                    guard let _post = self.post else { return }
                     if imagesUrl?.absoluteString == url.absoluteString {
                         self.eventImageView.image = image
+                        self.eventImageView.clipsToBounds = true
                     } else {
                         print("Not the right image")
                     }
@@ -124,9 +124,9 @@ class EventsTableViewCell: UITableViewCell {
             let distanceText: String
             if distance >= 1000 {
                 let distanceDouble = Double(distance)/1000.0
-                distanceText = "\(String(format: "%.1f", distanceDouble)) km"
+                distanceText = "\(String(format: "%.1f", distanceDouble)) км"
             } else {
-                distanceText = "\(distance) m"
+                distanceText = "\(distance) м"
             }
             distanceLabel.text = distanceText
         }

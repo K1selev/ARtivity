@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if isLogin {
             vc = EventsViewController()
         } else {
-            vc = AuthViewController()
+            vc = EventsViewController()
         }
         window.rootViewController = UINavigationController(rootViewController: vc)
         self.window = window

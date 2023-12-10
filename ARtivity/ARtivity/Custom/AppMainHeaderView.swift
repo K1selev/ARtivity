@@ -2,14 +2,14 @@
 //  AppHeaderView.swift
 //  ARtivity
 //
-//  Created by Сергей Киселев on 11.12.2023.
+//  Created by Сергей Киселев on 07.12.2023.
 //
 
 import UIKit
 import SnapKit
 import Firebase
 
-class AppHeaderView: UIView {
+class AppMainHeaderView: UIView {
     private lazy var title: UILabel = {
         let label = UILabel()
         label.textColor = .blue
@@ -20,7 +20,7 @@ class AppHeaderView: UIView {
     lazy var leftButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
-        button.setImage(UIImage(systemName: "arrowshape.backward"), for: .normal)
+        button.setImage(UIImage(systemName: "mappin.and.ellipse"), for: .normal)
         button.setTitle("", for: .normal)
         return button
     }()
@@ -80,11 +80,5 @@ class AppHeaderView: UIView {
 
     private func setupActions() {
 
-    }
-    
-//    @objc func buttonProfileClicked()
-//    {
-//        print("buttonLogedInClicked")
-//    }
-}
+    }}
 
