@@ -12,7 +12,7 @@ import Firebase
 class AppMainHeaderView: UIView {
     private lazy var title: UILabel = {
         let label = UILabel()
-        label.textColor = .blue
+        label.textColor = UIColor(named: "mainGreen")
         label.text = "ARtivity"
         return label
     }()
@@ -20,7 +20,7 @@ class AppMainHeaderView: UIView {
     lazy var leftButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
-        button.setImage(UIImage(systemName: "mappin.and.ellipse"), for: .normal)
+        button.setImage(UIImage(named: "navMapPoint"), for: .normal)
         button.setTitle("", for: .normal)
         return button
     }()
@@ -31,14 +31,14 @@ class AppMainHeaderView: UIView {
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         if isLogin {
             guard let user = Auth.auth().currentUser else { return button}
-            button.setImage(UIImage(systemName: "person.crop.circle"), for: .normal)
+            button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
             button.setTitle(" \(user.email ?? "User name")", for: .normal)
            
         } else {
-            button.setImage(UIImage(systemName: "person.crop.circle"), for: .normal)
+            button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
             button.setTitle(" Profile", for: .normal)
         }
-        button.setTitleColor(.blue, for: .normal)
+        button.setTitleColor(.gray, for: .normal)
         return button
     }()
 

@@ -53,6 +53,7 @@
 		A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */; };
 		A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */; };
 		A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */; };
+		A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,7 @@
 		A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
+		A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 		A53248852B159D36008AD9DF /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -364,6 +367,7 @@
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,
 				A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
+				A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
