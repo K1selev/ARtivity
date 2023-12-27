@@ -29,7 +29,10 @@ class CustomTextField: UITextField, UITextFieldDelegate {
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
         )
         self.layer.cornerRadius = 12
-        self.layer.borderWidth = 1
+        self.layer.borderWidth = 0.1
+        self.layer.shadowRadius = 10
+        self.layer.shadowColor = UIColor.systemGray5.cgColor
+        self.layer.shadowOpacity = 10
         self.autocorrectionType = .no
 //        self.clearButtonMode = .whileEditing
         self.isSecureTextEntry = isSecure
@@ -41,7 +44,7 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         self.leftViewMode = .always
 
         self.snp.makeConstraints { make in
-            make.height.equalTo(48)
+            make.height.equalTo(51)
             make.width.equalTo(UIScreen.main.bounds.width - 32)
         }
     }

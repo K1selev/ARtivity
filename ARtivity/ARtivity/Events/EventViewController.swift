@@ -59,6 +59,22 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    private var goTripButton = UIButton()
+    private var imageArray: [UIImage?] = [UIImage(named: "place1"),
+                                         UIImage(named: "place2"),
+                                         UIImage(named: "place3"),
+                                         UIImage(named: "place2"),
+                                         UIImage(named: "place1")]
+    private let photoCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 14
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: "PhotoCell")
+        return collectionView
+    }()
+    
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,6 +96,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.delegate = self
         setupUI()
+        setupCollectionView()
     }
     
 
@@ -94,13 +111,14 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
                                       for:.touchUpInside)
         
+        mapImage.image = UIImage(named: "mapPreview")
+        
         //MARK: it will be a simple tableViewCell
         setupPointView1()
         setupPointView2()
         setupPointView3()
         
 //        pointView2.addBlurToView()
-        
         view.addSubview(scrollView)
                 [imageViewPost,
                  eventName,
@@ -125,10 +143,14 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
                 lineView6,
                  descriptionMainText,
                  descriptionText,
-                 galeryMainText].forEach {
+                 galeryMainText,
+                 photoCollectionView,
+                mapImage].forEach {
                     scrollView.addSubview($0)
                    }
+//        view.sendSubviewToBack(scrollView)
         view.addSubview(topView)
+        view.addSubview(goTripButton)
         
         distanceLabel.textAlignment = .center
         timeLabel.textAlignment = .center
@@ -138,6 +160,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         setupData()
         makeConstraints()
         setupNoDataInf()
+    }
+    
+    private func setupCollectionView() {
+        photoCollectionView.backgroundColor = .clear
+        photoCollectionView.delegate = self
+        photoCollectionView.dataSource = self
+        photoCollectionView.showsHorizontalScrollIndicator = false
     }
 
     func makeConstraints() {
@@ -153,6 +182,16 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
             make.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
+        
+        
+        goTripButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-40)
+            make.leading.equalToSuperview().offset(28)
+            make.trailing.equalToSuperview().offset(-28)
+            make.height.equalTo(45)
+        }
+        
         imageViewPost.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -305,6 +344,21 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
+        
+        photoCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(100)
+        }
+        
+        mapImage.snp.makeConstraints { make in
+            make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(243)
+        }
+
     }
 
     func setupNoDataInf() {
@@ -347,6 +401,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         galeryMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         
         descriptionText.numberOfLines = 0
+        
+        goTripButton.setTitle("Записаться", for: .normal)// = CustomButton(title: "Записаться")
+        goTripButton.setTitleColor(.black, for: .normal)
+        goTripButton.isUserInteractionEnabled = true
+        goTripButton.backgroundColor = UIColor(named: "mainGreen")
+        goTripButton.layer.cornerRadius = 14
+        
     }
     
     //MARK: кринжанул
@@ -496,6 +557,10 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         }
 
     }
+    
+    func configurePhotoCollection(with models: [UIImage]) {
+        self.imageArray = models
+    }
 
     @objc func buttonProfileClicked()
     {
@@ -513,6 +578,35 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1400)
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1250)
+    }
+}
+
+
+extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageArray.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell",
+                                                          for: indexPath) as? PhotoCell,
+            imageArray.count > indexPath.row - 1
+        else {
+            return UICollectionViewCell()
+        }
+        
+        cell.configure(with: imageArray[indexPath.row])
+        
+        return cell
+        
+    }
+}
+
+extension EventViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 90, height: 90)
     }
 }

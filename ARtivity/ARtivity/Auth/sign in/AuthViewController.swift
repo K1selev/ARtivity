@@ -13,23 +13,18 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
 
     private let logoPetGeoAuth = UIView()
     private let titleName = UILabel()
-
+    private let backButton = UIButton()
     private var emailField = CustomTextField()
     private var passwordField = CustomTextField()
     private var buttonSignIn = CustomButton()
-
     private var buttonSignUp = UIButton()
     private var buttonSignUpAs = UIButton()
-
     private var buttonRestore = UIButton()
-//    private let alternativeWaySignIn = UIView()
-//    private let appleButton = UIButton()
-//    private let googleButton = UIButton()
 
     override func viewDidLoad() {
 
         super.viewDidLoad()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .white
 
         buttonSignIn.isUserInteractionEnabled = true
 
@@ -59,18 +54,10 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
         passwordField.delegate = self
         emailField.clearButtonMode = .whileEditing
         passwordField.enablePasswordToggle()
-
-//        alternativeWaySignIn.layer.contents = Asset.authAlternativeWayReg.image.cgImage
-//        appleButton.addTapGestureRecognizer {
-//            self.didTapAppleButton()
-//        }
-//        googleButton.addTapGestureRecognizer {
-//            self.didTapGoogleButton()
-//        }
-
-//        appleButton.setImage(Asset.authAppleButton.image, for: .normal)
-//        googleButton.setImage(Asset.authGoogleButton.image, for: .normal)
-//
+        
+        backButton.setImage(UIImage(named: "navBackButton"), for: .normal)
+        backButton.addTarget(self,action:#selector(buttonBackClicked), for:.touchUpInside)
+        
         buttonSignIn.addTarget(self, action: #selector(didTapButtonSignIn), for: .touchUpInside)
         buttonSignUp.addTarget(self, action: #selector(didTapButtonSignUp), for: .touchUpInside)
         buttonRestore.addTarget(self, action: #selector(didTapRestoreButton), for: .touchUpInside)
@@ -84,7 +71,8 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
          passwordField,
          buttonSignIn,
          buttonSignUp,
-         buttonRestore].forEach {
+         buttonRestore,
+        backButton].forEach {
             view.addSubview($0)
         }
     }
@@ -126,29 +114,14 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
             make.centerX.equalToSuperview()
             make.top.equalTo(buttonRestore).offset(60)
             make.leading.equalTo(20)
-            make.height.equalTo(45)
+            make.height.equalTo(51)
         }
-
-//        alternativeWaySignIn.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview()
-//            make.height.equalTo(20)
-//            make.width.equalTo(375)
-//            make.top.equalTo(buttonSignIn).offset(80)
-//        }
-//
-//        appleButton.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview().offset(-40)
-//            make.height.equalTo(48)
-//            make.width.equalTo(64)
-//            make.top.equalTo(alternativeWaySignIn).offset(40)
-//        }
-//
-//        googleButton.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview().offset(40)
-//            make.height.equalTo(48)
-//            make.width.equalTo(64)
-//            make.top.equalTo(alternativeWaySignIn).offset(40)
-//        }
+        
+        backButton.snp.makeConstraints { make in
+            make.width.height.equalTo(48)
+            make.leading.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(70)
+        }
 
         buttonSignUp.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-100)
@@ -257,5 +230,9 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
         forgotPasswordView.modalTransitionStyle = .crossDissolve
         forgotPasswordView.modalPresentationStyle = .overCurrentContext
         self.present(forgotPasswordView, animated: true, completion: nil)
+    }
+    
+    @objc func buttonBackClicked() {
+      dismiss(animated: true)
     }
 }
