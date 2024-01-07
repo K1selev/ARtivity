@@ -15,9 +15,8 @@ class CustomButton: UIButton {
 
     private var loading = UIActivityIndicatorView()
 
-    convenience init(textColor: UIColor = .white
-                     ,
-                     background: UIColor = .blue,
+    convenience init(textColor: UIColor = .black,
+                     background: UIColor = UIColor(named: "mainGreen") ?? .green,
                      title: String) {
         self.init(type: .custom)
         self.textColor = textColor

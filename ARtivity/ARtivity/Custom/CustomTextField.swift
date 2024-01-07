@@ -29,7 +29,10 @@ class CustomTextField: UITextField, UITextFieldDelegate {
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
         )
         self.layer.cornerRadius = 12
-        self.layer.borderWidth = 1
+        self.layer.borderWidth = 0.1
+        self.layer.shadowRadius = 10
+        self.layer.shadowColor = UIColor.systemGray5.cgColor
+        self.layer.shadowOpacity = 10
         self.autocorrectionType = .no
 //        self.clearButtonMode = .whileEditing
         self.isSecureTextEntry = isSecure
@@ -41,17 +44,17 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         self.leftViewMode = .always
 
         self.snp.makeConstraints { make in
-            make.height.equalTo(48)
+            make.height.equalTo(51)
             make.width.equalTo(UIScreen.main.bounds.width - 32)
         }
     }
 
     fileprivate func setPasswordToggleImage(_ button: UIButton) {
         if isSecureTextEntry {
-            button.setImage(UIImage(systemName: "eye"), for: .normal)
-            button.tintColor = UIColor(named: "textToInput")
+            button.setImage(UIImage(named: "eyePassHide"), for: .normal)
+//            button.tintColor = UIColor(named: "textToInput")
         } else {
-            button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+            button.setImage(UIImage(named: "eyePass"), for: .normal)
 
         }
     }

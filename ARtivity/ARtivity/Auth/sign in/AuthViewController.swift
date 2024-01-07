@@ -11,46 +11,43 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
 
     private var presenter: AuthPresenter?
 
-    private let logoPetGeoAuth = UIView()
+    private let logoApp = UIView()
     private let titleName = UILabel()
-
+    private let backButton = UIButton()
     private var emailField = CustomTextField()
     private var passwordField = CustomTextField()
     private var buttonSignIn = CustomButton()
-
     private var buttonSignUp = UIButton()
-    private var buttonSignUpAs = UIButton()
-
+    private let signUpText = UILabel()
     private var buttonRestore = UIButton()
-//    private let alternativeWaySignIn = UIView()
-//    private let appleButton = UIButton()
-//    private let googleButton = UIButton()
 
     override func viewDidLoad() {
 
         super.viewDidLoad()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .white
 
         buttonSignIn.isUserInteractionEnabled = true
 
         emailField = CustomTextField(placeholderText: "email",
                                      color: .white,
                                      security: false)
-        passwordField = CustomTextField(placeholderText: "password",
+        passwordField = CustomTextField(placeholderText: "пароль",
                                         color: .white,
                                         security: true)
-        buttonSignIn = CustomButton(title: "sign in")
-        buttonSignUp.setTitle("sign up", for: .normal)
-        buttonSignUp.setTitleColor(.systemGray, for: .normal)
+        buttonSignIn = CustomButton(title: "Войти")
+        buttonSignUp.setTitle("Зарегистрироваться", for: .normal)
+        buttonSignUp.setTitleColor(UIColor(named: "mainGreen"), for: .normal)
+        
+        signUpText.text = "Нет аккаунта?"
 
-        buttonRestore.setTitle("forgot password", for: .normal)
+        buttonRestore.setTitle("забыли пароль?", for: .normal)
         buttonRestore.setTitleColor(.systemGray, for: .normal)
 
-        logoPetGeoAuth.layer.contents = UIImage(named: "figure.roll")?.cgImage
+        logoApp.layer.contents = UIImage(named: "logo")?.cgImage
 
-        titleName.text = "sign in"
-        titleName.font = UIFont(name: "Arial", size: 28)
-        titleName.textColor = .black
+        titleName.text = "Вход"
+        titleName.font = UIFont(name: "Arial", size: 18)
+        titleName.textColor = UIColor(named: "mainGreen")
 
         emailField.returnKeyType = .next
         passwordField.returnKeyType = .go
@@ -59,18 +56,10 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
         passwordField.delegate = self
         emailField.clearButtonMode = .whileEditing
         passwordField.enablePasswordToggle()
-
-//        alternativeWaySignIn.layer.contents = Asset.authAlternativeWayReg.image.cgImage
-//        appleButton.addTapGestureRecognizer {
-//            self.didTapAppleButton()
-//        }
-//        googleButton.addTapGestureRecognizer {
-//            self.didTapGoogleButton()
-//        }
-
-//        appleButton.setImage(Asset.authAppleButton.image, for: .normal)
-//        googleButton.setImage(Asset.authGoogleButton.image, for: .normal)
-//
+        
+        backButton.setImage(UIImage(named: "navBackButton"), for: .normal)
+        backButton.addTarget(self,action:#selector(buttonBackClicked), for:.touchUpInside)
+        
         buttonSignIn.addTarget(self, action: #selector(didTapButtonSignIn), for: .touchUpInside)
         buttonSignUp.addTarget(self, action: #selector(didTapButtonSignUp), for: .touchUpInside)
         buttonRestore.addTarget(self, action: #selector(didTapRestoreButton), for: .touchUpInside)
@@ -78,34 +67,36 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapPiece))
         self.view.addGestureRecognizer(tapGesture)
 
-        [logoPetGeoAuth,
+        [logoApp,
          titleName,
          emailField,
          passwordField,
          buttonSignIn,
          buttonSignUp,
-         buttonRestore].forEach {
+         buttonRestore,
+        backButton,
+         signUpText].forEach {
             view.addSubview($0)
         }
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        logoPetGeoAuth.snp.makeConstraints { make in
+        logoApp.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(48)
-            make.width.equalTo(375)
-            make.top.equalToSuperview().inset(116)
+            make.height.equalTo(150)
+            make.width.equalTo(150)
+            make.top.equalToSuperview().offset(120)
         }
 
         titleName.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(200)
+            make.leading.equalToSuperview().offset(20)
+            make.top.equalTo(logoApp.snp.bottom).offset(60)
         }
 
         emailField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleName).offset(60)
+            make.top.equalTo(titleName.snp.bottom).offset(20)
             make.leading.equalTo(20)
             make.height.equalTo(45)
         }
@@ -126,34 +117,25 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
             make.centerX.equalToSuperview()
             make.top.equalTo(buttonRestore).offset(60)
             make.leading.equalTo(20)
-            make.height.equalTo(45)
+            make.height.equalTo(51)
+        }
+        
+        backButton.snp.makeConstraints { make in
+            make.width.height.equalTo(48)
+            make.leading.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(70)
+        }
+        
+        signUpText.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-80)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(25)
         }
 
-//        alternativeWaySignIn.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview()
-//            make.height.equalTo(20)
-//            make.width.equalTo(375)
-//            make.top.equalTo(buttonSignIn).offset(80)
-//        }
-//
-//        appleButton.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview().offset(-40)
-//            make.height.equalTo(48)
-//            make.width.equalTo(64)
-//            make.top.equalTo(alternativeWaySignIn).offset(40)
-//        }
-//
-//        googleButton.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview().offset(40)
-//            make.height.equalTo(48)
-//            make.width.equalTo(64)
-//            make.top.equalTo(alternativeWaySignIn).offset(40)
-//        }
-
         buttonSignUp.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-100)
-            make.centerX.equalToSuperview().offset(100)
-            make.height.equalTo(45)
+            make.top.equalTo(signUpText.snp.bottom).offset(5)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(25)
         }
     }
 
@@ -186,13 +168,17 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
 //    }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.layer.borderWidth = 0.7
         textField.layer.borderColor = UIColor.gray.cgColor
-        textField.layer.borderWidth = 1.6
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.blue.cgColor
+        if textField.text == "" {
+            textField.layer.borderWidth = 0
+        } else {
+            textField.layer.borderWidth = 0.7
+            textField.layer.borderColor = UIColor.gray.cgColor
+        }
     }
 
     func textField(_ textField: UITextField,
@@ -257,5 +243,9 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
         forgotPasswordView.modalTransitionStyle = .crossDissolve
         forgotPasswordView.modalPresentationStyle = .overCurrentContext
         self.present(forgotPasswordView, animated: true, completion: nil)
+    }
+    
+    @objc func buttonBackClicked() {
+      dismiss(animated: true)
     }
 }

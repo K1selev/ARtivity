@@ -88,7 +88,8 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         topView.isUserInteractionEnabled = true
         topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
                                       for:.touchUpInside)
-
+        topView.leftButton.addTarget(self,action:#selector(buttonMapClicked),
+                                     for:.touchUpInside)
         beginBatchFetch()
 
         self.hideKeyboardWhenTappedAround()
@@ -296,11 +297,19 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             postListenerHandle = nil
         }
     }
-    @objc func buttonProfileClicked()
-    {
+    
+    @objc func buttonMapClicked() {
+        let vc = MapViewController()
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
+    }
+    @objc func buttonProfileClicked() {
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         if isLogin {
             print("already loged in")
+            let vc = ProfileViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
         } else {
             let vc = AuthViewController()
             vc.modalPresentationStyle = .fullScreen

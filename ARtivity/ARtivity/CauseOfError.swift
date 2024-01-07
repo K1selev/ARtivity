@@ -24,25 +24,25 @@ extension CauseOfError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .loginOrPassword:
-            return "wrongLoginPass"
+            return "Неверный логин или пароль"
         case .shortPassword:
-            return "shortPassword"
+            return "Слишком короткий пароль"
         case .mailNotFound:
-            return "mailNotFound"
+            return "Email не найден"
         case .invalidEmail:
-            return "invalidEmail"
+            return "Неверный email"
         case .unknownError:
-            return "unknownError"
+            return "Неизвестная ошибка"
         case .serverError:
-            return "serverError"
+            return "Ошибка сервера"
         case .entranceFC:
-            return "entranceFC"
+            return "Ошибка входа"
         case .inactiveAccount:
-            return "inactiveAccount"
+            return "Неактивный аккаунт"
         case .passwordMismatch:
-            return "passwordMismatch"
+            return "Пароли не совпадают"
         case .verificationTimer:
-            return "verificationTimer"
+            return "Verification timer"
         }
     }
 }
