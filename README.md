@@ -1,5 +1,10 @@
 # ARtivity
-приложение для городских путушествий
+### приложение для городских путешествий
+- мобильное приложение для городских путешествий
+- открой новые и необычные места в родном городе
+- взгляни на прогулки под другим углом
 
-![Дизайн]([http://full/path/to/img.jpg](https://github.com/K1selev/ARtivity/blob/main/Screen/design.png)https://github.com/K1selev/ARtivity/blob/main/Screen/design.png)
+### Дизайн приложения:
+
+![Дизайн](https://github.com/K1selev/ARtivity/blob/main/Screen/design.png?raw=true)
 
