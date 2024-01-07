@@ -65,7 +65,100 @@ extension EventsModel: DatabaseRepresentation {
                                eventTimestamp: crDate,
                                eventAuthor: eventAuthor)
         }
-        print("DEBUG ERROR")
+        return nil
+    }
+}
+
+struct EventDetails {
+    var id: String?
+    var eventId: String?
+    var description: String?
+    var eventPoints: [String]?
+    var eventPhotos: [String]?
+    var eventLanguage: String?
+    var eventAR: Bool?
+}
+
+extension EventDetails: DatabaseRepresentation {
+    var representation: [String: Any] {
+        let rep: [String: Any] = [
+            "eventId": eventId,
+            "description": description,
+            "eventPoints": eventPoints,
+            "eventPhotos": eventPhotos,
+            "eventLanguage": eventLanguage,
+            "eventAR": eventAR
+        ]
+        return rep
+    }
+    
+    static func parse(_ key: String, _ data: [String: Any]) -> EventDetails? {
+
+        if let eventId = data["eventId"] as? String,
+           let description = data["description"] as? String,
+           let eventPoints = data["eventPoints"] as? [String],
+           let eventPhotos = data["eventPhotos"] as? [String],
+           let eventLanguage = data["eventLanguage"] as? String,
+           let eventAR = data["eventAR"] as? Bool
+        {
+            
+            return EventDetails(id: key,
+                               eventId: eventId,
+                               description: description,
+                               eventPoints: eventPoints,
+                               eventPhotos: eventPhotos,
+                               eventLanguage: eventLanguage,
+                               eventAR: eventAR)
+        }
+        return nil
+    }
+}
+
+struct PointDetail {
+    var id: String?
+    var address: String?
+    var description: String?
+    var latitude: Double?
+    var longitude: Double?
+    var name: String?
+    var photos: String?
+    var urlNet: String?
+}
+
+extension PointDetail: DatabaseRepresentation {
+    var representation: [String: Any] {
+        let rep: [String: Any] = [
+            "address": address,
+            "description": description,
+            "latitude": latitude,
+            "longitude": longitude,
+            "name": name,
+            "photos": photos,
+            "urlNet": urlNet
+        ]
+        return rep
+    }
+    
+    static func parse(_ key: String, _ data: [String: Any]) -> PointDetail? {
+
+        if let address = data["address"] as? String,
+           let description = data["description"] as? String,
+           let latitude = data["latitude"] as? Double,
+           let longitude = data["longitude"] as? Double,
+           let name = data["name"] as? String,
+           let photos = data["photos"] as? String,
+           let urlNet = data["urlNet"] as? String
+        {
+            
+            return PointDetail(id: key,
+                               address: address,
+                               description: description,
+                               latitude: latitude,
+                               longitude: longitude,
+                               name: name,
+                               photos: photos,
+                               urlNet: urlNet)
+        }
         return nil
     }
 }

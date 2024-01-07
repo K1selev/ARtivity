@@ -18,10 +18,12 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 
     private let titleName = UILabel()
     
-    private var backButton = UIButton()
-    private var backText = UILabel()
+    private var buttonSignIn = UIButton()
+    private var signInText = UILabel()
+    private let logoAppText = UILabel()
 
     private var continueButton = CustomButton()
+    private var nameField = CustomTextField()
     private var emailField = CustomTextField()
     private var passwordField = CustomTextField()
     private var repeatPasswordField = CustomTextField()
@@ -29,7 +31,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
     override func viewDidLoad() {
 
         super.viewDidLoad()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .white
 
         setupUI()
 
@@ -38,35 +40,43 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
         scrollView.backgroundColor = .white
         contentView.backgroundColor = .white
 
-        titleName.text = "create account"
-        titleName.font = UIFont(name: "Arial", size: 28)
-        titleName.textColor = .black
+        titleName.text = "Регистрация"
+        titleName.font = UIFont(name: "Arial", size: 18)
+        titleName.textColor = UIColor(named: "mainGreen")
+        
+        logoAppText.text = "ARtivity"
+        logoAppText.font = UIFont(name: "Arial", size: 38)
+        logoAppText.textColor = UIColor(named: "mainGreen")
 
+        nameField.returnKeyType = .next
         emailField.returnKeyType = .next
         passwordField.returnKeyType = .next
         repeatPasswordField.returnKeyType = .go
 
+        nameField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self
         repeatPasswordField.delegate = self
 
         continueButton.addTarget(self, action: #selector(didTapButtonContinue), for: .touchUpInside)
-        backButton.addTarget(self, action: #selector(didTapButtonBack), for: .touchUpInside)
+        buttonSignIn.addTarget(self, action: #selector(didTapButtonBack), for: .touchUpInside)
 //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapPiece))
 //        contentView.addGestureRecognizer(tapGesture)
         self.hideKeyboardWhenTappedAround()
 
-        [
+        [logoAppText,
          titleName,
+         nameField,
          emailField,
          repeatPasswordField,
          passwordField,
          continueButton,
-         backButton,
-         backText].forEach {
+         buttonSignIn,
+         signInText].forEach {
             view.addSubview($0)
         }
 
+        nameField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self
         repeatPasswordField.delegate = self
@@ -80,36 +90,40 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 
     func makeConstraints() {
         
-        titleName.snp.makeConstraints { make in
+        logoAppText.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(219)
+            make.top.equalToSuperview().offset(140)
+        }
+        
+        titleName.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(20)
+            make.top.equalTo(logoAppText.snp.bottom).offset(60)
         }
 
+        nameField.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(titleName.snp.bottom).offset(20)
+            make.leading.equalTo(20)
+            make.height.equalTo(45)
+        }
+        
         emailField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleName).offset(60)
+            make.top.equalTo(nameField.snp.bottom).offset(20)
             make.leading.equalTo(20)
             make.height.equalTo(45)
         }
 
         passwordField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-//            if isError {
-//                make.centerY.equalTo(emailField).offset(61)
-//            } else {
-                make.centerY.equalTo(emailField).offset(61)
-//            }
+            make.top.equalTo(emailField.snp.bottom).offset(20)
             make.leading.equalTo(20)
             make.height.equalTo(45)
         }
 
         repeatPasswordField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-//            if isError {
-//                make.centerY.equalTo(passwordField).offset(61)
-//            } else {
-                make.centerY.equalTo(passwordField).offset(61)
-//            }
+            make.top.equalTo(passwordField.snp.bottom).offset(20)
             make.leading.equalTo(20)
             make.height.equalTo(45)
         }
@@ -120,50 +134,54 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
             make.leading.equalTo(20)
             make.height.equalTo(45)
         }
-        backButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-50)
-            make.centerX.equalToSuperview().offset(90)
-            make.height.equalTo(45)
+        signInText.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-80)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(25)
         }
 
-        backText.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-50)
-            make.trailing.equalTo(backButton).offset(-60)
-            make.height.equalTo(45)
+        buttonSignIn.snp.makeConstraints { make in
+            make.top.equalTo(signInText.snp.bottom).offset(5)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(25)
         }
     }
 
     func setupUI() {
-        backButton.setTitle("sign in", for: .normal)
-        backButton.setTitleColor(.blue, for: .normal)
+        buttonSignIn.setTitle("Войти", for: .normal)
+        buttonSignIn.setTitleColor(UIColor(named: "mainGreen"), for: .normal)
 
-        backText.text = "already reged"
-        backText.font = UIFont(name: "Arial", size: 20)
-        backText.textColor = .black
+        signInText.text = "Зарегистрированы?"
+//        signInText.font = UIFont(name: "Arial", size: 20)
+//        signInText.textColor = .black
 
-        continueButton = CustomButton(title: "sign up")
+        continueButton = CustomButton(title: "Зарегистрироваться")
+        nameField = CustomTextField(placeholderText: "имя", color: .white, security: false)
+        nameField.clearButtonMode = .whileEditing
         emailField = CustomTextField(placeholderText: "email", color: .white, security: false)
         emailField.clearButtonMode = .whileEditing
-        passwordField = CustomTextField(placeholderText: "password", color: .white, security: true)
+        passwordField = CustomTextField(placeholderText: "пароль", color: .white, security: true)
         passwordField.clearButtonMode = .never
         passwordField.enablePasswordToggle()
-        repeatPasswordField = CustomTextField(placeholderText: "repeate password", color: .white, security: true)
+        repeatPasswordField = CustomTextField(placeholderText: "повторите пароль", color: .white, security: true)
         repeatPasswordField.clearButtonMode = .never
         repeatPasswordField.enablePasswordToggle()
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.blue.cgColor
-        textField.layer.borderWidth = 1.6
+        textField.layer.borderWidth = 1
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 0.7
         textField.layer.borderColor = UIColor.systemGray.cgColor
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
+        case nameField:
+            emailField.becomeFirstResponder()
         case emailField:
             passwordField.becomeFirstResponder()
         case passwordField:
@@ -214,7 +232,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
     func processingResult(error: String?) {
 //        let tabBar = TabBar()
         let vc = EventsViewController()
-        backButton.isEnabled = true
+        buttonSignIn.isEnabled = true
         continueButton.isEnabled = true
         continueButton.loadingStop()
 
@@ -238,7 +256,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 //        isError = true
 
         textField?.layer.borderColor = UIColor.red.cgColor
-        textField?.layer.borderWidth = 5
+        textField?.layer.borderWidth = 1
         self.processingResult(error: error)
 
 //        let errorText = UILabel()
@@ -283,7 +301,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 //            self.processingResult(error: CauseOfError.passwordMismatch.localizedDescription)
             return
         }
-        backButton.isEnabled = false
+        buttonSignIn.isEnabled = false
         continueButton.isEnabled = false
         continueButton.loadingStart()
         self.presenter = RegPresenter(view: self,

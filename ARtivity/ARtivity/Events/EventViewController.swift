@@ -13,11 +13,14 @@ import Firebase
 import SnapKit
 import CoreLocation
 
-class EventViewController: UIViewController, UIScrollViewDelegate {
+class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
 
     var post: EventsModel?
+    var postDetail: EventDetails?
+    var pointInf = [PointDetail]()
 
     var topView = AppHeaderView()
+    var tableView: UITableView!
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     private let imageViewPost = UIImageView()
     private let mainView = UIView()
@@ -60,11 +63,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
     private var goTripButton = UIButton()
-    private var imageArray: [UIImage?] = [UIImage(named: "place1"),
-                                         UIImage(named: "place2"),
-                                         UIImage(named: "place3"),
-                                         UIImage(named: "place2"),
-                                         UIImage(named: "place1")]
+    private var imageArray: [UIImage?] = []
     private let photoCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -85,6 +84,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupUI()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -95,10 +95,30 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.delegate = self
-        setupUI()
-        setupCollectionView()
+        getPostDetails { posts in
+        }
+        getPoints()
     }
     
+    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
+
+        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
+        
+        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+            var tempPost = EventDetails()
+
+            let lastPost = self.postDetail
+                if let childSnapshot = snapshot as? DataSnapshot,
+                   let data = childSnapshot.value as? [String: Any],
+                   let post = EventDetails.parse(childSnapshot.key, data)
+//                   childSnapshot.key != lastPost?.eventId
+                {
+                    self.postDetail = post
+                    self.setupDataInf()
+                }
+        })
+    }
+
 
     private func setupUI() {
         view.backgroundColor = .white
@@ -113,10 +133,24 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         
         mapImage.image = UIImage(named: "mapPreview")
         
+        tableView = UITableView(frame: view.bounds, style: .plain)
+        if isLogin {
+            tableView.isHidden = false
+        } else {
+            tableView.isHidden = true
+        }
+
+        tableView.backgroundColor = .white
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(EventPointTableViewCell.self, forCellReuseIdentifier: "EventPointTableViewCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.reloadData()
+        tableView.rowHeight = 60
+//        tableView.separatorStyle = .none
+        
         //MARK: it will be a simple tableViewCell
-        setupPointView1()
-        setupPointView2()
-        setupPointView3()
+
         
 //        pointView2.addBlurToView()
         view.addSubview(scrollView)
@@ -135,11 +169,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
                 lineView2,
                 pointsMainText,
                 lineView3,
-                 pointView1,
-                lineView4,
-                pointView2,
-                 lineView5,
-                 pointView3,
                 lineView6,
                  descriptionMainText,
                  descriptionText,
@@ -148,6 +177,17 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
                 mapImage].forEach {
                     scrollView.addSubview($0)
                    }
+        if isLogin {
+            scrollView.addSubview(tableView)
+        } else {
+            [pointView1,
+            lineView4,
+            pointView2,
+            lineView5,
+            pointView3].forEach {
+                scrollView.addSubview($0)
+               }
+        }
 //        view.sendSubviewToBack(scrollView)
         view.addSubview(topView)
         view.addSubview(goTripButton)
@@ -285,75 +325,95 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
             make.height.equalTo(1)
         }
         
-        pointView1.snp.makeConstraints { make in
-            make.top.equalTo(lineView3.snp.bottom)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(54)
-        }
-        
-        lineView4.snp.makeConstraints { make in
-            make.top.equalTo(pointView1.snp.bottom).offset(10)
-            make.leading.equalToSuperview().offset(34)
-            make.trailing.equalToSuperview().offset(-34)
-            make.height.equalTo(1)
-        }
-        
-        pointView2.snp.makeConstraints { make in
-            make.top.equalTo(lineView4.snp.bottom)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(54)
-        }
-        
-        lineView5.snp.makeConstraints { make in
-            make.top.equalTo(pointView2.snp.bottom).offset(10)
-            make.leading.equalToSuperview().offset(34)
-            make.trailing.equalToSuperview().offset(-34)
-            make.height.equalTo(1)
-        }
-        
-        pointView3.snp.makeConstraints { make in
-            make.top.equalTo(lineView5.snp.bottom)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(54)
+        if isLogin {
+            tableView.snp.makeConstraints { make in
+                make.top.equalTo(lineView3.snp.bottom).offset(10)
+                make.leading.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.height.equalTo(184)
+            }
+        } else {
+            pointView1.snp.makeConstraints { make in
+                make.top.equalTo(lineView3.snp.bottom)
+                make.leading.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.height.equalTo(54)
+            }
+            
+            lineView4.snp.makeConstraints { make in
+                make.top.equalTo(pointView1.snp.bottom).offset(10)
+                make.leading.equalToSuperview().offset(34)
+                make.trailing.equalToSuperview().offset(-34)
+                make.height.equalTo(1)
+            }
+            
+            pointView2.snp.makeConstraints { make in
+                make.top.equalTo(lineView4.snp.bottom)
+                make.leading.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.height.equalTo(54)
+            }
+            
+            lineView5.snp.makeConstraints { make in
+                make.top.equalTo(pointView2.snp.bottom).offset(10)
+                make.leading.equalToSuperview().offset(34)
+                make.trailing.equalToSuperview().offset(-34)
+                make.height.equalTo(1)
+            }
+            
+            pointView3.snp.makeConstraints { make in
+                make.top.equalTo(lineView5.snp.bottom)
+                make.leading.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.height.equalTo(54)
+            }
         }
         
         lineView6.snp.makeConstraints { make in
-            make.top.equalTo(pointView3.snp.bottom).offset(10)
+//            if isLogin {
+//                make.top.equalTo(pointView3.snp.bottom).offset(10)
+//            } else {
+//                make.top.equalTo(tableView.snp.bottom).offset(10)
+//            }
+            make.bottom.equalTo(descriptionMainText.snp.top).offset(-10)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(1)
         }
-        
+
         descriptionMainText.snp.makeConstraints { make in
-            make.top.equalTo(lineView6.snp.bottom).offset(15)
+//            make.top.equalTo(lineView6.snp.bottom).offset(15)
+            make.bottom.equalTo(descriptionText.snp.top).offset(-10)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
-        
+
         descriptionText.snp.makeConstraints { make in
-            make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
+//            make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
+            make.bottom.equalTo(galeryMainText.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
         }
-        
+
         galeryMainText.snp.makeConstraints { make in
-            make.top.equalTo(descriptionText.snp.bottom).offset(15)
+//            make.top.equalTo(descriptionText.snp.bottom).offset(15)
+            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
-        
+
         photoCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
+//            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
+            make.bottom.equalTo(mapImage.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(100)
         }
-        
+
         mapImage.snp.makeConstraints { make in
-            make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
+//            make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
+//            make.bottom.equalTo(scrollView.snp.bottom).offset(-20)
+            make.bottom.equalToSuperview().offset(1150)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(243)
@@ -385,11 +445,10 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         lineView6.layer.borderWidth = 0.5
         lineView6.layer.borderColor = UIColor.black.cgColor
         
-        languageText.text = "Русский язык экскурсии"
-        ARText.text = "Ориентируйся с помощью дополненной реальности"
+        
+        
         pointsMainText.text = "Точки экскурсии"
         descriptionMainText.text = "Описание"
-        descriptionText.text = "Приглашаем познакомиться с одной из древнейших и красивейших столиц мира. Вы оцените эклектичную архитектуру города, увидите знаменитые улицы и проспекты, побываете на центральных площадях."
         galeryMainText.text = "Фотографии с мест экскурсии"
         
         eventName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
@@ -402,7 +461,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         
         descriptionText.numberOfLines = 0
         
-        goTripButton.setTitle("Записаться", for: .normal)// = CustomButton(title: "Записаться")
+        goTripButton.setTitle("Отправиться на экскурсию", for: .normal)// = CustomButton(title: "Записаться")
         goTripButton.setTitleColor(.black, for: .normal)
         goTripButton.isUserInteractionEnabled = true
         goTripButton.backgroundColor = UIColor(named: "mainGreen")
@@ -410,12 +469,54 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
         
     }
     
-    //MARK: кринжанул
+    func setupDataInf() {
+        if postDetail?.eventLanguage == "rus" {
+            languageText.text = "Русский язык экскурсии"
+        }
+        if postDetail?.eventAR == true {
+            ARText.text = "Ориентируйся с помощью дополненной реальности"
+        }
+        descriptionText.text = postDetail?.description
+        
+        if isLogin {
+            
+        } else {
+            setupPointView1()
+            setupPointView2()
+            setupPointView3()
+        }
+        
+        for images in postDetail?.eventPhotos ?? [] {
+            if images != "" {
+                let imagesUrl =  URL(string: (images))
+                ImageService.getImage(withURL: imagesUrl!) { image, url in
+                    if imagesUrl?.absoluteString == url.absoluteString {
+                        self.imageArray.append(image)
+                    }
+                }
+            }
+        }
+        self.setupCollectionView()
+    }
+    
     func setupPointView1() {
         
+        let ref = Database.database().reference().child("points").child(postDetail?.eventPoints?.first ?? "0")
+        
+        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+            var tempPost = PointDetail()
+
+            let lastPost = self.postDetail
+                if let childSnapshot = snapshot as? DataSnapshot,
+                   let data = childSnapshot.value as? [String: Any],
+                   let point = PointDetail.parse(childSnapshot.key, data)
+                {
+                    self.pointName1.text = point.name
+                    self.pointDescription1.text = point.address
+                }
+        })
+
         pointNumber1.text = "1"
-        pointName1.text = "Большой театр"
-        pointDescription1.text = "Театральная площадь, 1"
         
         pointView1.addSubview(pointName1)
         pointView1.addSubview(pointNumber1)
@@ -442,9 +543,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setupPointView2() {
-        pointNumber2.text = "2"
-        pointName2.text = "Московский Кремль"
-        pointDescription2.text = "Ивановская площадь"
+        pointNumber2.text = ""
+        pointName2.text = "___________________"
         
         pointNumber2.textColor = .black.withAlphaComponent(0.1)
         pointName2.textColor = .black.withAlphaComponent(0.1)
@@ -475,9 +575,24 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setupPointView3() {
-        pointNumber3.text = "3"
-        pointName3.text = "Парк “Зарядье”"
-        pointDescription3.text = "ул. Варварка, 6, стр. 1"
+        
+        let ref = Database.database().reference().child("points").child(postDetail?.eventPoints?.last ?? "0")
+        
+        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+            var tempPost = PointDetail()
+
+            let lastPost = self.postDetail
+                if let childSnapshot = snapshot as? DataSnapshot,
+                   let data = childSnapshot.value as? [String: Any],
+                   let point = PointDetail.parse(childSnapshot.key, data)
+                {
+                    
+                    self.pointNumber3.text = "\(self.postDetail?.eventPoints?.count ?? 3)"
+                    self.pointName3.text = point.name
+                    self.pointDescription3.text = point.address
+                }
+        })
+
         
         pointView3.addSubview(pointName3)
         pointView3.addSubview(pointNumber3)
@@ -558,8 +673,28 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
 
     }
     
-    func configurePhotoCollection(with models: [UIImage]) {
-        self.imageArray = models
+    func getPoints() {
+
+        let ref = Database.database().reference().child("points")
+        
+        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+            var tempPoint = [PointDetail]()
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let data = childSnapshot.value as? [String: Any],
+                   let post = PointDetail.parse(childSnapshot.key, data) {
+                    let pointId = childSnapshot.key
+                    guard let pointDetail = self.postDetail?.eventPoints else { return }
+                    for item in pointDetail {
+                        if item == pointId {
+                            tempPoint.insert(post, at: 0)
+                            self.pointInf.append(post)
+                        }
+                    }
+                }
+            }
+            self.tableView.reloadData()
+        })
     }
 
     @objc func buttonProfileClicked()
@@ -578,7 +713,55 @@ class EventViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1250)
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1200)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return post?.eventPoint ?? 1
+        case 1:
+            return 0
+        default:
+            return 0
+        }
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "EventPointTableViewCell", for: indexPath) as! EventPointTableViewCell
+            if pointInf.isEmpty == false {
+                cell.set(point: pointInf[indexPath.row])
+                cell.numberLabel.text = "\(indexPath.row + 1)"
+            }
+//            cell.set(point: pointInf[indexPath.row])
+//            cell.set(post: posts[indexPath.row])
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell
+            cell.spinner.startAnimating()
+            return cell
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let post = posts[indexPath.row]
+//        print("SELECTED POST: \(post.eventId ?? "")")
+//        let vc = EventViewControllerDemo()
+//        vc.post = post
+//        vc.modalPresentationStyle = .fullScreen
+//        present(vc, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        cellHeights[indexPath] = cell.frame.size.height
+//        cell.selectionStyle = .none
+//        cell.backgroundColor =  .systemGray5
+        //        cell.selectedBackgroundView?.backgroundColor = .blue// Asset.backgroungGray.color
     }
 }
 
