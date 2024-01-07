@@ -466,6 +466,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         goTripButton.isUserInteractionEnabled = true
         goTripButton.backgroundColor = UIColor(named: "mainGreen")
         goTripButton.layer.cornerRadius = 14
+        goTripButton.addTarget(self, action: #selector(self.goTripButtonPressed), for: .touchUpInside)
         
     }
     
@@ -709,7 +710,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
 
     @objc func buttonBackClicked() {
-      dismiss(animated: true)
+        let vc = EventsViewController()
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: false)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -749,19 +752,29 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let post = posts[indexPath.row]
-//        print("SELECTED POST: \(post.eventId ?? "")")
-//        let vc = EventViewControllerDemo()
-//        vc.post = post
-//        vc.modalPresentationStyle = .fullScreen
-//        present(vc, animated: true)
+        let point = pointInf[indexPath.row]
+        print("SELECTED POINT: \(point.id ?? "")")
+        let vc = PointViewController()
+        vc.pointInf = point
+        vc.post = post
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 //        cellHeights[indexPath] = cell.frame.size.height
-//        cell.selectionStyle = .none
+        cell.selectionStyle = .none
 //        cell.backgroundColor =  .systemGray5
         //        cell.selectedBackgroundView?.backgroundColor = .blue// Asset.backgroungGray.color
+    }
+    
+    @objc func goTripButtonPressed() {
+        let point = pointInf[0]
+        let vc = PointViewController()
+        vc.pointInf = point
+        vc.post = post
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 }
 

@@ -307,6 +307,9 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         if isLogin {
             print("already loged in")
+            let vc = ProfileViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
         } else {
             let vc = AuthViewController()
             vc.modalPresentationStyle = .fullScreen

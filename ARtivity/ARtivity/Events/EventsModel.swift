@@ -121,7 +121,7 @@ struct PointDetail {
     var latitude: Double?
     var longitude: Double?
     var name: String?
-    var photos: String?
+    var photos: [String]?
     var urlNet: String?
 }
 
@@ -146,7 +146,7 @@ extension PointDetail: DatabaseRepresentation {
            let latitude = data["latitude"] as? Double,
            let longitude = data["longitude"] as? Double,
            let name = data["name"] as? String,
-           let photos = data["photos"] as? String,
+           let photos = data["photos"] as? [String],
            let urlNet = data["urlNet"] as? String
         {
             

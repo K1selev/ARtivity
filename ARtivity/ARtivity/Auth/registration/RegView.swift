@@ -156,26 +156,30 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 //        signInText.textColor = .black
 
         continueButton = CustomButton(title: "Зарегистрироваться")
-        nameField = CustomTextField(placeholderText: "имя", color: .white, security: false)
+        nameField = CustomTextField(placeholderText: "Имя", color: .white, security: false)
         nameField.clearButtonMode = .whileEditing
-        emailField = CustomTextField(placeholderText: "email", color: .white, security: false)
+        emailField = CustomTextField(placeholderText: "Email", color: .white, security: false)
         emailField.clearButtonMode = .whileEditing
-        passwordField = CustomTextField(placeholderText: "пароль", color: .white, security: true)
+        passwordField = CustomTextField(placeholderText: "Пароль", color: .white, security: true)
         passwordField.clearButtonMode = .never
         passwordField.enablePasswordToggle()
-        repeatPasswordField = CustomTextField(placeholderText: "повторите пароль", color: .white, security: true)
+        repeatPasswordField = CustomTextField(placeholderText: "Повторите пароль", color: .white, security: true)
         repeatPasswordField.clearButtonMode = .never
         repeatPasswordField.enablePasswordToggle()
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.layer.borderColor = UIColor.blue.cgColor
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 0.7
+        textField.layer.borderColor = UIColor.gray.cgColor
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderWidth = 0.7
-        textField.layer.borderColor = UIColor.systemGray.cgColor
+        if textField.text == "" {
+            textField.layer.borderWidth = 0
+        } else {
+            textField.layer.borderWidth = 0.7
+            textField.layer.borderColor = UIColor.gray.cgColor
+        }
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -256,7 +260,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
 //        isError = true
 
         textField?.layer.borderColor = UIColor.red.cgColor
-        textField?.layer.borderWidth = 1
+        textField?.layer.borderWidth = 0.7
         self.processingResult(error: error)
 
 //        let errorText = UILabel()

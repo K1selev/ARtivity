@@ -22,21 +22,21 @@ class ForgotPassViewController: UIViewController, UITextFieldDelegate, ForgotPas
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .white
 
         emailField.clearButtonMode = .whileEditing
 
         emailField = CustomTextField(placeholderText: "email",
                                      color: .white,
                                      security: false)
-        buttonThrowOff = CustomButton(title: "restore password")
-        buttonGoBack.setImage(UIImage(systemName: "arrowshape.backward.fill"), for: .normal)
+        buttonThrowOff = CustomButton(title: "Восстановить пароль")
+        buttonGoBack.setImage(UIImage(named: "navBackButton"), for: .normal)
 
-        sectionTitle.text = "restore password"
+        sectionTitle.text = "Восстановление пароля"
         sectionTitle.font = UIFont(name: "Arial", size: 28)
         sectionTitle.textColor = .black
         
-        subView.text = "restorePassSub"
+        subView.text = "Введите почту для сброса пароля"
         subView.font = UIFont(name: "Arial", size: 16)
         subView.textColor = .black
         subView.numberOfLines = 0
@@ -106,13 +106,17 @@ class ForgotPassViewController: UIViewController, UITextFieldDelegate, ForgotPas
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.layer.borderColor = UIColor.black.cgColor
-        textField.layer.borderWidth = 1.6
+        textField.layer.borderColor = UIColor.gray.cgColor
+        textField.layer.borderWidth = 0.7
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.black.cgColor
+        if textField.text == "" {
+            textField.layer.borderWidth = 0
+        } else {
+            textField.layer.borderWidth = 0.7
+            textField.layer.borderColor = UIColor.gray.cgColor
+        }
     }
 
 //    func textFieldShouldClear(_ textField: UITextField) -> Bool {

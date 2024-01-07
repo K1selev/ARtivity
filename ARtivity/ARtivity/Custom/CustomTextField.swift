@@ -51,10 +51,10 @@ class CustomTextField: UITextField, UITextFieldDelegate {
 
     fileprivate func setPasswordToggleImage(_ button: UIButton) {
         if isSecureTextEntry {
-            button.setImage(UIImage(systemName: "eye"), for: .normal)
-            button.tintColor = UIColor(named: "textToInput")
+            button.setImage(UIImage(named: "eyePassHide"), for: .normal)
+//            button.tintColor = UIColor(named: "textToInput")
         } else {
-            button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+            button.setImage(UIImage(named: "eyePass"), for: .normal)
 
         }
     }

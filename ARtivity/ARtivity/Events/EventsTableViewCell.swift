@@ -81,12 +81,14 @@ class EventsTableViewCell: UITableViewCell {
         }
         pointsLabel.snp.makeConstraints { make in
             make.top.equalTo(distanceLabel)
-            make.centerX.equalTo(eventImageView.snp.centerX)
+//            make.centerX.equalTo(eventImageView.snp.centerX)
+            make.leading.equalTo(distanceLabel.snp.trailing).offset(8)
             make.height.equalTo(26)
         }
         timeLabel.snp.makeConstraints { make in
             make.top.equalTo(distanceLabel)
-            make.trailing.equalTo(eventImageView.snp.trailing)
+//            make.trailing.equalTo(eventImageView.snp.trailing)
+            make.leading.equalTo(pointsLabel.snp.trailing).offset(8)
             make.height.equalTo(26)
         }
         eventRaiting.snp.makeConstraints { make in
@@ -124,32 +126,54 @@ class EventsTableViewCell: UITableViewCell {
             let distanceText: String
             if distance >= 1000 {
                 let distanceDouble = Double(distance)/1000.0
-                distanceText = "\(String(format: "%.1f", distanceDouble)) км"
+                distanceText = "  \(String(format: "%.1f", distanceDouble)) км  "
             } else {
-                distanceText = "\(distance) м"
+                distanceText = "  \(distance) м  "
             }
             distanceLabel.text = distanceText
         }
+        distanceLabel.backgroundColor = .systemGray3
+        distanceLabel.layer.cornerRadius = 10
+        distanceLabel.layer.masksToBounds = true
+        distanceLabel.textColor = .white
+        
         if let points = post.eventPoint {
             if points == 1 {
-                pointsLabel.text = "\(points) точка"
+                pointsLabel.text = "  \(points) точка  "
             } else if points < 5 {
-                pointsLabel.text = "\(points) точки"
+                pointsLabel.text = "  \(points) точки  "
             } else {
-                pointsLabel.text = "\(points) точек"
+                pointsLabel.text = "  \(points) точек  "
             }
         }
+        pointsLabel.backgroundColor = .systemGray3
+        pointsLabel.layer.cornerRadius = 10
+        pointsLabel.layer.masksToBounds = true
+        pointsLabel.textColor = .white
         
         if let time = post.eventTime {
             if time < 60 {
-                timeLabel.text = "\(time) минут"
+                timeLabel.text = "  \(time) минут  "
             } else {
-                timeLabel.text = "\(time/60) часа"
+                timeLabel.text = "  \(time/60) часа  "
             }
         }
+        timeLabel.backgroundColor = .systemGray3
+        timeLabel.layer.cornerRadius = 10
+        timeLabel.layer.masksToBounds = true
+        timeLabel.textColor = .white
         
-        eventRaiting.text = "\(post.eventRating ?? 0)"
-        authorLabel.text = post.eventAuthor?.authorName
+        eventRaiting.text = "  \(post.eventRating ?? 0)  "
+        eventRaiting.backgroundColor = .systemGray3
+        eventRaiting.layer.cornerRadius = 10
+        eventRaiting.layer.masksToBounds = true
+        eventRaiting.textColor = .white
+        
+        authorLabel.text = "  \(post.eventAuthor?.authorName ?? "")  "
+        authorLabel.backgroundColor = .systemGray3
+        authorLabel.layer.cornerRadius = 10
+        authorLabel.layer.masksToBounds = true
+        authorLabel.textColor = .white
     }
 }
 

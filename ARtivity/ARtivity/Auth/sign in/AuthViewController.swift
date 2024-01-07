@@ -168,13 +168,17 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
 //    }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.layer.borderWidth = 0.7
         textField.layer.borderColor = UIColor.gray.cgColor
-        textField.layer.borderWidth = 1
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderWidth = 0.7
-        textField.layer.borderColor = UIColor.blue.cgColor
+        if textField.text == "" {
+            textField.layer.borderWidth = 0
+        } else {
+            textField.layer.borderWidth = 0.7
+            textField.layer.borderColor = UIColor.gray.cgColor
+        }
     }
 
     func textField(_ textField: UITextField,

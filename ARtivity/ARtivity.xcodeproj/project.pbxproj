@@ -10,6 +10,13 @@
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
 		A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */; };
+		A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A32B4B2A1800A8B64F /* PointViewController.swift */; };
+		A53166A62B4B447400A8B64F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A52B4B447400A8B64F /* ProfileViewController.swift */; };
+		A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A72B4B44A700A8B64F /* SettingsCell.swift */; };
+		A53166AA2B4B44BB00A8B64F /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A92B4B44BB00A8B64F /* SettingsSection.swift */; };
+		A53166AC2B4B44D100A8B64F /* UserInfoHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166AB2B4B44D100A8B64F /* UserInfoHeader.swift */; };
+		A53166AE2B4B4A4000A8B64F /* ProfileViewConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166AD2B4B4A4000A8B64F /* ProfileViewConstants.swift */; };
+		A53166B02B4B4B7100A8B64F /* PlugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166AF2B4B4B7100A8B64F /* PlugViewController.swift */; };
 		A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A532486A2B159A82008AD9DF /* AppDelegate.swift */; };
 		A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A532486C2B159A82008AD9DF /* SceneDelegate.swift */; };
 		A532486F2B159A82008AD9DF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A532486E2B159A82008AD9DF /* ViewController.swift */; };
@@ -62,6 +69,13 @@
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
 		A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPointTableViewCell.swift; sourceTree = "<group>"; };
+		A53166A32B4B2A1800A8B64F /* PointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewController.swift; sourceTree = "<group>"; };
+		A53166A52B4B447400A8B64F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		A53166A72B4B44A700A8B64F /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
+		A53166A92B4B44BB00A8B64F /* SettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
+		A53166AB2B4B44D100A8B64F /* UserInfoHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoHeader.swift; sourceTree = "<group>"; };
+		A53166AD2B4B4A4000A8B64F /* ProfileViewConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewConstants.swift; sourceTree = "<group>"; };
+		A53166AF2B4B4B7100A8B64F /* PlugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlugViewController.swift; sourceTree = "<group>"; };
 		A53248672B159A82008AD9DF /* ARtivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARtivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A532486A2B159A82008AD9DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A532486C2B159A82008AD9DF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -169,6 +183,12 @@
 		A53248832B159D1F008AD9DF /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				A53166A52B4B447400A8B64F /* ProfileViewController.swift */,
+				A53166A72B4B44A700A8B64F /* SettingsCell.swift */,
+				A53166A92B4B44BB00A8B64F /* SettingsSection.swift */,
+				A53166AB2B4B44D100A8B64F /* UserInfoHeader.swift */,
+				A53166AD2B4B4A4000A8B64F /* ProfileViewConstants.swift */,
+				A53166AF2B4B4B7100A8B64F /* PlugViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -202,6 +222,7 @@
 				A516ADEC2B2664C4003A467A /* EventViewController.swift */,
 				A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */,
 				A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */,
+				A53166A32B4B2A1800A8B64F /* PointViewController.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -352,7 +373,10 @@
 				A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */,
 				A5D2EEDD2B173B7800B0151A /* AuthPresenter.swift in Sources */,
 				A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */,
+				A53166AE2B4B4A4000A8B64F /* ProfileViewConstants.swift in Sources */,
+				A53166A62B4B447400A8B64F /* ProfileViewController.swift in Sources */,
 				A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */,
+				A53166AA2B4B44BB00A8B64F /* SettingsSection.swift in Sources */,
 				A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */,
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
 				A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */,
@@ -364,6 +388,7 @@
 				A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */,
 				A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */,
 				A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */,
+				A53166B02B4B4B7100A8B64F /* PlugViewController.swift in Sources */,
 				A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */,
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
@@ -373,9 +398,12 @@
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,
 				A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */,
+				A53166AC2B4B44D100A8B64F /* UserInfoHeader.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
 				A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */,
+				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
+				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
