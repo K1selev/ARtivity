@@ -756,7 +756,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         print("SELECTED POINT: \(point.id ?? "")")
         let vc = PointViewController()
         vc.pointInf = point
+        vc.pointInfo = pointInf
         vc.post = post
+        vc.postItem = indexPath.row
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
@@ -772,7 +774,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         let point = pointInf[0]
         let vc = PointViewController()
         vc.pointInf = point
+        vc.pointInfo = pointInf
         vc.post = post
+        vc.postItem = 0
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }

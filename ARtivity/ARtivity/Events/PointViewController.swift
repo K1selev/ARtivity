@@ -15,6 +15,8 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     
     var pointInf: PointDetail?
     var post: EventsModel?
+    var postItem: Int?
+    var pointInfo: [PointDetail]?
     
     var topView = AppHeaderView()
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -205,11 +207,20 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         
         descriptionText.numberOfLines = 0
         
-        goNextButton.setTitle("К следующей точке", for: .normal)// = CustomButton(title: "Записаться")
+        let pointsCount = pointInfo?.count ?? 0
+//        goNextButton.setTitle("К следующей точке", for: .normal)// = CustomButton(title: "Записаться")
         goNextButton.setTitleColor(.black, for: .normal)
         goNextButton.isUserInteractionEnabled = true
         goNextButton.backgroundColor = UIColor(named: "mainGreen")
         goNextButton.layer.cornerRadius = 14
+        if postItem ?? 0 < pointsCount {
+            self.goNextButton.setTitle("К следующей точке", for: .normal)
+            self.goNextButton.addTarget(self, action:  #selector(didTapGoNextButton), for: .touchUpInside)
+        } else {
+            self.goNextButton.setTitle("Закончить прогулку", for: .normal)
+            
+            self.goNextButton.addTarget(self, action:  #selector(didTapFinishButton), for: .touchUpInside)
+        }
         
     }
     
@@ -274,6 +285,24 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     override func viewDidAppear(_ animated: Bool) {
         let heightView = 910 + descriptionText.bounds.size.height
         scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: heightView)
+    }
+    
+    @objc func didTapGoNextButton() {
+        postItem! += 1
+        let point = pointInfo?[postItem ?? 0]
+        print("SELECTED POINT: \(point?.id ?? "")")
+        let vc = PointViewController()
+        vc.pointInf = point
+        vc.post = post
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
+    }
+    
+    @objc func didTapFinishButton() {
+        let vc = EventViewController()
+        vc.post = post
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: false)
     }
 }
 
