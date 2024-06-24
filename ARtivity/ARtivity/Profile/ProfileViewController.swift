@@ -356,6 +356,10 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func goToLogin() {
+        UserDefaults.standard.set(false, forKey: "isLogin")
+        let vc = AuthViewController()
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 
     @objc func buttonBackClicked() {
