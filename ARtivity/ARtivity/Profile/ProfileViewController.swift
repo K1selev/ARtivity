@@ -163,7 +163,7 @@ final class ProfileViewController: UIViewController {
     }()
     lazy var titleNav: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = UIColor(named: "appTextMain")
         label.text = "Профиль"
         return label
     }()
@@ -172,7 +172,7 @@ final class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "appBackground")
         configureTableView()
         configureUI()
 //        userInfoHeader.configure(output.headerDisplayData)
@@ -228,7 +228,7 @@ final class ProfileViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = ProfileViewConstants.TableView.rowHeight
         tableView.register(SettingsCell.self, forCellReuseIdentifier: reuseIdentifier)
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor(named: "appBackground")
         tableView.separatorStyle = .singleLine
         tableView.contentInset.top = ProfileViewConstants.TableView.contentInsetTop
         tableView.alwaysBounceVertical = false
@@ -236,10 +236,10 @@ final class ProfileViewController: UIViewController {
 
         tableView.subviews.forEach { view in
             view.layer.masksToBounds = false
-            view.layer.shadowOffset = .zero
-            view.layer.shadowRadius = ProfileViewConstants.Shadow.shadowRadius
-            view.layer.shadowOpacity = ProfileViewConstants.Shadow.shadowOpacity
-            view.layer.shadowColor = ProfileViewConstants.Shadow.shadowColor.cgColor
+//            view.layer.shadowOffset = .zero
+//            view.layer.shadowRadius = ProfileViewConstants.Shadow.shadowRadius
+//            view.layer.shadowOpacity = ProfileViewConstants.Shadow.shadowOpacity
+//            view.layer.shadowColor = ProfileViewConstants.Shadow.shadowColor.cgColor
         }
     }
 
@@ -247,7 +247,7 @@ final class ProfileViewController: UIViewController {
         let view = UIView()
         let title = UILabel()
         title.font = UIFont.systemFont(ofSize: 16)
-        title.textColor = .black
+        title.textColor = UIColor(named: "appTextMain")
         title.text = SettingsSection(rawValue: section)?.description
         view.addSubview(title)
         title.snp.makeConstraints { make in
@@ -319,14 +319,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
             case 3:
                 showMailComposer(message: "TextConstantsProfile.beGuideMessage")
             case 4:
-//                if UserDefaults.standard.bool(forKey: UserKeys.isDarkMode.rawValue) == true {
-//                    UIApplication.shared.keyWindow?.overrideUserInterfaceStyle = .light
-//                    UserDefaults.standard.set(false, forKey: UserKeys.isDarkMode.rawValue)
-//                } else {
-//                    UIApplication.shared.keyWindow?.overrideUserInterfaceStyle = .dark
-//                    UserDefaults.standard.set(true, forKey: UserKeys.isDarkMode.rawValue)
-//                }
-//                UserDefaults.standard.synchronize()
                 print("changeTheme")
             default:
                 print("no action")

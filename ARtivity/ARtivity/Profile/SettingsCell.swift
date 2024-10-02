@@ -12,8 +12,9 @@ final class SettingsCell: UITableViewCell {
         didSet {
             guard let sectionType = sectionType else { return }
             imageView?.image = UIImage(systemName: sectionType.image)?
-                .withTintColor(.black, renderingMode: .alwaysOriginal)
+                .withTintColor(UIColor(named: "appTextMain")!, renderingMode: .alwaysOriginal)
             textLabel?.text = sectionType.description
+            textLabel?.textColor = UIColor(named: "appTextMain")
         }
     }
 

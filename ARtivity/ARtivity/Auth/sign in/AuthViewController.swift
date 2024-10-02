@@ -24,7 +24,7 @@ class AuthViewController: UIViewController, UITextFieldDelegate, AuthScreenView 
     override func viewDidLoad() {
 
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "appBackground")
 
         buttonSignIn.isUserInteractionEnabled = true
 

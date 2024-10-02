@@ -118,6 +118,7 @@ struct PointDetail {
     var id: String?
     var address: String?
     var description: String?
+    var isFirstPoint: Bool?
     var latitude: Double?
     var longitude: Double?
     var name: String?
@@ -130,6 +131,7 @@ extension PointDetail: DatabaseRepresentation {
         let rep: [String: Any] = [
             "address": address,
             "description": description,
+            "isFirstPoint": isFirstPoint,
             "latitude": latitude,
             "longitude": longitude,
             "name": name,
@@ -143,6 +145,7 @@ extension PointDetail: DatabaseRepresentation {
 
         if let address = data["address"] as? String,
            let description = data["description"] as? String,
+           let isFirstPoint = data["isFirstPoint"] as? Bool,
            let latitude = data["latitude"] as? Double,
            let longitude = data["longitude"] as? Double,
            let name = data["name"] as? String,
@@ -153,6 +156,7 @@ extension PointDetail: DatabaseRepresentation {
             return PointDetail(id: key,
                                address: address,
                                description: description,
+                               isFirstPoint: isFirstPoint,
                                latitude: latitude,
                                longitude: longitude,
                                name: name,

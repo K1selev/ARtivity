@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
 		A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */; };
@@ -35,6 +36,9 @@
 		A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB52B2276A900E40ABE /* LoadingCell.swift */; };
 		A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB92B230CC900E40ABE /* DatabaseManager.swift */; };
 		A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BBB2B2312CD00E40ABE /* ImageService.swift */; };
+		A543C8B92C29E2D400B1CD49 /* YBaseMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */; };
+		A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */; };
+		A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */; };
 		A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED52B17300C00B0151A /* AuthViewController.swift */; };
 		A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED82B17356F00B0151A /* CustomButton.swift */; };
 		A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */; };
@@ -66,6 +70,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.debug.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.debug.xcconfig"; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
 		A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPointTableViewCell.swift; sourceTree = "<group>"; };
@@ -95,6 +100,9 @@
 		A5327BB52B2276A900E40ABE /* LoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCell.swift; sourceTree = "<group>"; };
 		A5327BB92B230CC900E40ABE /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		A5327BBB2B2312CD00E40ABE /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YBaseMapView.swift; sourceTree = "<group>"; };
+		A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extention.swift"; sourceTree = "<group>"; };
+		A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChipsFilterButton.swift; sourceTree = "<group>"; };
 		A5D2EED52B17300C00B0151A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A5D2EED82B17356F00B0151A /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -109,6 +117,8 @@
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
 		A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.release.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.release.xcconfig"; sourceTree = "<group>"; };
+		F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARtivity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,17 +141,37 @@
 				A5D2EEF62B173BEF00B0151A /* FirebasePerformance in Frameworks */,
 				A53248822B159D10008AD9DF /* SnapKit in Frameworks */,
 				A5D2EEE82B173BEF00B0151A /* FirebaseFirestore in Frameworks */,
+				13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6BA279DFA48BA693F71D30E9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */,
+				DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		73575B4A29F6EE080D592FD6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A532485E2B159A82008AD9DF = {
 			isa = PBXGroup;
 			children = (
 				A53248692B159A82008AD9DF /* ARtivity */,
 				A53248682B159A82008AD9DF /* Products */,
+				6BA279DFA48BA693F71D30E9 /* Pods */,
+				73575B4A29F6EE080D592FD6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,6 +186,7 @@
 		A53248692B159A82008AD9DF /* ARtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A543C8BA2C2AB30D00B1CD49 /* Extentions */,
 				A5D2EED72B17355700B0151A /* Custom */,
 				A53248862B159D3F008AD9DF /* Events */,
 				A53248852B159D36008AD9DF /* Map */,
@@ -207,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */,
+				A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -236,6 +268,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		A543C8BA2C2AB30D00B1CD49 /* Extentions */ = {
+			isa = PBXGroup;
+			children = (
+				A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */,
+			);
+			path = Extentions;
+			sourceTree = "<group>";
+		};
 		A5D2EED72B17355700B0151A /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,6 +283,7 @@
 				A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */,
 				A5327BAA2B224E0C00E40ABE /* AppMainHeaderView.swift */,
 				A516ADEE2B2669B2003A467A /* AppHeaderView.swift */,
+				A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -281,9 +322,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A532487B2B159A83008AD9DF /* Build configuration list for PBXNativeTarget "ARtivity" */;
 			buildPhases = (
+				ECAF64656A59B2126CEE79F5 /* [CP] Check Pods Manifest.lock */,
 				A53248632B159A82008AD9DF /* Sources */,
 				A53248642B159A82008AD9DF /* Frameworks */,
 				A53248652B159A82008AD9DF /* Resources */,
+				F3EBC92C89625FFD9BF9C3A6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -362,6 +405,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		ECAF64656A59B2126CEE79F5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ARtivity-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F3EBC92C89625FFD9BF9C3A6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A53248632B159A82008AD9DF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -381,6 +466,7 @@
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
 				A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */,
 				A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */,
+				A543C8B92C29E2D400B1CD49 /* YBaseMapView.swift in Sources */,
 				A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */,
 				A5327BB12B22604900E40ABE /* DatabaseRepresentation.swift in Sources */,
 				A5D2EF002B17997400B0151A /* UserProfile.swift in Sources */,
@@ -389,6 +475,7 @@
 				A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */,
 				A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */,
 				A53166B02B4B4B7100A8B64F /* PlugViewController.swift in Sources */,
+				A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */,
 				A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */,
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
@@ -401,6 +488,7 @@
 				A53166AC2B4B44D100A8B64F /* UserInfoHeader.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
+				A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */,
 				A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
 				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
@@ -545,6 +633,7 @@
 		};
 		A532487C2B159A83008AD9DF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -573,6 +662,7 @@
 		};
 		A532487D2B159A83008AD9DF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

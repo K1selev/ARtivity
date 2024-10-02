@@ -13,7 +13,7 @@ protocol RegScreenView: class {
 }
 
 protocol RegScreenPresenter {
-   init(view: RegScreenView, email: String?, password: String?)
+   init(view: RegScreenView, email: String?, password: String?, isMaker: Bool?)
    func dataProcessing()
 }
 
@@ -21,13 +21,15 @@ class RegPresenter: RegScreenPresenter {
    unowned let view: RegScreenView
    let password: String?
    let email: String?
+    let isMaker: Bool?
    var verificationTimer: Timer?
 
-   required init(view: RegScreenView, email: String?, password: String?) {
-       self.password = password
-       self.email = email
-       self.view = view
-   }
+    required init(view: RegScreenView, email: String?, password: String?, isMaker: Bool?) {
+        self.password = password
+        self.email = email
+        self.view = view
+        self.isMaker = isMaker
+    }
    func dataProcessing() {
        guard let email = self.email, let password = self.password else {
            self.view.processingResult(error: CauseOfError.loginOrPassword.localizedDescription)
@@ -65,8 +67,9 @@ class RegPresenter: RegScreenPresenter {
            "name": username,
            "email": email,
            "accountCompleted": true,
-           "phone": "no number",
-           "photoURL": "url" // profileImageURL.absoluteString
+           "phone": "no number yet",
+           "isMaker": isMaker,
+//           "photoURL": "url" // profileImageURL.absoluteString
        ] as [String: Any]
 
        databaseRef.setValue(userObject) { error, _ in

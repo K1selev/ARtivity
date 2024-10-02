@@ -13,13 +13,14 @@ class UserProfile {
     var email: String
     var name: String
     var phone: String
-    var photoURL: URL?
+    var isMaker: Bool
 
-    init(uid: String, accountCompleted: Bool, email: String, name: String, phone: String) {
+    init(uid: String, accountCompleted: Bool, email: String, name: String, phone: String, isMaker: Bool) {
         self.uid = uid
         self.accountCompleted = accountCompleted
         self.email = email
         self.name = name
         self.phone = phone
+        self.isMaker = isMaker
     }
 }

@@ -10,6 +10,7 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
+import YandexMapsMobile
 
 class PointViewController: UIViewController, UIScrollViewDelegate{
     
@@ -29,6 +30,11 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    private var map = YBaseMapView()
+    lazy var mapView: YMKMapView! = {
+        return map.mapView
+    }()
+    
     private var goNextButton = UIButton()
     private var imageArray: [UIImage?] = []
     private let photoCollectionView: UICollectionView = {
@@ -56,6 +62,8 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         super.viewDidLoad()
         self.setupUI()
         self.setupDataInf()
+        self.setupMap(latitude: pointInf?.latitude ?? 0.0, 
+                      longitude: pointInf?.longitude ?? 0.0)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -69,7 +77,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "appBackground")
         imageViewPost.backgroundColor = .systemGray5
         imageViewPost.layer.cornerRadius = 13
         scrollView.backgroundColor = .clear
@@ -89,7 +97,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
          descriptionText,
          galeryMainText,
          photoCollectionView,
-         mapImage,
+         mapView,
          urlMainText,
          urlText].forEach {
             scrollView.addSubview($0)
@@ -101,6 +109,29 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         loadImageView()
         makeConstraints()
         setupNoDataInf()
+    }
+    
+    private func setupMap(latitude: Double, longitude: Double) {
+        
+        mapView.mapWindow.map.move(
+            with: YMKCameraPosition(
+                target: YMKPoint(latitude: latitude,
+                                 longitude: longitude),
+                zoom: 13,
+                azimuth: 0,
+                tilt: 0
+            ),
+            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
+            cameraCallback: nil)
+        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
+            horizontalAlignment: .left,
+            verticalAlignment: YMKLogoVerticalAlignment.bottom)
+        )
+        addPlacemarkOnMap(latitude: pointInf?.latitude ?? 0.0,
+                          longitude:  pointInf?.longitude ?? 0.0,
+                          name:  pointInf?.name ?? "smth")
+//        mapView.mapWindow.map.addCameraListener(with: self)
+//        mapView.mapWindow.map.addInputListener(with: self)
     }
     
     private func setupCollectionView() {
@@ -171,7 +202,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
             make.height.equalTo(100)
         }
         
-        mapImage.snp.makeConstraints { make in
+        mapView.snp.makeConstraints { make in
             make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
@@ -179,7 +210,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         }
         
         urlMainText.snp.makeConstraints { make in
-            make.top.equalTo(mapImage.snp.bottom).offset(15)
+            make.top.equalTo(mapView.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -213,7 +244,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         goNextButton.isUserInteractionEnabled = true
         goNextButton.backgroundColor = UIColor(named: "mainGreen")
         goNextButton.layer.cornerRadius = 14
-        if postItem ?? 0 < pointsCount {
+        if postItem ?? 0 < pointsCount - 1 {
             self.goNextButton.setTitle("К следующей точке", for: .normal)
             self.goNextButton.addTarget(self, action:  #selector(didTapGoNextButton), for: .touchUpInside)
         } else {
@@ -276,10 +307,22 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     }
     
     @objc func buttonBackClicked() {
-        let vc = EventViewController()
-        vc.post = post
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: false)
+        if postItem ?? 0 == 0 {
+            let vc = EventViewController()
+            vc.post = post
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: false)
+        } else {
+            postItem! -= 1
+            let point = pointInfo?[postItem ?? 0]
+            let vc = PointViewController()
+            vc.pointInf = point
+            vc.pointInfo = pointInfo
+            vc.post = post
+            vc.postItem = postItem
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -293,7 +336,9 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         print("SELECTED POINT: \(point?.id ?? "")")
         let vc = PointViewController()
         vc.pointInf = point
+        vc.pointInfo = pointInfo
         vc.post = post
+        vc.postItem = postItem
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
@@ -303,6 +348,26 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         vc.post = post
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: false)
+    }
+    
+    func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
+        let point = YMKPoint(latitude: latitude, longitude: longitude)
+        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
+        
+      // Настройка и добавление иконки
+        viewPlacemark.setIconWith(
+            UIImage(named: "map_search_result_primary")!,
+            style: YMKIconStyle(
+                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
+                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
+                zIndex: 0,
+                flat: true,
+                visible: true,
+                scale: 1.5,
+                tappableArea: nil
+            )
+        )
+        viewPlacemark.userData = name
     }
 }
 
