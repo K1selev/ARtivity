@@ -29,7 +29,7 @@ class EventPointTableViewCell: UITableViewCell {
 
     private func setup() {
         
-        cellView.backgroundColor = .white
+        cellView.backgroundColor = UIColor(named: "appBackground")
         cellView.layer.cornerRadius = 8
         
         contentView.addSubview(cellView)

@@ -12,8 +12,10 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
+import YandexMapsMobile
 
 class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+    
 
     var post: EventsModel?
     var postDetail: EventDetails?
@@ -62,6 +64,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    private var map = YBaseMapView()
+    lazy var mapView: YMKMapView! = {
+        return map.mapView
+    }()
+    
     private var goTripButton = UIButton()
     private var imageArray: [UIImage?] = []
     private let photoCollectionView: UICollectionView = {
@@ -85,6 +92,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+       
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -98,6 +106,26 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         getPostDetails { posts in
         }
         getPoints()
+    }
+    
+    private func setupMap(latitude: Double, longitude: Double) {
+
+        mapView.mapWindow.map.move(
+            with: YMKCameraPosition(
+                target: YMKPoint(latitude: latitude,
+                                 longitude: longitude),
+                zoom: 12,
+                azimuth: 0,
+                tilt: 0
+            ),
+            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
+            cameraCallback: nil)
+        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
+            horizontalAlignment: .left,
+            verticalAlignment: YMKLogoVerticalAlignment.bottom)
+        )
+//        mapView.mapWindow.map.addCameraListener(with: self)
+//        mapView.mapWindow.map.addInputListener(with: self)
     }
     
     func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
@@ -121,7 +149,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
 
 
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "appBackground")
         imageViewPost.backgroundColor = .systemGray5
         imageViewPost.layer.cornerRadius = 13
         scrollView.backgroundColor = .clear
@@ -140,7 +168,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             tableView.isHidden = true
         }
 
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor(named: "appBackground")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(EventPointTableViewCell.self, forCellReuseIdentifier: "EventPointTableViewCell")
         tableView.delegate = self
@@ -174,7 +202,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                  descriptionText,
                  galeryMainText,
                  photoCollectionView,
-                mapImage].forEach {
+                 mapView].forEach {
                     scrollView.addSubview($0)
                    }
         if isLogin {
@@ -198,7 +226,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         
         loadImageView()
         setupData()
-        makeConstraints()
         setupNoDataInf()
     }
     
@@ -209,7 +236,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         photoCollectionView.showsHorizontalScrollIndicator = false
     }
 
-    func makeConstraints() {
+    func makeConstraints(height: CGFloat) {
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -370,50 +397,52 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         }
         
         lineView6.snp.makeConstraints { make in
-//            if isLogin {
-//                make.top.equalTo(pointView3.snp.bottom).offset(10)
-//            } else {
-//                make.top.equalTo(tableView.snp.bottom).offset(10)
-//            }
-            make.bottom.equalTo(descriptionMainText.snp.top).offset(-10)
+            if isLogin {
+                make.top.equalTo(tableView.snp.bottom).offset(10)
+                
+            } else { make.top.equalTo(pointView3.snp.bottom).offset(10)
+            }
+//            make.bottom.equalTo(descriptionMainText.snp.top).offset(-10)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(1)
         }
 
         descriptionMainText.snp.makeConstraints { make in
-//            make.top.equalTo(lineView6.snp.bottom).offset(15)
-            make.bottom.equalTo(descriptionText.snp.top).offset(-10)
+            make.top.equalTo(lineView6.snp.bottom).offset(15)
+//            make.bottom.equalTo(descriptionText.snp.top).offset(-10)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
 
         descriptionText.snp.makeConstraints { make in
-//            make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
-            make.bottom.equalTo(galeryMainText.snp.top).offset(-15)
+            make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
+//            make.bottom.equalTo(galeryMainText.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(height)
+//            make.trailing.equalToSuperview().offset(-34)
         }
 
         galeryMainText.snp.makeConstraints { make in
-//            make.top.equalTo(descriptionText.snp.bottom).offset(15)
-            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
+            make.top.equalTo(descriptionText.snp.bottom).offset(15)
+//            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
 
         photoCollectionView.snp.makeConstraints { make in
-//            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
-            make.bottom.equalTo(mapImage.snp.top).offset(-15)
+            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
+//            make.bottom.equalTo(mapView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(100)
         }
 
-        mapImage.snp.makeConstraints { make in
-//            make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
+        mapView.snp.makeConstraints { make in
+            make.top.equalTo(photoCollectionView.snp.bottom).offset(15)
 //            make.bottom.equalTo(scrollView.snp.bottom).offset(-20)
-            make.bottom.equalToSuperview().offset(1150)
+//            make.bottom.equalToSuperview().offset(1150)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(243)
@@ -479,6 +508,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         }
         descriptionText.text = postDetail?.description
         
+        let width = 300.0
+        let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
+        
         if isLogin {
             
         } else {
@@ -498,6 +530,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             }
         }
         self.setupCollectionView()
+        
+        self.makeConstraints(height: height)
     }
     
     func setupPointView1() {
@@ -690,6 +724,17 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                         if item == pointId {
                             tempPoint.insert(post, at: 0)
                             self.pointInf.append(post)
+                            if self.isLogin {
+                                self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+                                if post.isFirstPoint ?? false {
+                                    self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+                                }
+                            } else {
+                                if post.isFirstPoint ?? false {
+                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+                                }
+                            }
                         }
                     }
                 }
@@ -716,7 +761,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1200)
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 1300)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -771,14 +816,41 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
     
     @objc func goTripButtonPressed() {
-        let point = pointInf[0]
-        let vc = PointViewController()
-        vc.pointInf = point
-        vc.pointInfo = pointInf
-        vc.post = post
-        vc.postItem = 0
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+        if isLogin {
+            if !pointInf.isEmpty {
+                let point = pointInf[0]
+                let vc = PointViewController()
+                vc.pointInf = point
+                vc.pointInfo = pointInf
+                vc.post = post
+                vc.postItem = 0
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true)
+            }
+        } else {
+            let vc = AuthViewController()
+            present(vc, animated: true)
+        }
+    }
+    
+    func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
+        let point = YMKPoint(latitude: latitude, longitude: longitude)
+        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
+        
+      // Настройка и добавление иконки
+        viewPlacemark.setIconWith(
+            UIImage(named: "map_search_result_primary")!,
+            style: YMKIconStyle(
+                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
+                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
+                zIndex: 0,
+                flat: true,
+                visible: true,
+                scale: 1.5,
+                tappableArea: nil
+            )
+        )
+        viewPlacemark.userData = name
     }
 }
 

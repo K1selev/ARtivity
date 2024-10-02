@@ -52,7 +52,7 @@ class AppHeaderView: UIView {
     }
 
     private func setup() {
-        backgroundColor = .white
+        backgroundColor = UIColor(named: "appHeader")
         setupConstraints()
         setupActions()
     }

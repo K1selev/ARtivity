@@ -22,7 +22,7 @@ class ForgotPassViewController: UIViewController, UITextFieldDelegate, ForgotPas
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "appBackground")
 
         emailField.clearButtonMode = .whileEditing
 
@@ -34,11 +34,11 @@ class ForgotPassViewController: UIViewController, UITextFieldDelegate, ForgotPas
 
         sectionTitle.text = "Восстановление пароля"
         sectionTitle.font = UIFont(name: "Arial", size: 28)
-        sectionTitle.textColor = .black
+        sectionTitle.textColor = UIColor(named: "appTextMain")
         
         subView.text = "Введите почту для сброса пароля"
         subView.font = UIFont(name: "Arial", size: 16)
-        subView.textColor = .black
+        subView.textColor = UIColor(named: "appTextMain")
         subView.numberOfLines = 0
         subView.textAlignment = .center
 

@@ -32,7 +32,7 @@ final class UserInfoHeader: UIView {
         let label = UILabel()
         guard let user = Auth.auth().currentUser else { return UILabel()}
         label.text = user.email ?? "Имя пользователя"
-        label.textColor = .darkGray
+        label.textColor = UIColor(named: "appTextMain")
         label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
@@ -41,7 +41,7 @@ final class UserInfoHeader: UIView {
         let label = UILabel()
         label.text = "Статус"
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = .gray
+        label.textColor = UIColor(named: "appTextMain")
         return label
     }()
 

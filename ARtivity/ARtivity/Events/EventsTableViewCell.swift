@@ -33,7 +33,7 @@ class EventsTableViewCell: UITableViewCell {
 
     private func setup() {
         
-        cellView.backgroundColor = .white
+        cellView.backgroundColor = UIColor(named: "appCellsBackground")
         cellView.layer.cornerRadius = 8
 
         eventImageView.backgroundColor = .systemGray5

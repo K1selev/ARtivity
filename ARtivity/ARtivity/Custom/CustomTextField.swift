@@ -30,9 +30,9 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         )
         self.layer.cornerRadius = 12
         self.layer.borderWidth = 0.1
-        self.layer.shadowRadius = 10
-        self.layer.shadowColor = UIColor.systemGray5.cgColor
-        self.layer.shadowOpacity = 10
+//        self.layer.shadowRadius = 10
+//        self.layer.shadowColor = UIColor.systemGray5.cgColor
+//        self.layer.shadowOpacity = 10
         self.autocorrectionType = .no
 //        self.clearButtonMode = .whileEditing
         self.isSecureTextEntry = isSecure

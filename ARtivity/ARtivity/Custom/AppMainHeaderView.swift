@@ -9,12 +9,14 @@ import UIKit
 import SnapKit
 import Firebase
 
+var isMaker = 0
+
 class AppMainHeaderView: UIView {
-    private lazy var title: UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor(named: "mainGreen")
-        label.text = "ARtivity"
-        return label
+    lazy var title: UIButton = {
+        let button = UIButton()
+        button.setTitle("ARtivity", for: .normal)
+        button.setTitleColor(UIColor(named: "mainGreen"), for: .normal)
+        return button
     }()
 
     lazy var leftButton: UIButton = {
@@ -31,8 +33,25 @@ class AppMainHeaderView: UIView {
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         if isLogin {
             guard let user = Auth.auth().currentUser else { return button}
-            button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
-            button.setTitle(" \(user.email ?? "User name")", for: .normal)
+            
+            let ref = Database.database().reference()
+            let userRef = ref.child("users").child(user.uid)
+            userRef.observeSingleEvent(of: .value, with: {(snapshot) in
+                let dictUserInfo = snapshot.value as? [String:AnyObject]
+                let maker = dictUserInfo?["isMaker"]
+                guard let makerNonOpt = maker else {
+                    return
+                }
+                isMaker = makerNonOpt as! Int
+                if isMaker == 1 {
+                    button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+                    button.tintColor = UIColor(named: "mainGreen") ?? .green
+                    button.setTitle("", for: .normal)
+                } else {
+                    button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
+                    button.setTitle(" \(user.email ?? "User name")", for: .normal)
+                }
+            })
            
         } else {
             button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
@@ -52,7 +71,7 @@ class AppMainHeaderView: UIView {
     }
 
     private func setup() {
-        backgroundColor = .white
+        backgroundColor = UIColor(named: "appHeader")
         setupConstraints()
         setupActions()
     }
