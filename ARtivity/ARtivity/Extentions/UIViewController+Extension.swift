@@ -68,6 +68,16 @@ extension UIViewController {
         aView?.removeFromSuperview()
         aView = nil
     }
+    
+    func presentBottomPopup(text: String, image: UIImage, withBotButton: Bool) {
+        let popupView = PopupView(text: text, image: image)
+        self.view.addSubview(popupView)
+        let insetHeight = withBotButton ? 72 : 16
+        popupView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(16)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(insetHeight)
+        }
+    }
 }
 
 extension UIView {

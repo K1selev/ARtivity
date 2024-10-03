@@ -10,6 +10,12 @@
 		13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
+		A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120B2CAEA0A300C3274B /* PopupView.swift */; };
+		A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */; };
+		A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120F2CAEB93400C3274B /* ErrorView.swift */; };
+		A52F12122CAECEFF00C3274B /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F12112CAECEFF00C3274B /* IconButton.swift */; };
+		A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F12132CAEF1FE00C3274B /* SelectedImagesCell.swift */; };
+		A52F12172CAEF2F800C3274B /* Reusable in Frameworks */ = {isa = PBXBuildFile; productRef = A52F12162CAEF2F800C3274B /* Reusable */; };
 		A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */; };
 		A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A32B4B2A1800A8B64F /* PointViewController.swift */; };
 		A53166A62B4B447400A8B64F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53166A52B4B447400A8B64F /* ProfileViewController.swift */; };
@@ -73,6 +79,11 @@
 		0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.debug.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.debug.xcconfig"; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
+		A52F120B2CAEA0A300C3274B /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
+		A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationViewController.swift; sourceTree = "<group>"; };
+		A52F120F2CAEB93400C3274B /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		A52F12112CAECEFF00C3274B /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		A52F12132CAEF1FE00C3274B /* SelectedImagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedImagesCell.swift; sourceTree = "<group>"; };
 		A53166A12B4B0D0200A8B64F /* EventPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPointTableViewCell.swift; sourceTree = "<group>"; };
 		A53166A32B4B2A1800A8B64F /* PointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewController.swift; sourceTree = "<group>"; };
 		A53166A52B4B447400A8B64F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +152,7 @@
 				A5D2EEF62B173BEF00B0151A /* FirebasePerformance in Frameworks */,
 				A53248822B159D10008AD9DF /* SnapKit in Frameworks */,
 				A5D2EEE82B173BEF00B0151A /* FirebaseFirestore in Frameworks */,
+				A52F12172CAEF2F800C3274B /* Reusable in Frameworks */,
 				13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +177,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A52F11F42CAE886E00C3274B /* EventCreation */ = {
+			isa = PBXGroup;
+			children = (
+				A52F120F2CAEB93400C3274B /* ErrorView.swift */,
+				A52F12112CAECEFF00C3274B /* IconButton.swift */,
+				A52F12132CAEF1FE00C3274B /* SelectedImagesCell.swift */,
+				A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */,
+			);
+			path = EventCreation;
+			sourceTree = "<group>";
+		};
 		A532485E2B159A82008AD9DF = {
 			isa = PBXGroup;
 			children = (
@@ -186,6 +209,7 @@
 		A53248692B159A82008AD9DF /* ARtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A52F11F42CAE886E00C3274B /* EventCreation */,
 				A543C8BA2C2AB30D00B1CD49 /* Extentions */,
 				A5D2EED72B17355700B0151A /* Custom */,
 				A53248862B159D3F008AD9DF /* Events */,
@@ -204,7 +228,6 @@
 				A5D2EEFB2B175E5700B0151A /* CauseOfError.swift */,
 				A5D2EEFD2B17993C00B0151A /* UserService.swift */,
 				A5D2EEFF2B17997400B0151A /* UserProfile.swift */,
-				A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */,
 				A5327BB22B22605000E40ABE /* Model */,
 				A5327BB92B230CC900E40ABE /* DatabaseManager.swift */,
 			);
@@ -271,6 +294,7 @@
 		A543C8BA2C2AB30D00B1CD49 /* Extentions */ = {
 			isa = PBXGroup;
 			children = (
+				A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */,
 				A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */,
 			);
 			path = Extentions;
@@ -284,6 +308,7 @@
 				A5327BAA2B224E0C00E40ABE /* AppMainHeaderView.swift */,
 				A516ADEE2B2669B2003A467A /* AppHeaderView.swift */,
 				A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */,
+				A52F120B2CAEA0A300C3274B /* PopupView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -349,6 +374,7 @@
 				A5D2EEF52B173BEF00B0151A /* FirebasePerformance */,
 				A5D2EEF72B173BEF00B0151A /* FirebaseRemoteConfig */,
 				A5D2EEF92B173BEF00B0151A /* FirebaseStorage */,
+				A52F12162CAEF2F800C3274B /* Reusable */,
 			);
 			productName = ARtivity;
 			productReference = A53248672B159A82008AD9DF /* ARtivity.app */;
@@ -381,6 +407,7 @@
 			packageReferences = (
 				A53248802B159D10008AD9DF /* XCRemoteSwiftPackageReference "SnapKit" */,
 				A5D2EEDE2B173BEF00B0151A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A52F12152CAEF2F800C3274B /* XCRemoteSwiftPackageReference "Reusable" */,
 			);
 			productRefGroup = A53248682B159A82008AD9DF /* Products */;
 			projectDirPath = "";
@@ -461,6 +488,7 @@
 				A53166AE2B4B4A4000A8B64F /* ProfileViewConstants.swift in Sources */,
 				A53166A62B4B447400A8B64F /* ProfileViewController.swift in Sources */,
 				A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */,
+				A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */,
 				A53166AA2B4B44BB00A8B64F /* SettingsSection.swift in Sources */,
 				A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */,
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
@@ -470,6 +498,7 @@
 				A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */,
 				A5327BB12B22604900E40ABE /* DatabaseRepresentation.swift in Sources */,
 				A5D2EF002B17997400B0151A /* UserProfile.swift in Sources */,
+				A52F12122CAECEFF00C3274B /* IconButton.swift in Sources */,
 				A5327BB42B2260BA00E40ABE /* EventAuthorModel.swift in Sources */,
 				A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */,
 				A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */,
@@ -480,6 +509,9 @@
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
+				A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */,
+				A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */,
+				A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */,
 				A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */,
 				A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */,
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
@@ -713,6 +745,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A52F12152CAEF2F800C3274B /* XCRemoteSwiftPackageReference "Reusable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AliSoftware/Reusable.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.2;
+			};
+		};
 		A53248802B159D10008AD9DF /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -732,6 +772,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A52F12162CAEF2F800C3274B /* Reusable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A52F12152CAEF2F800C3274B /* XCRemoteSwiftPackageReference "Reusable" */;
+			productName = Reusable;
+		};
 		A53248812B159D10008AD9DF /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A53248802B159D10008AD9DF /* XCRemoteSwiftPackageReference "SnapKit" */;

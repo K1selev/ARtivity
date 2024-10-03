@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 import Firebase
 
+var isMaker = 0
+
 class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private var searchBar: UISearchBar!
@@ -41,6 +43,11 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var refreshControl: UIRefreshControl!
     private let buttonNewPost = UIButton()
     var lastUploadedPostID: String?
+    let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
+    
+    
+    private let buttonCreatePost = UIButton()
+    
     var postsRef: DatabaseReference {
         return Database.database().reference().child("events")
     }
@@ -67,6 +74,27 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             queryRef = postsRef.queryOrdered(byChild: "eventTimestamp")
         }
         return queryRef
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let user = Auth.auth().currentUser else { return}
+        let ref = Database.database().reference()
+        let userRef = ref.child("users").child(user.uid)
+        userRef.observeSingleEvent(of: .value, with: {(snapshot) in
+            let dictUserInfo = snapshot.value as? [String:AnyObject]
+            let maker = dictUserInfo?["isMaker"]
+            guard let makerNonOpt = maker else {
+                return
+            }
+            isMaker = makerNonOpt as! Int
+            if isMaker != 1 && self.isLogin {
+                self.buttonCreatePost.isHidden = true
+            } else {
+                self.buttonCreatePost.isHidden = false
+            }
+        })
     }
 
     override func viewDidLoad() {
@@ -103,6 +131,15 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
                                                      for:.touchUpInside)
         filterTimeMoreThreeHourBtn.addTarget(self,action:#selector(filterTimeMoreThreeHourBtnClicked),
                                              for:.touchUpInside)
+                
+        buttonCreatePost.setTitle("", for: .normal)
+        buttonCreatePost.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+        buttonCreatePost.tintColor = UIColor(named: "mainGreen") ?? .green
+//        buttonCreatePost.imageView?.contentMode = .scaleAspectFit
+        buttonCreatePost.contentVerticalAlignment = .fill
+        buttonCreatePost.contentHorizontalAlignment = .fill
+        buttonCreatePost.addTarget(self,action:#selector(createPost),
+                                    for:.touchUpInside)
         
         view.addSubview(topView)
         view.addSubview(tableView)
@@ -111,6 +148,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        view.addSubview(searchBarController.searchBar)
         view.addSubview(filterBtn)
         view.addSubview(filtersView)
+        view.addSubview(buttonCreatePost)
         
         [filterLabel,
          filterDistanceLabel,
@@ -276,11 +314,16 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             make.trailing.equalToSuperview().inset(10)
             make.top.equalTo(filterTimeLabel.snp.bottom).offset(10)
         }
+        buttonCreatePost.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-40)
+            make.trailing.equalToSuperview().offset(-30)
+            make.height.equalTo(70)
+            make.width.equalTo(70)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         listenForNewPosts()
     }
 
@@ -471,9 +514,13 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         if isLogin {
             print("already loged in")
-            let vc = ProfileViewController()
-            vc.modalPresentationStyle = .fullScreen
-            present(vc, animated: true)
+//            if isMaker != 1 {
+                let vc = ProfileViewController()
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true)
+//            } else {
+//                print("here will be creation of exc!")
+//            }
         } else {
             let vc = AuthViewController()
             vc.modalPresentationStyle = .fullScreen
@@ -557,7 +604,13 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let filteredListData: [EventsModel] = posts.filter{ $0.eventName!.lowercased().contains(searchedText.lowercased()) }
         posts = filteredListData
         tableView.reloadData()
-        }
+    }
+    
+    @objc func createPost() {
+        let vc = EventCreationViewController()
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
 }
 
 extension EventsViewController: UISearchBarDelegate {
