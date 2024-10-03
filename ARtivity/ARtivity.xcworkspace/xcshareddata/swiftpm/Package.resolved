@@ -1,5 +1,5 @@
 {
-  "originHash" : "910721d77a3ac87518a21131dada7037ec37dacf2f2894410a484342de5776bf",
+  "originHash" : "17cf7f6ebb6540ec5cfa11efbdc624a4c759491bed26bce1b25c5459896b1137",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -107,6 +107,15 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "reusable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AliSoftware/Reusable.git",
+      "state" : {
+        "revision" : "18674709421360e210c2ecd4e8e08b217d4ea61d",
+        "version" : "4.1.2"
       }
     },
     {
