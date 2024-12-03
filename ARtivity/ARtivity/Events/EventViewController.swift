@@ -741,6 +741,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             }
             self.tableView.reloadData()
         })
+        if pointInf.isEmpty {
+        }
     }
 
     @objc func buttonProfileClicked()

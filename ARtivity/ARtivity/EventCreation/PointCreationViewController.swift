@@ -1,8 +1,8 @@
 //
-//  EventCreationViewController.swift
+//  PointCreationViewController.swift
 //  ARtivity
 //
-//  Created by Сергей Киселев on 03.10.2024.
+//  Created by Сергей Киселев on 16.11.2024.
 //
 
 
@@ -14,27 +14,24 @@ import CoreLocation
 import YandexMapsMobile
 import AVFoundation
 import PhotosUI
+import MapKit
+//import MapKit
 
-class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
 
     var post: EventsModel? = nil
     var postDetail: EventDetails?
-    var pointsArrayEvent = [String]()
     var pointInf = [PointDetail]()
-    var tableViewHeight = 0
 
     var topView = AppHeaderView()
-    var tableView: UITableView!
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     private let mainView = UIView()
-    private let eventName = UILabel()
-    
+    private let pointName = UILabel()
     private let createMainText = UILabel()
-    private let pointsMainText = UILabel()
-    
     private let descriptionMainText = UILabel()
     private let descriptionText = UILabel()
+    private let addressMainText = UILabel()
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
@@ -43,11 +40,12 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         return map.mapView
     }()
     
+    let activityIndicator = UIActivityIndicatorView()
+    
     lazy var commentTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = UIColor.white
-        textView.text = "Описание экскурсии"
-//        textView.font = AppFont.bodyRegular
+        textView.text = "Описание точки"
         textView.textColor = UIColor.gray
         textView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 12)
         textView.layer.cornerRadius = 12
@@ -81,7 +79,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     lazy var selectImagesButton = IconButton(
         icon: UIImage(systemName: "camera")!
     )
-    
     lazy var imgTextStackView: UIStackView = {
         let sv = UIStackView(arrangedSubviews: [addImagesLabel,
                                                 imagesErrorView])
@@ -90,6 +87,8 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         sv.alignment = .leading
         return sv
     }()
+    private var addressTextLatitude: Double? = nil
+    private var addressTextLongitude: Double? = nil
 
     lazy var imagesStackView: UIStackView = {
         let sv = UIStackView(arrangedSubviews: [selectImagesButton,
@@ -129,12 +128,13 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         sv.alignment = .leading
         return sv
     }()
+
+    lazy var pointNameTextView = CustomTextFieldCreate()
     
-    
-    lazy var eventNameTextView: UITextView = {
+    lazy var addressText: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = UIColor.white
-        textView.text = "Название экскурсии"
+        textView.text = "Добавьте адрес"
         textView.textColor = UIColor.gray
         textView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 12)
         textView.layer.cornerRadius = 12
@@ -151,8 +151,8 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         return textView
     }()
     
-    private var createEvent = UIButton()
-    private var addPoint = UIButton()
+    private var createPoint = UIButton()
+//    private var addPoint = UIButton()
     private var imageArray: [UIImage?] = []
     
     let scrollView: UIScrollView = {
@@ -165,9 +165,11 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        pointNameTextView = CustomTextFieldCreate(placeholderText: "Название точки",
+                                     color: .white)
         self.setupUI()
         setupImagesMenu()
-        setupAddPoints()
        
     }
     
@@ -181,6 +183,12 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         self.scrollView.delegate = self
         getPoints()
         setupDataInf()
+    }
+    
+    private func randomAlphanumericString(_ length: Int) -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let randomString = (0..<length).map { _ in String(letters.randomElement()!) }.reduce("", +)
+        return randomString
     }
     
     private func setupMap(latitude: Double, longitude: Double) {
@@ -224,46 +232,35 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private func setupUI() {
         view.backgroundColor = UIColor(named: "appBackground")
         scrollView.backgroundColor = .clear
+        
+        
         topView.isUserInteractionEnabled = true
         topView.leftButton.addTarget(self,action:#selector(buttonBackClicked),
                                      for:.touchUpInside)
-        topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
-                                      for:.touchUpInside)
+        
+        topView.rightButton.isHidden = true
+        topView.title.isHidden = true
         
         mapImage.image = UIImage(named: "mapPreview")
         
-        tableView = UITableView(frame: view.bounds, style: .plain)
-        if postDetail == nil {
-            tableView.isHidden = true
-        } else {
-            tableView.isHidden = false
-        }
-        
-        tableView.backgroundColor = UIColor(named: "appBackground")
-        tableView.register(EventPointTableViewCell.self, forCellReuseIdentifier: "EventPointTableViewCell")
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.reloadData()
-        tableView.rowHeight = 60
-        tableView.isEditing = true
-        tableView.isScrollEnabled = false
-        
         view.addSubview(scrollView)
         [createMainText,
-         eventNameTextView,
-         pointsMainText,
+         pointNameTextView,
+//         pointsMainText,
          descriptionMainText,
+         addressMainText,
+         addressText,
          commentStackView,
          galeryMainText,
          imagesStackView,
          collectionViewPhotos,
-         addPoint,
+//         addPoint,
          mapView].forEach {
             scrollView.addSubview($0)
         }
-        scrollView.addSubview(tableView)
+//        scrollView.addSubview(tableView)
         view.addSubview(topView)
-        view.addSubview(createEvent)
+        view.addSubview(createPoint)
         
         setupData()
         setupNoDataInf()
@@ -281,6 +278,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+//        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         scrollView.topAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
@@ -291,7 +289,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             make.height.equalTo(50)
         }
         
-        createEvent.snp.makeConstraints { make in
+        createPoint.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-40)
             make.leading.equalToSuperview().offset(28)
@@ -305,39 +303,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             make.trailing.equalToSuperview().offset(-34)
         }
         
-        eventNameTextView.snp.makeConstraints { make in
+        pointNameTextView.snp.makeConstraints { make in
             make.top.equalTo(createMainText.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
         }
         
-        pointsMainText.snp.makeConstraints { make in
-            make.top.equalTo(eventNameTextView.snp.bottom).offset(15)
-            make.leading.equalToSuperview().offset(34)
-            make.height.equalTo(20)
-        }
-        
-        tableViewHeight = (pointsArrayEvent.count ?? 0) * 60
-        
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(pointsMainText.snp.bottom).offset(10)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.height.equalTo(tableViewHeight)
-        }
-        
-        addPoint.snp.makeConstraints { make in
-//            if self.pointsArray?.isEmpty ?? true {
-//                make.top.equalTo(pointsMainText.snp.bottom).offset(10)
-//            } else {
-            make.top.equalTo(tableView.snp.bottom).offset(10)
-//            }
-            make.centerX.equalToSuperview()
-            make.height.equalTo(20)
-        }
-        
         descriptionMainText.snp.makeConstraints { make in
-            make.top.equalTo(addPoint.snp.bottom).offset(10)
+            make.top.equalTo(pointNameTextView.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -350,19 +323,33 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 //            make.height.equalTo(height)
 //            make.trailing.equalToSuperview().offset(-34)
         }
+        
+        
+        addressMainText.snp.makeConstraints { make in
+            make.top.equalTo(commentStackView.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+        }
+        
+        addressText.snp.makeConstraints { make in
+            make.top.equalTo(addressMainText.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(34)
+//            make.height.equalTo(20)
+        }
+        
 
         galeryMainText.snp.makeConstraints { make in
-            make.top.equalTo(commentStackView.snp.bottom).offset(15)
+            make.top.equalTo(addressText.snp.bottom).offset(15)
 //            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
 
         imagesStackView.snp.makeConstraints { make in
-            make.top.equalTo(galeryMainText.snp.bottom).offset(15)
+            make.top.equalTo(galeryMainText.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
-            make.height.equalTo(100)
+            make.height.equalTo(80)
         }
         
         
@@ -370,7 +357,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             make.top.equalTo(galeryMainText.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(74)
             make.trailing.equalToSuperview().offset(-34)
-            make.height.equalTo(100)
+            make.height.equalTo(80)
         }
 
 
@@ -385,34 +372,34 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 
     func setupNoDataInf() {
         
-        
-        pointsMainText.text = "Точки экскурсии"
-        createMainText.text = "Создание экскурсии"
+        createMainText.text = "Создание точки"
         descriptionMainText.text = "Описание"
-        galeryMainText.text = "Фотографии с мест экскурсии"
+        galeryMainText.text = "Фотографии точки экскурсии"
+        addressMainText.text = "Адрес точки на карте"
         
-        eventName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        pointName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         createMainText.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        pointsMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
+        addressMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        addressText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         galeryMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        
+        addressText.addTapGestureRecognizer {
+            self.alertAddAdress(title: "Добавить", placeholder: "Введите адрес") { [self] (text) in
+                print(text)
+                setupPlacemark(adressPlace: text)
+            }
+        }
         
         descriptionText.numberOfLines = 0
         
-        createEvent.setTitle("Сохранить экскурсию", for: .normal)// = CustomButton(title: "Записаться")
-        createEvent.setTitleColor(.black, for: .normal)
-        createEvent.isUserInteractionEnabled = true
-        createEvent.backgroundColor = UIColor(named: "mainGreen")
-        createEvent.layer.cornerRadius = 14
-        createEvent.addTarget(self, action: #selector(self.createEventButtonPressed), for: .touchUpInside)
-        
-        addPoint.setTitle("", for: .normal)
-        addPoint.setImage(UIImage(systemName: "plus"), for: .normal)
-        addPoint.tintColor = UIColor.black
-        addPoint.isUserInteractionEnabled = true
-//        addPoint.addTarget(self, action: #selector(self.addButtonPressed), for: .touchUpInside)
-        
+        createPoint.setTitle("Добавить точку", for: .normal)
+        createPoint.setTitleColor(.black, for: .normal)
+        createPoint.isUserInteractionEnabled = true
+        createPoint.backgroundColor = UIColor(named: "mainGreen")
+        createPoint.layer.cornerRadius = 14
+        createPoint.addTarget(self, action: #selector(self.createPointButtonPressed), for: .touchUpInside)
     }
     
     func setupDataInf() {
@@ -437,7 +424,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
 
     func setupData() {
-        eventName.text = post?.eventName
+        pointName.text = post?.eventName
     }
     
     private func setupImagesMenu() {
@@ -463,25 +450,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             self.selectImagesButton.showsMenuAsPrimaryAction = false
             self.selectImagesButton.menu = nil
         }
-    }
-    
-    private func setupAddPoints() {
-        let cameraAction = UIAction(
-            title: "Создать новую",
-//            image: UIImage(systemName: "camera.on.rectangle"),
-            handler: { _ in
-                self.addButtonPressed()
-            })
-        let galleryAction = UIAction(
-            title: "Выбрать существующую",
-//            image: UIImage(systemName: "photo.on.rectangle"),
-            handler: { _ in
-                self.addExistingButtonPressed()
-            })
-        self.addPoint.showsMenuAsPrimaryAction = true
-        self.addPoint.menu = UIMenu(
-            title: "",
-            children: [cameraAction, galleryAction])
     }
 
     private func presentCamera() {
@@ -522,43 +490,68 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         present(picker, animated: true, completion: nil)
     }
     
+    private func setupPlacemark(adressPlace: String) {
+        
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(adressPlace) { [self] (placemarks, error) in
+            
+            
+            if let error = error {
+                print(error)
+//                alerError(title: "Ошибка", message: "Сервер недоступен. Попробуйте добавить адрес еще раз")
+                return
+            }
+            
+            guard let placemarks = placemarks else { return }
+            let placemark = placemarks.first
+            
+            let annotation = MKPointAnnotation()
+            annotation.title = "\(adressPlace)"
+            guard let placemarkLocation = placemark?.location else { return }
+            print(mapView.mapWindow.map.mapObjects)
+            addressText.text = adressPlace
+            mapView.mapWindow.map.mapObjects.clear()
+            addPlacemarkOnMap(latitude: placemarkLocation.coordinate.latitude ?? 0.0, longitude: placemarkLocation.coordinate.longitude ?? 0.0, name: adressPlace)
+            addressText.font = UIFont.systemFont(ofSize: 14)
+            addressText.textColor = UIColor.black
+            addressTextLatitude = placemarkLocation.coordinate.latitude
+            addressTextLongitude = placemarkLocation.coordinate.longitude
+        }
+        
+    }
+    
     func getPoints() {
+
         let ref = Database.database().reference().child("points")
+        
         ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
             var tempPoint = [PointDetail]()
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
                    let data = childSnapshot.value as? [String: Any],
                    let post = PointDetail.parse(childSnapshot.key, data) {
-                    if !self.pointsArrayEvent.isEmpty {
-//                    if !(self.pointsArray?.isEmpty ?? true) {
-                        for itemPoint in self.pointsArrayEvent {
-                            if itemPoint == post.id {
-                                tempPoint.insert(post, at: 0)
-                                self.pointInf.append(post)
-                                if self.isLogin {
+                    let pointId = childSnapshot.key
+                    guard let pointDetail = self.postDetail?.eventPoints else { return }
+                    for item in pointDetail {
+                        if item == pointId {
+                            tempPoint.insert(post, at: 0)
+                            self.pointInf.append(post)
+                            if self.isLogin {
+                                self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+                                if post.isFirstPoint ?? false {
+                                    self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+                                }
+                            } else {
+                                if post.isFirstPoint ?? false {
                                     self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    if post.isFirstPoint ?? false {
-                                        self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-                                        self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    }
-                                } else {
-                                    if post.isFirstPoint ?? false {
-                                        self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            if self.pointInf.isEmpty {
-                self.tableView.isHidden = true
-            } else {
-                self.tableView.isHidden = false
-            }
-            self.tableView.reloadData()
-            self.setupDataInf()
+//            self.tableView.reloadData()
         })
     }
 
@@ -572,123 +565,88 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             present(vc, animated: true)
         }
     }
-
+    
+    
     @objc func buttonBackClicked() {
-        let vc = EventsViewController()
+        let vc = EventCreationViewController()
         vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: false)
+        self.present(vc, animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: CGFloat(tableViewHeight + 750))
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 700)
     }
     
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 2
-//    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return pointInf.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EventPointTableViewCell", for: indexPath) as! EventPointTableViewCell
-        if pointInf.isEmpty == false {
-            cell.set(point: pointInf[indexPath.row])
-            cell.numberLabel.text = "\(indexPath.row + 1)"
-        }
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cellHeights[indexPath] = cell.frame.size.height
-        cell.selectionStyle = .none
-//        cell.backgroundColor =  .systemGray5
-        //        cell.selectedBackgroundView?.backgroundColor = .blue// Asset.backgroungGray.color
-    }
-    
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let item = pointInf[sourceIndexPath.row]
-        pointInf.remove(at: sourceIndexPath.row)
-        pointInf.insert(item, at: destinationIndexPath.row)
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-           print("Deleted")
-           pointInf.remove(at: indexPath.row)
-            self.tableView.reloadData()
+        switch section {
+        case 0:
+            return post?.eventPoint ?? 1
+        case 1:
+            return 0
+        default:
+            return 0
         }
     }
     
-    @objc func createEventButtonPressed() {
-        if pointInf.isEmpty {
-            print("empty points")
-        }
-        if eventNameTextView.text == "Название экскурсии" {
-            eventNameTextView.layer.borderColor = UIColor.red.cgColor
-            print("another name")
-        }
-        if eventNameTextView.text != "Название экскурсии" {
-            eventNameTextView.layer.borderColor = UIColor.lightGray.cgColor
-        }
-        if commentTextView.text == "Описание экскурсии" {
-            commentTextView.layer.borderColor = UIColor.red.cgColor
-            print("another comment")
-        }
-        if commentTextView.text != "Описание экскурсии" {
-            commentTextView.layer.borderColor = UIColor.lightGray.cgColor
-        }
-        if !pointInf.isEmpty &&
-            eventNameTextView.text != "Название экскурсии" &&
-            commentTextView.text != "Описание экскурсии" {
+    @objc func createPointButtonPressed() {
+        
+        if
+//            !pointInf.isEmpty &&
+            pointNameTextView.text != "" &&
+            commentTextView.text != "Описание точки" &&
+            addressText.text != "Добавьте адрес" {
             print(pointInf)
-            //            if canCreate {
-            
+            self.uploadData()
             print("create")
-            //            }
+            activityIndicator.color = .black
+            activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+            
+            createPoint.addSubview(activityIndicator)
+            activityIndicator.snp.makeConstraints { make in
+                make.center.equalToSuperview()
+            }
+            activityIndicator.startAnimating()
+            createPoint.setTitle("", for: .normal)
         }
-//        if isLogin {
-//            if !pointInf.isEmpty {
-//                let point = pointInf[0]
-//                let vc = PointViewController()
-//                vc.pointInf = point
-//                vc.pointInfo = pointInf
-//                vc.post = post
-//                vc.postItem = 0
-//                vc.modalPresentationStyle = .fullScreen
-//                present(vc, animated: true)
-//            }
-//        } else {
-//            let vc = AuthViewController()
-//            present(vc, animated: true)
-//        }
     }
     
-    @objc func addButtonPressed() {
-        let vc = PointCreationViewController()
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
-    }
-    
-    @objc func addExistingButtonPressed() {
-        let vc = PointExitingViewController()
-        vc.pointsArrayEvent = pointsArrayEvent
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+    private func uploadData() {
+        StorageService.shared.uploadPostImages(self.images, imageCategory: "points") { urls in
+            print(urls)
+            let id = self.randomAlphanumericString(15)
+//            { success in
+            let data = PointDetail(id: id,
+                                   address: self.addressText.text,
+                                   description: self.commentTextView.text,
+                                   isFirstPoint: false,
+                                   latitude: self.addressTextLatitude,
+                                   longitude: self.addressTextLongitude,
+                                   name: self.pointNameTextView.text,
+                                   photos: urls,
+                                   urlNet: "")
+            StorageService.shared.createNewPoint(data: data) { success in
+                print(success)
+            }
+            self.images.removeAll()
+            self.pointNameTextView.text = ""
+            self.addressText.text = "Добавьте адрес"
+            self.commentTextView.text = "Описание точки"
+            self.addressTextLatitude = nil
+            self.addressTextLongitude = nil
+            self.mapView.mapWindow.map.mapObjects.clear()
+            self.activityIndicator.startAnimating()
+            self.activityIndicator.removeFromSuperview()
+            self.createPoint.setTitle("Добавить точку", for: .normal)
+        }
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
         let point = YMKPoint(latitude: latitude, longitude: longitude)
         let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
-        
-      // Настройка и добавление иконки
         viewPlacemark.setIconWith(
             UIImage(named: "map_search_result_primary")!,
             style: YMKIconStyle(
@@ -701,12 +659,45 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                 tappableArea: nil
             )
         )
+        mapView.mapWindow.map.move(
+            with: YMKCameraPosition(
+                target: YMKPoint(latitude: latitude,
+                                 longitude: longitude),
+                zoom: 12,
+                azimuth: 0,
+                tilt: 0
+            ),
+            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
+            cameraCallback: nil)
         viewPlacemark.userData = name
+    }
+    
+    func alertAddAdress(title: String, placeholder: String, completionHandler: @escaping (String) -> Void) {
+        
+        let alertController = UIAlertController(title:  title, message: nil, preferredStyle: .alert)
+        let alertOk = UIAlertAction(title: "OK", style: .default) { (action) in
+            print("action")
+            let tfText = alertController.textFields?.first
+            guard let text = tfText?.text else {return}
+            completionHandler(text)
+        }
+        
+        alertController.addTextField { (tf) in
+            tf.placeholder = placeholder
+        }
+        
+        let alertCancel = UIAlertAction(title: "Отмена", style: .default) { (_) in
+        }
+        
+        alertController.addAction(alertOk)
+        alertController.addAction(alertCancel)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
 
-extension EventCreationViewController: UICollectionViewDataSource {
+extension PointCreationViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
@@ -721,7 +712,7 @@ extension EventCreationViewController: UICollectionViewDataSource {
         return cell
     }
 }
-extension EventCreationViewController: UICollectionViewDelegateFlowLayout {
+extension PointCreationViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -741,7 +732,7 @@ extension EventCreationViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension EventCreationViewController: PHPickerViewControllerDelegate {
+extension PointCreationViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController,
                 didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
@@ -757,7 +748,7 @@ extension EventCreationViewController: PHPickerViewControllerDelegate {
     }
 }
 
-extension EventCreationViewController: UIImagePickerControllerDelegate,
+extension PointCreationViewController: UIImagePickerControllerDelegate,
                                     UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {

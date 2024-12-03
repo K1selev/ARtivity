@@ -30,14 +30,9 @@ class CustomTextField: UITextField, UITextFieldDelegate {
         )
         self.layer.cornerRadius = 12
         self.layer.borderWidth = 0.1
-//        self.layer.shadowRadius = 10
-//        self.layer.shadowColor = UIColor.systemGray5.cgColor
-//        self.layer.shadowOpacity = 10
         self.autocorrectionType = .no
-//        self.clearButtonMode = .whileEditing
         self.isSecureTextEntry = isSecure
         self.autocapitalizationType = .none
-//        self.font = AppFont.bodyRegular
         self.backgroundColor = bgColor
         self.layer.borderColor = UIColor.gray.cgColor
         self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: self.frame.height))
@@ -52,7 +47,6 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     fileprivate func setPasswordToggleImage(_ button: UIButton) {
         if isSecureTextEntry {
             button.setImage(UIImage(named: "eyePassHide"), for: .normal)
-//            button.tintColor = UIColor(named: "textToInput")
         } else {
             button.setImage(UIImage(named: "eyePass"), for: .normal)
 
@@ -78,3 +72,38 @@ class CustomTextField: UITextField, UITextFieldDelegate {
     }
 }
 
+
+class CustomTextFieldCreate: UITextField, UITextFieldDelegate {
+    
+    private var placeholderText = String()
+    private var bgColor = UIColor()
+    var borderColor = UIColor.gray.cgColor
+    
+    convenience init(placeholderText: String, color: UIColor) {
+        self.init()
+        self.placeholderText = placeholderText
+        self.bgColor = color
+        entryField()
+    }
+    
+    private func entryField() {
+        self.textColor = .black
+        self.attributedPlaceholder = NSAttributedString(
+            string: placeholderText,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray,
+                         NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12.0, weight: .light)]
+        )
+        self.font = UIFont.systemFont(ofSize: 14.0)
+        self.layer.cornerRadius = 12
+        self.layer.borderWidth = 1
+        self.backgroundColor = bgColor
+        self.layer.borderColor = borderColor
+        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: self.frame.height))
+        self.leftViewMode = .always
+        
+        self.snp.makeConstraints { make in
+            make.height.equalTo(40)
+            make.width.equalTo(UIScreen.main.bounds.width - 64)
+        }
+    }
+}
