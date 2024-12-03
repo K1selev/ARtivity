@@ -10,6 +10,9 @@
 		13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
+		A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */; };
+		A527AFF52CEA0D0D00086737 /* PointExitingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */; };
+		A527AFF72CEBAD8000086737 /* SearchSuggestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */; };
 		A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120B2CAEA0A300C3274B /* PopupView.swift */; };
 		A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */; };
 		A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120F2CAEB93400C3274B /* ErrorView.swift */; };
@@ -45,6 +48,7 @@
 		A543C8B92C29E2D400B1CD49 /* YBaseMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */; };
 		A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */; };
 		A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */; };
+		A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5478E2F2CEF5FD5003D479B /* StorageService.swift */; };
 		A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED52B17300C00B0151A /* AuthViewController.swift */; };
 		A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED82B17356F00B0151A /* CustomButton.swift */; };
 		A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */; };
@@ -79,6 +83,9 @@
 		0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.debug.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.debug.xcconfig"; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
+		A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointCreationViewController.swift; sourceTree = "<group>"; };
+		A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointExitingViewController.swift; sourceTree = "<group>"; };
+		A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSuggestVC.swift; sourceTree = "<group>"; };
 		A52F120B2CAEA0A300C3274B /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationViewController.swift; sourceTree = "<group>"; };
 		A52F120F2CAEB93400C3274B /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
@@ -114,6 +121,7 @@
 		A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YBaseMapView.swift; sourceTree = "<group>"; };
 		A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extention.swift"; sourceTree = "<group>"; };
 		A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChipsFilterButton.swift; sourceTree = "<group>"; };
+		A5478E2F2CEF5FD5003D479B /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		A5D2EED52B17300C00B0151A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A5D2EED82B17356F00B0151A /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -180,6 +188,10 @@
 		A52F11F42CAE886E00C3274B /* EventCreation */ = {
 			isa = PBXGroup;
 			children = (
+				A5478E2F2CEF5FD5003D479B /* StorageService.swift */,
+				A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */,
+				A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */,
+				A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */,
 				A52F120F2CAEB93400C3274B /* ErrorView.swift */,
 				A52F12112CAECEFF00C3274B /* IconButton.swift */,
 				A52F12132CAEF1FE00C3274B /* SelectedImagesCell.swift */,
@@ -480,6 +492,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */,
+				A527AFF72CEBAD8000086737 /* SearchSuggestVC.swift in Sources */,
 				A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */,
 				A5327BAB2B224E0C00E40ABE /* AppMainHeaderView.swift in Sources */,
 				A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */,
@@ -491,6 +504,7 @@
 				A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */,
 				A53166AA2B4B44BB00A8B64F /* SettingsSection.swift in Sources */,
 				A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */,
+				A527AFF52CEA0D0D00086737 /* PointExitingViewController.swift in Sources */,
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
 				A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */,
 				A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */,
@@ -503,6 +517,7 @@
 				A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */,
 				A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */,
 				A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */,
+				A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */,
 				A53166B02B4B4B7100A8B64F /* PlugViewController.swift in Sources */,
 				A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */,
 				A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */,
@@ -524,6 +539,7 @@
 				A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
 				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
+				A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

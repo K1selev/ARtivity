@@ -10,7 +10,7 @@ import SnapKit
 import Firebase
 
 class AppHeaderView: UIView {
-    private lazy var title: UILabel = {
+    lazy var title: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: "mainGreen")
         label.text = "ARtivity"

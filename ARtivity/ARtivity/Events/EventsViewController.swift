@@ -79,6 +79,8 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.buttonCreatePost.isHidden = true
+        
         guard let user = Auth.auth().currentUser else { return}
         let ref = Database.database().reference()
         let userRef = ref.child("users").child(user.uid)
