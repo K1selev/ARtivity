@@ -23,7 +23,6 @@ class YBaseMapView: UIView {
     }
 
     private func setup() {
-        // OpenGl is deprecated under M1 simulator, we should use Vulkan
         mapView = YMKMapView(frame: bounds, vulkanPreferred: YBaseMapView.isM1Simulator())
         mapView.mapWindow.map.mapType = .map
     }

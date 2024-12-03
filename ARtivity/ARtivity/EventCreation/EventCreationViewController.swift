@@ -411,7 +411,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         addPoint.setImage(UIImage(systemName: "plus"), for: .normal)
         addPoint.tintColor = UIColor.black
         addPoint.isUserInteractionEnabled = true
-//        addPoint.addTarget(self, action: #selector(self.addButtonPressed), for: .touchUpInside)
         
     }
     
@@ -531,7 +530,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                    let data = childSnapshot.value as? [String: Any],
                    let post = PointDetail.parse(childSnapshot.key, data) {
                     if !self.pointsArrayEvent.isEmpty {
-//                    if !(self.pointsArray?.isEmpty ?? true) {
                         for itemPoint in self.pointsArrayEvent {
                             if itemPoint == post.id {
                                 tempPoint.insert(post, at: 0)
@@ -628,47 +626,35 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
     
     @objc func createEventButtonPressed() {
-        if pointInf.isEmpty {
-            print("empty points")
-        }
-        if eventNameTextView.text == "Название экскурсии" {
-            eventNameTextView.layer.borderColor = UIColor.red.cgColor
-            print("another name")
-        }
-        if eventNameTextView.text != "Название экскурсии" {
-            eventNameTextView.layer.borderColor = UIColor.lightGray.cgColor
-        }
-        if commentTextView.text == "Описание экскурсии" {
-            commentTextView.layer.borderColor = UIColor.red.cgColor
-            print("another comment")
-        }
-        if commentTextView.text != "Описание экскурсии" {
-            commentTextView.layer.borderColor = UIColor.lightGray.cgColor
-        }
-        if !pointInf.isEmpty &&
-            eventNameTextView.text != "Название экскурсии" &&
-            commentTextView.text != "Описание экскурсии" {
-            print(pointInf)
-            //            if canCreate {
-            
-            print("create")
-            //            }
-        }
-//        if isLogin {
-//            if !pointInf.isEmpty {
-//                let point = pointInf[0]
-//                let vc = PointViewController()
-//                vc.pointInf = point
-//                vc.pointInfo = pointInf
-//                vc.post = post
-//                vc.postItem = 0
-//                vc.modalPresentationStyle = .fullScreen
-//                present(vc, animated: true)
-//            }
-//        } else {
-//            let vc = AuthViewController()
-//            present(vc, animated: true)
+//        if pointInf.isEmpty {
+//            print("empty points")
 //        }
+//        if eventNameTextView.text == "Название экскурсии" {
+//            eventNameTextView.layer.borderColor = UIColor.red.cgColor
+//            print("another name")
+//        }
+//        if eventNameTextView.text != "Название экскурсии" {
+//            eventNameTextView.layer.borderColor = UIColor.lightGray.cgColor
+//        }
+//        if commentTextView.text == "Описание экскурсии" {
+//            commentTextView.layer.borderColor = UIColor.red.cgColor
+//            print("another comment")
+//        }
+//        if commentTextView.text != "Описание экскурсии" {
+//            commentTextView.layer.borderColor = UIColor.lightGray.cgColor
+//        }
+//        if !pointInf.isEmpty &&
+//            eventNameTextView.text != "Название экскурсии" &&
+//            commentTextView.text != "Описание экскурсии" {
+//            print(pointInf)
+//            //            if canCreate {
+//            
+//            print("create")
+//            //            }
+//        }
+        
+        print("create")
+        
     }
     
     @objc func addButtonPressed() {

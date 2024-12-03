@@ -2,53 +2,25 @@
 //  MapViewController.swift
 //  ARtivity
 //
-//  Created by Сергей Киселев on 22.12.2023.
+//  Created by Сергей Киселев on 03.12.2024.
 //
 
+
 import UIKit
-import SnapKit
-import YandexMapsMobile
+import MapKit
+import CoreLocation
 import Firebase
 
-enum MapType {
-    case standard
-    case creation
-}
 
-class MapViewController: UIViewController, YMKMapCameraListener, YMKMapInputListener {
-    func onMapTap(with map: YMKMap, point: YMKPoint) {
-        
-    }
+class MapViewController: UIViewController {
     
-    func onMapLongTap(with map: YMKMap, point: YMKPoint) {
-        
-    }
-    
-    func onCameraPositionChanged(with map: YMKMap, cameraPosition: YMKCameraPosition, cameraUpdateReason: YMKCameraUpdateReason, finished: Bool) {
-        
-        currentZoom = cameraPosition.zoom
-        currentMapLocation = cameraPosition.target
-        
-    }
-    
-    
-    var type: MapType = .standard
-    private var isFirstRequest = true
-    private var currentZoom: Float = 0
-    private var currentMapLocation: YMKPoint = YMKPoint(latitude: 0, longitude: 0)
-    let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     var topView = AppHeaderView()
-    private var map = YBaseMapView()
-    lazy var mapView: YMKMapView! = {
-        return map.mapView
-    }()
-    var posts = [EventsModel]()
-    var postDetail: EventDetails?
-    var pointInf = [PointDetail]()
-
-    let userLocationButton = MapButton(icon: UIImage(named: "logo")!)
+    let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     let zoomInButton = MapButton(icon: UIImage(named: "plusIcon")!)
     let zoomOutButton = MapButton(icon: UIImage(named: "minusIcon")!)
+    var posts = [EventsModel]()
+    var currentZoom: Double = 0.05
+    var currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 55.7602196, longitude: 37.6186409)
     
     private lazy var zoomStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -59,74 +31,158 @@ class MapViewController: UIViewController, YMKMapCameraListener, YMKMapInputList
         stackView.spacing = 4.0
         return stackView
     }()
+    
+    let mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
+    }()
+    
+    var annotationsArray = [MKPointAnnotation]()
 
-    var userLocation = YMKPoint() {
-        didSet {
-            guard userLocation.latitude != 0 && userLocation.longitude != 0 else { return }
-            guard type != .creation else { return }
-            if isFirstRequest {
-                isFirstRequest = false
-                var duration = 0
-                switch type {
-                case .standard:
-                    duration = 1
-                case .creation:
-                    duration = 0
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mapView.delegate = self
+        setConstraints()
+        setupActions()
+        getPoints()
+        view.backgroundColor = UIColor(named: "appBackground")
+        // Do any additional setup after loading the view.
+    }
+    
+    func getPoints() {
+            let ref = Database.database().reference().child("points")
+            ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+                var tempPoint = [PointDetail]()
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot,
+                       let data = childSnapshot.value as? [String: Any],
+                       let post = PointDetail.parse(childSnapshot.key, data) {
+                        if post.isFirstPoint ?? false {
+                            let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+                            self.addAnnotation(location: currentMapLocation)
+                        }
+                    }
                 }
-                mapView.mapWindow.map.move(
-                    with: YMKCameraPosition.init(target: userLocation, zoom: 14, azimuth: 0, tilt: 0),
-                    animation: YMKAnimation(type: YMKAnimationType.linear, duration: Float(duration)),
-                    cameraCallback: nil)
+            })
+        }
+
+    private func setupActions() {
+        moveToLocation(latitude: 55.7602196, longitude: 37.6186409, zoom: 1)
+        
+        zoomInButton.addTapGestureRecognizer {
+            
+            self.currentZoom = max(self.currentZoom / 1.5, 0.001)
+            let newRegion = MKCoordinateRegion(center: self.currentMapLocation, span: MKCoordinateSpan(latitudeDelta: self.currentZoom, longitudeDelta: self.currentZoom))
+            self.mapView.setRegion(newRegion, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.zoomInButton.isUserInteractionEnabled = true
+            }
+        }
+        zoomOutButton.addTapGestureRecognizer {
+            self.currentZoom = max(self.currentZoom * 1.5, 0.001)
+            let newRegion = MKCoordinateRegion(center: self.currentMapLocation, span: MKCoordinateSpan(latitudeDelta: self.currentZoom, longitudeDelta: self.currentZoom))
+            self.mapView.setRegion(newRegion, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.zoomInButton.isUserInteractionEnabled = true
             }
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+//    private func createDirectionRequest(startCoordinate: CLLocationCoordinate2D,  destinationCoordinate: CLLocationCoordinate2D) {
+//        
+//        let startLocation = MKPlacemark(coordinate: startCoordinate)
+//        let destinationLocation = MKPlacemark(coordinate: destinationCoordinate)
+//        
+//        let request = MKDirections.Request()
+//        request.source = MKMapItem(placemark: startLocation)
+//        request.destination = MKMapItem(placemark: destinationLocation)
+//        request.transportType = .walking
+//        request.requestsAlternateRoutes = true
+//        
+//        let diraction = MKDirections(request: request)
+//        diraction.calculate { (response, error) in
+//            
+//            if let error = error {
+//                print(error)
+//                return
+//            }
+//            
+//            guard let response = response else {
+////                self.alerError(title: "Error", message: "маршурт не доступен")
+//                return
+//            }
+//            
+//            var minRoute = response.routes[0]
+//            for route in response.routes {
+//                print (route.distance)
+//                minRoute = (route.distance < minRoute.distance) ? route : minRoute
+//            }
+//            
+//            self.mapView.addOverlay(minRoute.polyline)
+//        }
+//    }
+    
+    @objc func buttonBackClicked() {
+        dismiss(animated: true)
+    }
+    
+    @objc func buttonProfileClicked()
+    {
+        if isLogin {
+            print("already loged in")
+        } else {
+            let vc = AuthViewController()
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
+        }
+    }
+    
+    func addAnnotation(location: CLLocationCoordinate2D){
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = location
+            annotation.title = ""
+            self.mapView.addAnnotation(annotation)
+    }
+    
+    func moveToLocation(latitude: Double, longitude: Double, zoom: Double) {
+            let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            currentMapLocation = location
+            currentZoom = 1 / pow(2, zoom) // Convert zoom level to span approximation
+
+            let newRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: currentZoom, longitudeDelta: currentZoom))
+            mapView.setRegion(newRegion, animated: true)
+        }
+    
+}
+
+extension MapViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
+        let renderer = MKPolylineRenderer(overlay: overlay as! MKPolyline)
+        renderer.strokeColor = .red
+        return renderer
+        
+    }
+    
+}
+
+extension MapViewController {
+    
+    func setConstraints() {
+        
         view.addSubview(topView)
+//        view.addSubview(userLocationButton)
         view.addSubview(mapView)
-        view.addSubview(userLocationButton)
         view.addSubview(zoomStackView)
-        setupMap()
-        getPoints()
-        setupUI()
-        setupActions()
-    }
-    
-    private func setupMap() {
         
-        let latitude = 55.7602196
-        let longitude = 37.6186409
-        
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: latitude,
-                                 longitude: longitude),
-                zoom: 10,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-            cameraCallback: nil)
-        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
-            horizontalAlignment: .left,
-            verticalAlignment: YMKLogoVerticalAlignment.bottom)
-        )
-        mapView.mapWindow.map.addCameraListener(with: self)
-        mapView.mapWindow.map.addInputListener(with: self)
-    }
-    
-    private func setupUI() {
-        view.backgroundColor = UIColor(named: "appBackground")
         topView.isUserInteractionEnabled = true
         topView.leftButton.addTarget(self,action:#selector(buttonBackClicked),
                                      for:.touchUpInside)
         topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
                                       for:.touchUpInside)
-        makeConstraints()
-    }
-    
-    func makeConstraints() {
+        
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(68)
             make.leading.equalToSuperview()
@@ -139,157 +195,56 @@ class MapViewController: UIViewController, YMKMapCameraListener, YMKMapInputList
             make.bottom.equalToSuperview()//equalTo(view.safeAreaLayoutGuide)
         }
         
-        userLocationButton.snp.makeConstraints {
-            $0.height.width.equalTo(48)
-            $0.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview().inset(34)
-        }
-
         zoomStackView.snp.makeConstraints {
             $0.top.equalTo(topView.snp.bottom).offset(18)
             $0.left.equalToSuperview().inset(16)
             $0.width.equalTo(48)
         }
-    }
-    @objc func buttonProfileClicked()
-    {
-        if isLogin {
-            print("already loged in")
-        } else {
-            let vc = AuthViewController()
-            vc.modalPresentationStyle = .fullScreen
-            present(vc, animated: true)
-        }
-    }
-    
-    @objc func buttonBackClicked() {
-      dismiss(animated: true)
-    }
-    
-    func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
-        let point = YMKPoint(latitude: latitude, longitude: longitude)
-        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
+
         
-      // Настройка и добавление иконки
-        viewPlacemark.setIconWith(
-            UIImage(named: "map_search_result_primary")!,
-            style: YMKIconStyle(
-                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
-                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
-                zIndex: 0,
-                flat: true,
-                visible: true,
-                scale: 1.5,
-                tappableArea: nil
-            )
-        )
-        viewPlacemark.addTapListener(with: self)
-        viewPlacemark.userData = name
-    }
-    
-    func getPoints() {
-        let ref = Database.database().reference().child("points")
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPoint = [PointDetail]()
-            for child in snapshot.children {
-                if let childSnapshot = child as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = PointDetail.parse(childSnapshot.key, data) {
-                    if post.isFirstPoint ?? false {
-                        self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                    }
-                }
-            }
-        })
-    }
-    
-    private func setupActions() {
-        userLocationButton.addTapGestureRecognizer {
-//            if self.userLocation.latitude != 0 && self.userLocation.longitude != 0 {
-//                self.mapView.mapWindow.map.move(
-//                    with: YMKCameraPosition.init(target: self.userLocation, zoom: self.currentZoom, azimuth: 0, tilt: 0),
-//                    animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0.5),
-//                    cameraCallback: nil)
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                    if self.currentZoom < 15 {
-//                        self.mapView.mapWindow.map.move(
-//                            with: YMKCameraPosition.init(target: self.userLocation, zoom: 16, azimuth: 0, tilt: 0),
-//                            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0.8),
-//                            cameraCallback: nil)
-//                    }
-//                }
-//            } else {
-////                self.presentBottomPopup(text: L10n.Popup.noAccesToGeo,
-////                                        image: Asset.popupOrange.image,
-////                                        withBotButton: false)
-//            }
-        }
-        zoomInButton.addTapGestureRecognizer {
-            self.mapView.mapWindow.map.move(
-                with: YMKCameraPosition.init(
-                    target: self.currentMapLocation,
-                    zoom: self.currentZoom + 1,
-                    azimuth: 0, tilt: 0),
-                animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0.5),
-                cameraCallback: nil)
-            self.zoomInButton.isUserInteractionEnabled = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.zoomInButton.isUserInteractionEnabled = true
-            }
-        }
-        zoomOutButton.addTapGestureRecognizer {
-            self.mapView.mapWindow.map.move(
-                with: YMKCameraPosition.init(
-                    target: self.currentMapLocation,
-                    zoom: self.currentZoom - 1,
-                    azimuth: 0, tilt: 0),
-                animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0.5),
-                cameraCallback: nil)
-            self.zoomOutButton.isUserInteractionEnabled = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.zoomOutButton.isUserInteractionEnabled = true
-            }
-        }
+//        mapView.addSubview(addAdressButton)
+//        NSLayoutConstraint.activate([
+//            addAdressButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 50),
+//            addAdressButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
+//            addAdressButton.heightAnchor.constraint(equalToConstant: 50),
+//            addAdressButton.widthAnchor.constraint(equalToConstant: 50)
+//        ])
+//        
+//        mapView.addSubview(routeButton)
+//        NSLayoutConstraint.activate([
+//            routeButton.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
+//            routeButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
+//            routeButton.heightAnchor.constraint(equalToConstant: 100),
+//            routeButton.widthAnchor.constraint(equalToConstant: 100)
+//        ])
+//        
+//        mapView.addSubview(resetButton)
+//        NSLayoutConstraint.activate([
+//            resetButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
+//            resetButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
+//            resetButton.heightAnchor.constraint(equalToConstant: 50),
+//            resetButton.widthAnchor.constraint(equalToConstant: 50)
+//        ])
     }
 }
 
-extension MapViewController: YMKMapObjectTapListener {
-    func onMapObjectTap(with mapObject: YMKMapObject, point: YMKPoint) -> Bool {
-        guard let placemark = mapObject as? YMKPlacemarkMapObject else {
-            // Сценарий на случай ошибки
-            return false
-        }
-        // Сценарий на случай успеха. Бизнес-логику добавляют сюда.
-                // Пример
-        self.focusOnPlacemark(placemark: placemark)
-        return true
-    }
+extension MKMapView {
+  func zoomToUserLocation() {
+     self.zoomToUserLocation(latitudinalMeters: 1000, longitudinalMeters: 1000)
+  }
 
-    func focusOnPlacemark(placemark: YMKPlacemarkMapObject) {
-        // Поменять расположение камеры, чтобы сфокусироваться на точке
-        mapView.mapWindow.map.move(
-              with: YMKCameraPosition(target: placemark.geometry, zoom: 18, azimuth: 0, tilt: 0),
-              animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1.5),
-              cameraCallback: nil // Опциональный callback по завершению работы камеры
-        )
+  func zoomToUserLocation(latitudinalMeters:CLLocationDistance,longitudinalMeters:CLLocationDistance)
+  {
+    guard let coordinate = userLocation.location?.coordinate else { return }
+    self.zoomToLocation(location: coordinate, latitudinalMeters: latitudinalMeters, longitudinalMeters: longitudinalMeters)
+  }
 
-        if let placemarkName: String = placemark.userData as? String {
-            // Пример
-            self.displaySelectedPlacemarkName(placemarkName)
-        } else {
-            // do nothing
-        }
-    }
+  func zoomToLocation(location : CLLocationCoordinate2D,latitudinalMeters:CLLocationDistance = 100,longitudinalMeters:CLLocationDistance = 100)
+  {
+      let region = MKCoordinateRegion(center: location, latitudinalMeters: latitudinalMeters, longitudinalMeters: longitudinalMeters)
+    setRegion(region, animated: true)
+  }
 
-    func displaySelectedPlacemarkName(_ placemarkName: String) {
-        // your code here
-        if isLogin {
-            
-        } else {
-            let vc = AuthViewController()
-            present(vc, animated: true)
-        }
-    }
 }
 
 class MapButton: UIButton {

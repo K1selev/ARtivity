@@ -57,10 +57,6 @@ class StorageService {
             if let error = error {
                 completion(false)
                 print("Error: \(error.localizedDescription)")
-//            } else {
-//                self.createNewPlacemark(placemark: placemark) { success in
-//                    success ? completion(true) : completion(false)
-//                }
             }
         }
     }

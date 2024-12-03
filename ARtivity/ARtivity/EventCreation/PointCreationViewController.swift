@@ -15,7 +15,6 @@ import YandexMapsMobile
 import AVFoundation
 import PhotosUI
 import MapKit
-//import MapKit
 
 class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
@@ -101,7 +100,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
     lazy var addImagesLabel: UILabel = {
         let label = UILabel()
-//        label.font = AppFont.bodyRegular
         label.text = "Добавить фото"
         label.numberOfLines = 2
         return label
@@ -151,8 +149,23 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         return textView
     }()
     
+    private let customAlertLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Успешно добавлено"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 30)
+        return label
+    }()
+    private let customAlert: UIView = {
+        let customAlertView = UIView()
+        customAlertView.backgroundColor = UIColor(named: "mainGreen")
+        customAlertView.layer.cornerRadius = 30
+        return customAlertView
+    }()
+    
     private var createPoint = UIButton()
-//    private var addPoint = UIButton()
     private var imageArray: [UIImage?] = []
     
     let scrollView: UIScrollView = {
@@ -165,6 +178,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.customAlert.addSubview(customAlertLabel)
+        customAlertLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
         
         pointNameTextView = CustomTextFieldCreate(placeholderText: "Название точки",
                                      color: .white)
@@ -209,24 +227,23 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         )
     }
     
-    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
-
-        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
-        
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPost = EventDetails()
-
-            let lastPost = self.postDetail
-                if let childSnapshot = snapshot as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = EventDetails.parse(childSnapshot.key, data)
-//                   childSnapshot.key != lastPost?.eventId
-                {
-                    self.postDetail = post
-                    self.setupDataInf()
-                }
-        })
-    }
+//    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
+//
+//        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
+//        
+//        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+//            var tempPost = EventDetails()
+//
+//            let lastPost = self.postDetail
+//                if let childSnapshot = snapshot as? DataSnapshot,
+//                   let data = childSnapshot.value as? [String: Any],
+//                   let post = EventDetails.parse(childSnapshot.key, data)
+//                {
+//                    self.postDetail = post
+//                    self.setupDataInf()
+//                }
+//        })
+//    }
 
 
     private func setupUI() {
@@ -246,7 +263,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(scrollView)
         [createMainText,
          pointNameTextView,
-//         pointsMainText,
          descriptionMainText,
          addressMainText,
          addressText,
@@ -254,11 +270,14 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
          galeryMainText,
          imagesStackView,
          collectionViewPhotos,
-//         addPoint,
          mapView].forEach {
             scrollView.addSubview($0)
         }
-//        scrollView.addSubview(tableView)
+        
+        
+        customAlert.isHidden = true
+        customAlert.layer.zPosition = 1000
+        view.addSubview(customAlert)
         view.addSubview(topView)
         view.addSubview(createPoint)
         
@@ -278,7 +297,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         scrollView.topAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
@@ -317,11 +335,8 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
 
         commentStackView.snp.makeConstraints { make in
             make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
-//            make.bottom.equalTo(galeryMainText.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
-//            make.height.equalTo(height)
-//            make.trailing.equalToSuperview().offset(-34)
         }
         
         
@@ -334,13 +349,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         addressText.snp.makeConstraints { make in
             make.top.equalTo(addressMainText.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(34)
-//            make.height.equalTo(20)
         }
         
 
         galeryMainText.snp.makeConstraints { make in
             make.top.equalTo(addressText.snp.bottom).offset(15)
-//            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -366,6 +379,13 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(243)
+        }
+        
+        customAlert.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(80)
         }
 
     }
@@ -498,7 +518,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             
             if let error = error {
                 print(error)
-//                alerError(title: "Ошибка", message: "Сервер недоступен. Попробуйте добавить адрес еще раз")
                 return
             }
             
@@ -540,7 +559,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                                 self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 if post.isFirstPoint ?? false {
                                     self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 }
                             } else {
                                 if post.isFirstPoint ?? false {
@@ -551,7 +569,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
             }
-//            self.tableView.reloadData()
         })
     }
 
@@ -595,7 +612,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     @objc func createPointButtonPressed() {
         
         if
-//            !pointInf.isEmpty &&
             pointNameTextView.text != "" &&
             commentTextView.text != "Описание точки" &&
             addressText.text != "Добавьте адрес" {
@@ -618,7 +634,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         StorageService.shared.uploadPostImages(self.images, imageCategory: "points") { urls in
             print(urls)
             let id = self.randomAlphanumericString(15)
-//            { success in
             let data = PointDetail(id: id,
                                    address: self.addressText.text,
                                    description: self.commentTextView.text,
@@ -630,6 +645,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                                    urlNet: "")
             StorageService.shared.createNewPoint(data: data) { success in
                 print(success)
+            }
+            print(id)
+            self.customAlert.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                self.customAlert.isHidden = true
             }
             self.images.removeAll()
             self.pointNameTextView.text = ""

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */; };
+		A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A508C6572CFF5D3A007E527D /* MapViewController.swift */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
 		A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */; };
@@ -75,12 +76,13 @@
 		A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */; };
 		A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */; };
 		A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */; };
-		A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */; };
+		A5F30EDB2B35E2DA00241D40 /* MapViewControllerYa.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */; };
 		A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.debug.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.debug.xcconfig"; sourceTree = "<group>"; };
+		A508C6572CFF5D3A007E527D /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
 		A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointCreationViewController.swift; sourceTree = "<group>"; };
@@ -134,7 +136,7 @@
 		A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
-		A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerYa.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.release.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.release.xcconfig"; sourceTree = "<group>"; };
 		F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARtivity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -272,7 +274,8 @@
 		A53248852B159D36008AD9DF /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				A5F30EDA2B35E2DA00241D40 /* MapViewController.swift */,
+				A508C6572CFF5D3A007E527D /* MapViewController.swift */,
+				A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */,
 				A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */,
 			);
 			path = Map;
@@ -524,6 +527,7 @@
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
+				A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */,
 				A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */,
 				A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */,
 				A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */,
@@ -536,7 +540,7 @@
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
 				A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */,
-				A5F30EDB2B35E2DA00241D40 /* MapViewController.swift in Sources */,
+				A5F30EDB2B35E2DA00241D40 /* MapViewControllerYa.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
 				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
 				A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */,
