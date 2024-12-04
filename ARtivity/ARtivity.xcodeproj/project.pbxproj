@@ -13,7 +13,6 @@
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
 		A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */; };
 		A527AFF52CEA0D0D00086737 /* PointExitingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */; };
-		A527AFF72CEBAD8000086737 /* SearchSuggestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */; };
 		A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120B2CAEA0A300C3274B /* PopupView.swift */; };
 		A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */; };
 		A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120F2CAEB93400C3274B /* ErrorView.swift */; };
@@ -86,7 +85,6 @@
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
 		A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointCreationViewController.swift; sourceTree = "<group>"; };
 		A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointExitingViewController.swift; sourceTree = "<group>"; };
-		A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSuggestVC.swift; sourceTree = "<group>"; };
 		A52F120B2CAEA0A300C3274B /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		A52F120D2CAEAF2800C3274B /* EventCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationViewController.swift; sourceTree = "<group>"; };
 		A52F120F2CAEB93400C3274B /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
@@ -189,7 +187,6 @@
 			isa = PBXGroup;
 			children = (
 				A5478E2F2CEF5FD5003D479B /* StorageService.swift */,
-				A527AFF62CEBAD7F00086737 /* SearchSuggestVC.swift */,
 				A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */,
 				A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */,
 				A52F120F2CAEB93400C3274B /* ErrorView.swift */,
@@ -492,7 +489,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */,
-				A527AFF72CEBAD8000086737 /* SearchSuggestVC.swift in Sources */,
 				A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */,
 				A5327BAB2B224E0C00E40ABE /* AppMainHeaderView.swift in Sources */,
 				A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */,

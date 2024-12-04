@@ -12,7 +12,7 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
-import YandexMapsMobile
+import MapKit
 
 class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -64,9 +64,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
-    private var map = YBaseMapView()
-    lazy var mapView: YMKMapView! = {
-        return map.mapView
+    
+    let mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
     }()
     
     private var goTripButton = UIButton()
@@ -92,6 +94,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        mapView.delegate = self
        
     }
     
@@ -110,22 +113,25 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     
     private func setupMap(latitude: Double, longitude: Double) {
 
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: latitude,
-                                 longitude: longitude),
-                zoom: 12,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-            cameraCallback: nil)
-        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
-            horizontalAlignment: .left,
-            verticalAlignment: YMKLogoVerticalAlignment.bottom)
-        )
-//        mapView.mapWindow.map.addCameraListener(with: self)
-//        mapView.mapWindow.map.addInputListener(with: self)
+//        mapView.mapWindow.map.move(
+//            with: YMKCameraPosition(
+//                target: YMKPoint(latitude: latitude,
+//                                 longitude: longitude),
+//                zoom: 12,
+//                azimuth: 0,
+//                tilt: 0
+//            ),
+//            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
+//            cameraCallback: nil)
+//        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
+//            horizontalAlignment: .left,
+//            verticalAlignment: YMKLogoVerticalAlignment.bottom)
+//        )
+        let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//        currentMapLocation = location
+//        currentZoom = 1 / pow(2, 1)
+        let newRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03))
+        mapView.setRegion(newRegion, animated: true)
     }
     
     func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
@@ -737,11 +743,43 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                             }
                         }
                     }
+                    
+                    let startLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.first?.latitude ?? 0.0,
+                                                                                       longitude: self.pointInf.first?.longitude ?? 0.0)
+                    
+                    let endLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.last?.latitude ?? 0.0,
+                                                                                     longitude: self.pointInf.last?.longitude ?? 0.0)
+                    self.createRoute(from: startLocation, to: endLocation)
                 }
             }
             self.tableView.reloadData()
         })
         if pointInf.isEmpty {
+        }
+    }
+    
+    func createRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
+        let sourcePlacemark = MKPlacemark(coordinate: source)
+        let destinationPlacemark = MKPlacemark(coordinate: destination)
+        
+        let directionRequest = MKDirections.Request()
+        directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+        directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+        directionRequest.transportType = .walking
+        
+        let directions = MKDirections(request: directionRequest)
+        directions.calculate { [weak self] response, error in
+            guard let self = self else { return }
+            guard let response = response, let route = response.routes.first else {
+                if let error = error {
+                    print("Error calculating route: \(error)")
+                }
+                return
+            }
+            
+            self.mapView.addOverlay(route.polyline, level: .aboveRoads)
+            let routeRect = route.polyline.boundingMapRect
+            self.mapView.setRegion(MKCoordinateRegion(routeRect), animated: true)
         }
     }
 
@@ -836,23 +874,30 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
-        let point = YMKPoint(latitude: latitude, longitude: longitude)
-        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
-        
-      // Настройка и добавление иконки
-        viewPlacemark.setIconWith(
-            UIImage(named: "map_search_result_primary")!,
-            style: YMKIconStyle(
-                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
-                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
-                zIndex: 0,
-                flat: true,
-                visible: true,
-                scale: 1.5,
-                tappableArea: nil
-            )
-        )
-        viewPlacemark.userData = name
+//        let point = YMKPoint(latitude: latitude, longitude: longitude)
+//        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
+//        
+//      // Настройка и добавление иконки
+//        viewPlacemark.setIconWith(
+//            UIImage(named: "map_search_result_primary")!,
+//            style: YMKIconStyle(
+//                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
+//                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
+//                zIndex: 0,
+//                flat: true,
+//                visible: true,
+//                scale: 1.5,
+//                tappableArea: nil
+//            )
+//        )
+//        viewPlacemark.userData = name
+        let annotation = MKPointAnnotation()
+        let location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: latitude,
+                                                                      longitude: longitude)
+        annotation.coordinate = location
+        annotation.title = name
+        self.mapView.addAnnotation(annotation)
+//}
     }
 }
 
@@ -882,5 +927,46 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
 extension EventViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 90, height: 90)
+    }
+}
+
+extension EventViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !(annotation is MKUserLocation) else {return nil }
+
+        let annotationIdentifier = "CustomPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKPinAnnotationView
+
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView?.canShowCallout = true
+
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+            imageView.image = UIImage(named: "map_search_result_primary")!
+            imageView.contentMode = .scaleAspectFit
+        }
+
+        annotationView?.annotation = annotation
+        annotationView?.image = UIImage(named: "map_search_result_primary")
+        annotationView?.frame.size = CGSize(width: 30, height: 40)
+        return annotationView
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(region, animated: true)
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if let polyline = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = UIColor(named: "mainGreen")
+            renderer.lineWidth = 4.0
+            return renderer
+        }
+        return MKOverlayRenderer(overlay: overlay)
     }
 }

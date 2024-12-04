@@ -11,9 +11,9 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
-import YandexMapsMobile
 import AVFoundation
 import PhotosUI
+import MapKit
 
 class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -38,9 +38,11 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
-    private var map = YBaseMapView()
-    lazy var mapView: YMKMapView! = {
-        return map.mapView
+    
+    let mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
     }()
     
     lazy var commentTextView: UITextView = {
@@ -168,6 +170,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         self.setupUI()
         setupImagesMenu()
         setupAddPoints()
+        mapView.delegate = self
        
     }
     
@@ -183,22 +186,10 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         setupDataInf()
     }
     
-    private func setupMap(latitude: Double, longitude: Double) {
-
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: latitude,
-                                 longitude: longitude),
-                zoom: 12,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-            cameraCallback: nil)
-        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
-            horizontalAlignment: .left,
-            verticalAlignment: YMKLogoVerticalAlignment.bottom)
-        )
+    private func setupMap(latitude: Double, longitude: Double, delta: Double) {
+        let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let newRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: delta, longitudeDelta: delta))
+        mapView.setRegion(newRegion, animated: true)
     }
     
     func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
@@ -537,7 +528,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                                 if self.isLogin {
                                     self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                     if post.isFirstPoint ?? false {
-                                        self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+                                        self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, delta: 1)
                                         self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                     }
                                 } else {
@@ -546,6 +537,15 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                                     }
                                 }
                             }
+                        }
+                        if self.pointsArrayEvent.count >= 2 {
+                            let startLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.first?.latitude ?? 0.0,
+                                                                                               longitude: self.pointInf.first?.longitude ?? 0.0)
+                            
+                            let endLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.last?.latitude ?? 0.0,
+                                                                                             longitude: self.pointInf.last?.longitude ?? 0.0)
+                            self.createRoute(from: startLocation, to: endLocation)
+                            
                         }
                     }
                 }
@@ -558,6 +558,31 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             self.tableView.reloadData()
             self.setupDataInf()
         })
+    }
+    
+    func createRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
+        let sourcePlacemark = MKPlacemark(coordinate: source)
+        let destinationPlacemark = MKPlacemark(coordinate: destination)
+        
+        let directionRequest = MKDirections.Request()
+        directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+        directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+        directionRequest.transportType = .walking
+        
+        let directions = MKDirections(request: directionRequest)
+        directions.calculate { [weak self] response, error in
+            guard let self = self else { return }
+            guard let response = response, let route = response.routes.first else {
+                if let error = error {
+                    print("Error calculating route: \(error)")
+                }
+                return
+            }
+            
+            self.mapView.addOverlay(route.polyline, level: .aboveRoads)
+            let routeRect = route.polyline.boundingMapRect
+            self.mapView.setRegion(MKCoordinateRegion(routeRect), animated: true)
+        }
     }
 
     @objc func buttonProfileClicked()
@@ -671,23 +696,13 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
-        let point = YMKPoint(latitude: latitude, longitude: longitude)
-        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
-        
-      // Настройка и добавление иконки
-        viewPlacemark.setIconWith(
-            UIImage(named: "map_search_result_primary")!,
-            style: YMKIconStyle(
-                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
-                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
-                zIndex: 0,
-                flat: true,
-                visible: true,
-                scale: 1.5,
-                tappableArea: nil
-            )
-        )
-        viewPlacemark.userData = name
+        let annotation = MKPointAnnotation()
+        let location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: latitude,
+                                                                      longitude: longitude)
+        annotation.coordinate = location
+        annotation.title = name
+        self.mapView.addAnnotation(annotation)
+        self.setupMap(latitude: latitude, longitude: longitude, delta: 0.01)
     }
 }
 
@@ -750,5 +765,44 @@ extension EventCreationViewController: UIImagePickerControllerDelegate,
         picker.dismiss(animated: true)
         guard let image = info[.originalImage] as? UIImage else { return }
         self.images.append(image)
+    }
+}
+
+extension EventCreationViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !(annotation is MKUserLocation) else {return nil }
+
+        let annotationIdentifier = "CustomPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKPinAnnotationView
+
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView?.canShowCallout = true
+
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+            imageView.image = UIImage(named: "map_search_result_primary")!
+            imageView.contentMode = .scaleAspectFit
+        }
+
+        annotationView?.annotation = annotation
+        annotationView?.image = UIImage(named: "map_search_result_primary")
+        annotationView?.frame.size = CGSize(width: 30, height: 40)
+        return annotationView
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(region, animated: true)
+    }
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if let polyline = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = UIColor(named: "mainGreen")
+            renderer.lineWidth = 4.0
+            return renderer
+        }
+        return MKOverlayRenderer(overlay: overlay)
     }
 }

@@ -3,7 +3,7 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
-import YandexMapsMobile
+//import YandexMapsMobile
 import AVFoundation
 import PhotosUI
 

@@ -114,40 +114,6 @@ class MapViewController: UIViewController {
         }
     }
     
-//    private func createDirectionRequest(startCoordinate: CLLocationCoordinate2D,  destinationCoordinate: CLLocationCoordinate2D) {
-//        
-//        let startLocation = MKPlacemark(coordinate: startCoordinate)
-//        let destinationLocation = MKPlacemark(coordinate: destinationCoordinate)
-//        
-//        let request = MKDirections.Request()
-//        request.source = MKMapItem(placemark: startLocation)
-//        request.destination = MKMapItem(placemark: destinationLocation)
-//        request.transportType = .walking
-//        request.requestsAlternateRoutes = true
-//        
-//        let diraction = MKDirections(request: request)
-//        diraction.calculate { (response, error) in
-//            
-//            if let error = error {
-//                print(error)
-//                return
-//            }
-//            
-//            guard let response = response else {
-////                self.alerError(title: "Error", message: "маршурт не доступен")
-//                return
-//            }
-//            
-//            var minRoute = response.routes[0]
-//            for route in response.routes {
-//                print (route.distance)
-//                minRoute = (route.distance < minRoute.distance) ? route : minRoute
-//            }
-//            
-//            self.mapView.addOverlay(minRoute.polyline)
-//        }
-//    }
-    
     @objc func buttonBackClicked() {
         dismiss(animated: true)
     }
@@ -196,8 +162,6 @@ extension MapViewController: MKMapViewDelegate {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
             imageView.image = UIImage(named: "map_search_result_primary")!
             imageView.contentMode = .scaleAspectFit
-
-//            annotationView?.rightCalloutAccessoryView = imageView
         }
 
         annotationView?.annotation = annotation
