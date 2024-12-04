@@ -12,7 +12,6 @@ class ErrorView: UIView {
 
     lazy var label: UILabel = {
         let label = UILabel()
-//        label.font = AppFont.caption1Regular
         label.textColor = UIColor.red
         return label
     }()

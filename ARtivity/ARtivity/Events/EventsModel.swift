@@ -167,3 +167,78 @@ extension PointDetail: DatabaseRepresentation {
     }
 }
 
+
+
+struct EventDetailsTest {
+    var id: String?
+    var eventId: String?
+    var description: String?
+    var eventPoints: [String]?
+    var eventPhotos: [String]?
+    var eventLanguage: String?
+    var eventAR: Bool?
+    var eventDistance: Int?
+    var eventImage: String?
+    var eventName: String?
+    var eventPoint: Int?
+    var eventRating: Double?
+    var eventTime: Int?
+    var eventTimestamp: Date?
+    var eventAuthor: EventAuthorModel?
+}
+
+extension EventDetailsTest: DatabaseRepresentation {
+    var representation: [String: Any] {
+        let rep: [String: Any] = [
+            "eventId": eventId,
+            "description": description,
+            "eventPoints": eventPoints,
+            "eventPhotos": eventPhotos,
+            "eventLanguage": eventLanguage,
+            "eventAR": eventAR,
+            "eventDistance": eventDistance,
+            "eventImage": eventImage,
+            "eventName": eventName,
+            "eventPoint": eventPoint,
+            "eventRating": eventRating,
+            "eventTime": eventTime,
+            "eventAuthor": eventAuthor?.representation,
+            "eventTimestamp": eventTimestamp?.timeIntervalSince1970
+        ]
+        return rep
+    }
+    
+    static func parse(_ key: String, _ data: [String: Any]) -> EventDetailsTest? {
+        
+        if let eventId = data["eventId"] as? String,
+           let description = data["description"] as? String,
+           let eventPoints = data["eventPoints"] as? [String],
+           let eventPhotos = data["eventPhotos"] as? [String],
+           let eventLanguage = data["eventLanguage"] as? String,
+           let eventAR = data["eventAR"] as? Bool,
+           let eventAuthor = data["eventAuthor"] as? [String: Any],
+           let authorId = eventAuthor["authorId"] as? String,
+           let authorName = eventAuthor["authorName"] as? String,
+           let eventId = data["eventId"] as? String,
+           let eventDistance = data["eventDistance"] as? Int,
+           let eventImage = data["eventImage"] as? String,
+           let eventName = data["eventName"] as? String,
+           let eventPoint = data["eventPoint"] as? Int,
+           let eventRating = data["eventRating"] as? Double,
+           let eventTime = data["eventTime"] as? Int,
+           let eventTimestamp = data["eventTimestamp"] as? Double
+            
+        {
+            
+            return EventDetailsTest(id: key,
+                                    eventId: eventId,
+                                    description: description,
+                                    eventPoints: eventPoints,
+                                    eventPhotos: eventPhotos,
+                                    eventLanguage: eventLanguage,
+                                    eventAR: eventAR)
+        }
+        return nil
+    }
+}
+

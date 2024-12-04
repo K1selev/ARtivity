@@ -3,7 +3,7 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
-import YandexMapsMobile
+//import YandexMapsMobile
 import AVFoundation
 import PhotosUI
 
@@ -56,7 +56,6 @@ class PointExitingViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        self.scrollView.delegate = self
         getPoints()
         makeConstraints()
     }
@@ -72,7 +71,6 @@ class PointExitingViewController: UIViewController {
             if let childSnapshot = snapshot as? DataSnapshot,
                let data = childSnapshot.value as? [String: Any],
                let post = EventDetails.parse(childSnapshot.key, data)
-            //                   childSnapshot.key != lastPost?.eventId
             {
                 self.postDetail = post
             }
@@ -82,7 +80,6 @@ class PointExitingViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = UIColor(named: "appBackground")
-//        scrollView.backgroundColor = .clear
         
         
         topView.isUserInteractionEnabled = true
@@ -95,12 +92,6 @@ class PointExitingViewController: UIViewController {
         view.addSubview(createMainText)
         view.addSubview(searchBar)
         view.addSubview(tableView)
-//        [createMainText,
-//         searchBar
-//        ].forEach {
-//            scrollView.addSubview($0)
-//        }
-        //        scrollView.addSubview(tableView)
         view.addSubview(topView)
         view.addSubview(createPoint)
         
@@ -111,7 +102,6 @@ class PointExitingViewController: UIViewController {
         tableView.reloadData()
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
-//        tableView.refreshControl = refreshControl
         self.tableView.keyboardDismissMode = .onDrag
         
         setupData()
@@ -119,28 +109,12 @@ class PointExitingViewController: UIViewController {
     }
     
     func makeConstraints() {
-        
-//        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-//        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        //        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
-//        scrollView.topAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
-//        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(68)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        
-//        createPoint.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview()
-//            make.bottom.equalToSuperview().offset(-40)
-//            make.leading.equalToSuperview().offset(28)
-//            make.trailing.equalToSuperview().offset(-28)
-//            make.height.equalTo(45)
-//        }
-        
         createMainText.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)

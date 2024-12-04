@@ -11,11 +11,9 @@ import FirebaseAuth
 import Firebase
 import SnapKit
 import CoreLocation
-import YandexMapsMobile
 import AVFoundation
 import PhotosUI
 import MapKit
-//import MapKit
 
 class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
@@ -35,9 +33,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
-    private var map = YBaseMapView()
-    lazy var mapView: YMKMapView! = {
-        return map.mapView
+    
+    let mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
     }()
     
     let activityIndicator = UIActivityIndicatorView()
@@ -101,7 +101,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
     lazy var addImagesLabel: UILabel = {
         let label = UILabel()
-//        label.font = AppFont.bodyRegular
         label.text = "Добавить фото"
         label.numberOfLines = 2
         return label
@@ -151,8 +150,23 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         return textView
     }()
     
+    private let customAlertLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Успешно добавлено"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 30)
+        return label
+    }()
+    private let customAlert: UIView = {
+        let customAlertView = UIView()
+        customAlertView.backgroundColor = UIColor(named: "mainGreen")
+        customAlertView.layer.cornerRadius = 30
+        return customAlertView
+    }()
+    
     private var createPoint = UIButton()
-//    private var addPoint = UIButton()
     private var imageArray: [UIImage?] = []
     
     let scrollView: UIScrollView = {
@@ -165,6 +179,12 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        mapView.delegate = self
+        self.customAlert.addSubview(customAlertLabel)
+        customAlertLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
         
         pointNameTextView = CustomTextFieldCreate(placeholderText: "Название точки",
                                      color: .white)
@@ -192,42 +212,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func setupMap(latitude: Double, longitude: Double) {
-
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: latitude,
-                                 longitude: longitude),
-                zoom: 12,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-            cameraCallback: nil)
-        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
-            horizontalAlignment: .left,
-            verticalAlignment: YMKLogoVerticalAlignment.bottom)
-        )
-    }
-    
-    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
-
-        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
         
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPost = EventDetails()
-
-            let lastPost = self.postDetail
-                if let childSnapshot = snapshot as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = EventDetails.parse(childSnapshot.key, data)
-//                   childSnapshot.key != lastPost?.eventId
-                {
-                    self.postDetail = post
-                    self.setupDataInf()
-                }
-        })
+        let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let newRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(newRegion, animated: true)
     }
-
 
     private func setupUI() {
         view.backgroundColor = UIColor(named: "appBackground")
@@ -246,7 +235,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(scrollView)
         [createMainText,
          pointNameTextView,
-//         pointsMainText,
          descriptionMainText,
          addressMainText,
          addressText,
@@ -254,11 +242,14 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
          galeryMainText,
          imagesStackView,
          collectionViewPhotos,
-//         addPoint,
          mapView].forEach {
             scrollView.addSubview($0)
         }
-//        scrollView.addSubview(tableView)
+        
+        
+        customAlert.isHidden = true
+        customAlert.layer.zPosition = 1000
+        view.addSubview(customAlert)
         view.addSubview(topView)
         view.addSubview(createPoint)
         
@@ -278,7 +269,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         scrollView.topAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
@@ -317,11 +307,8 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
 
         commentStackView.snp.makeConstraints { make in
             make.top.equalTo(descriptionMainText.snp.bottom).offset(10)
-//            make.bottom.equalTo(galeryMainText.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
-//            make.height.equalTo(height)
-//            make.trailing.equalToSuperview().offset(-34)
         }
         
         
@@ -334,13 +321,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         addressText.snp.makeConstraints { make in
             make.top.equalTo(addressMainText.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(34)
-//            make.height.equalTo(20)
         }
         
 
         galeryMainText.snp.makeConstraints { make in
             make.top.equalTo(addressText.snp.bottom).offset(15)
-//            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -366,6 +351,13 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(243)
+        }
+        
+        customAlert.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(80)
         }
 
     }
@@ -498,7 +490,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             
             if let error = error {
                 print(error)
-//                alerError(title: "Ошибка", message: "Сервер недоступен. Попробуйте добавить адрес еще раз")
                 return
             }
             
@@ -508,9 +499,10 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             let annotation = MKPointAnnotation()
             annotation.title = "\(adressPlace)"
             guard let placemarkLocation = placemark?.location else { return }
-            print(mapView.mapWindow.map.mapObjects)
+//            print(mapView.mapWindow.map.mapObjects)
             addressText.text = adressPlace
-            mapView.mapWindow.map.mapObjects.clear()
+//            mapView.mapWindow.map.mapObjects.clear()
+            mapView.removeAnnotations(mapView.annotations)
             addPlacemarkOnMap(latitude: placemarkLocation.coordinate.latitude ?? 0.0, longitude: placemarkLocation.coordinate.longitude ?? 0.0, name: adressPlace)
             addressText.font = UIFont.systemFont(ofSize: 14)
             addressText.textColor = UIColor.black
@@ -540,7 +532,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                                 self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 if post.isFirstPoint ?? false {
                                     self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 }
                             } else {
                                 if post.isFirstPoint ?? false {
@@ -551,7 +542,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
             }
-//            self.tableView.reloadData()
         })
     }
 
@@ -595,7 +585,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     @objc func createPointButtonPressed() {
         
         if
-//            !pointInf.isEmpty &&
             pointNameTextView.text != "" &&
             commentTextView.text != "Описание точки" &&
             addressText.text != "Добавьте адрес" {
@@ -618,7 +607,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         StorageService.shared.uploadPostImages(self.images, imageCategory: "points") { urls in
             print(urls)
             let id = self.randomAlphanumericString(15)
-//            { success in
             let data = PointDetail(id: id,
                                    address: self.addressText.text,
                                    description: self.commentTextView.text,
@@ -631,13 +619,18 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             StorageService.shared.createNewPoint(data: data) { success in
                 print(success)
             }
+            print(id)
+            self.customAlert.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                self.customAlert.isHidden = true
+            }
             self.images.removeAll()
             self.pointNameTextView.text = ""
             self.addressText.text = "Добавьте адрес"
             self.commentTextView.text = "Описание точки"
             self.addressTextLatitude = nil
             self.addressTextLongitude = nil
-            self.mapView.mapWindow.map.mapObjects.clear()
+            self.mapView.removeAnnotations(self.mapView.annotations)
             self.activityIndicator.startAnimating()
             self.activityIndicator.removeFromSuperview()
             self.createPoint.setTitle("Добавить точку", for: .normal)
@@ -645,31 +638,14 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
-        let point = YMKPoint(latitude: latitude, longitude: longitude)
-        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
-        viewPlacemark.setIconWith(
-            UIImage(named: "map_search_result_primary")!,
-            style: YMKIconStyle(
-                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
-                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
-                zIndex: 0,
-                flat: true,
-                visible: true,
-                scale: 1.5,
-                tappableArea: nil
-            )
-        )
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: latitude,
-                                 longitude: longitude),
-                zoom: 12,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-            cameraCallback: nil)
-        viewPlacemark.userData = name
+        
+        let annotation = MKPointAnnotation()
+        let location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: latitude,
+                                                                      longitude: longitude)
+        annotation.coordinate = location
+        annotation.title = name
+        self.mapView.addAnnotation(annotation)
+        self.setupMap(latitude: latitude, longitude: longitude)
     }
     
     func alertAddAdress(title: String, placeholder: String, completionHandler: @escaping (String) -> Void) {
@@ -755,5 +731,35 @@ extension PointCreationViewController: UIImagePickerControllerDelegate,
         picker.dismiss(animated: true)
         guard let image = info[.originalImage] as? UIImage else { return }
         self.images.append(image)
+    }
+}
+
+extension PointCreationViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !(annotation is MKUserLocation) else {return nil }
+
+        let annotationIdentifier = "CustomPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKPinAnnotationView
+
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView?.canShowCallout = true
+
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+            imageView.image = UIImage(named: "map_search_result_primary")!
+            imageView.contentMode = .scaleAspectFit
+        }
+
+        annotationView?.annotation = annotation
+        annotationView?.image = UIImage(named: "map_search_result_primary")
+        annotationView?.frame.size = CGSize(width: 30, height: 40)
+        return annotationView
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(region, animated: true)
     }
 }
