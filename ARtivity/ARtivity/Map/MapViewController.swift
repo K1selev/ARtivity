@@ -47,27 +47,52 @@ class MapViewController: UIViewController {
         setupActions()
         getPoints()
         view.backgroundColor = UIColor(named: "appBackground")
-        // Do any additional setup after loading the view.
     }
     
+//    func getPoints() {
+//            let ref = Database.database().reference().child("points")
+//            ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+//                var tempPoint = [PointDetail]()
+//                for child in snapshot.children {
+//                    if let childSnapshot = child as? DataSnapshot,
+//                       let data = childSnapshot.value as? [String: Any],
+//                       let post = PointDetail.parse(childSnapshot.key, data) {
+//                        if post.isFirstPoint ?? false {
+//                            let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+//                            self.addAnnotation(location: currentMapLocation)
+//                        }
+//                    }
+//                }
+//            })
+//        }
+    
     func getPoints() {
-            let ref = Database.database().reference().child("points")
+            let ref = Database.database().reference().child("eventDetails")
             ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-                var tempPoint = [PointDetail]()
+                var tempPoint = [EventDetails]()
                 for child in snapshot.children {
                     if let childSnapshot = child as? DataSnapshot,
                        let data = childSnapshot.value as? [String: Any],
-                       let post = PointDetail.parse(childSnapshot.key, data) {
-                        if post.isFirstPoint ?? false {
-                            let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-                            self.addAnnotation(location: currentMapLocation)
-                        }
+                       let post = EventDetails.parse(childSnapshot.key, data) {
+                        let refPoint = Database.database().reference().child("points").child(post.eventPoints?.first ?? "0")
+                        refPoint.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+                            var tempPoint = PointDetail()
+                            if let childSnapshot = snapshot as? DataSnapshot,
+                               let data = childSnapshot.value as? [String: Any],
+                               let point = PointDetail.parse(childSnapshot.key, data)
+                            {
+                                let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: point.latitude ?? 0.0, longitude: point.longitude ?? 0.0)
+                                self.addAnnotation(location: currentMapLocation, title: point.name ?? "", subtitle: point.address ?? "")
+                            }
+                        })
                     }
                 }
             })
         }
 
     private func setupActions() {
+//        mapView.annotations
+//        annotationView.image = UIImage(named: "yourImagename”)
         moveToLocation(latitude: 55.7602196, longitude: 37.6186409, zoom: 1)
         
         zoomInButton.addTapGestureRecognizer {
@@ -138,18 +163,18 @@ class MapViewController: UIViewController {
         }
     }
     
-    func addAnnotation(location: CLLocationCoordinate2D){
+    func addAnnotation(location: CLLocationCoordinate2D, title: String, subtitle: String){
             let annotation = MKPointAnnotation()
             annotation.coordinate = location
-            annotation.title = ""
+            annotation.title = title
+        annotation.subtitle = subtitle
             self.mapView.addAnnotation(annotation)
     }
     
     func moveToLocation(latitude: Double, longitude: Double, zoom: Double) {
             let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             currentMapLocation = location
-            currentZoom = 1 / pow(2, zoom) // Convert zoom level to span approximation
-
+            currentZoom = 1 / pow(2, zoom)
             let newRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: currentZoom, longitudeDelta: currentZoom))
             mapView.setRegion(newRegion, animated: true)
         }
@@ -158,14 +183,37 @@ class MapViewController: UIViewController {
 
 extension MapViewController: MKMapViewDelegate {
     
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        
-        let renderer = MKPolylineRenderer(overlay: overlay as! MKPolyline)
-        renderer.strokeColor = .red
-        return renderer
-        
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !(annotation is MKUserLocation) else {return nil }
+
+        let annotationIdentifier = "CustomPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKPinAnnotationView
+
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView?.canShowCallout = true
+
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+            imageView.image = UIImage(named: "map_search_result_primary")!
+            imageView.contentMode = .scaleAspectFit
+
+//            annotationView?.rightCalloutAccessoryView = imageView
+        }
+
+        annotationView?.annotation = annotation
+        annotationView?.image = UIImage(named: "map_search_result_primary")
+        annotationView?.frame.size = CGSize(width: 30, height: 40)
+        return annotationView
     }
     
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        
+        currentZoom = 0.02
+        currentMapLocation = annotation.coordinate
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: currentZoom, longitudeDelta: currentZoom))
+        mapView.setRegion(region, animated: true)
+    }
 }
 
 extension MapViewController {
@@ -200,31 +248,6 @@ extension MapViewController {
             $0.left.equalToSuperview().inset(16)
             $0.width.equalTo(48)
         }
-
-        
-//        mapView.addSubview(addAdressButton)
-//        NSLayoutConstraint.activate([
-//            addAdressButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 50),
-//            addAdressButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
-//            addAdressButton.heightAnchor.constraint(equalToConstant: 50),
-//            addAdressButton.widthAnchor.constraint(equalToConstant: 50)
-//        ])
-//        
-//        mapView.addSubview(routeButton)
-//        NSLayoutConstraint.activate([
-//            routeButton.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
-//            routeButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
-//            routeButton.heightAnchor.constraint(equalToConstant: 100),
-//            routeButton.widthAnchor.constraint(equalToConstant: 100)
-//        ])
-//        
-//        mapView.addSubview(resetButton)
-//        NSLayoutConstraint.activate([
-//            resetButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
-//            resetButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
-//            resetButton.heightAnchor.constraint(equalToConstant: 50),
-//            resetButton.widthAnchor.constraint(equalToConstant: 50)
-//        ])
     }
 }
 

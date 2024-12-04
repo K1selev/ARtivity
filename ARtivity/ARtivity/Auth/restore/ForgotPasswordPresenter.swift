@@ -33,7 +33,6 @@ class ForgotPasswordPresenter: ForgotPasswordScreenPresenter {
                 self?.view.conclusion(title: "Ошибка", message: CauseOfError.mailNotFound.localizedDescription)
                 return
             }
-//            self?.present(SuccessfullyRestored, animated: true, completion: nil)
             self?.view.conclusion(title: "", message: "На вашу почту отправление ссылка для изменения пароля")
         }
     }

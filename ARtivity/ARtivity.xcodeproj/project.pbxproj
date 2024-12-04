@@ -76,7 +76,6 @@
 		A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */; };
 		A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */; };
 		A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */; };
-		A5F30EDB2B35E2DA00241D40 /* MapViewControllerYa.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */; };
 		A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -136,7 +135,6 @@
 		A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
-		A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerYa.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.release.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.release.xcconfig"; sourceTree = "<group>"; };
 		F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARtivity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -275,7 +273,6 @@
 			isa = PBXGroup;
 			children = (
 				A508C6572CFF5D3A007E527D /* MapViewController.swift */,
-				A5F30EDA2B35E2DA00241D40 /* MapViewControllerYa.swift */,
 				A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */,
 			);
 			path = Map;
@@ -540,7 +537,6 @@
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
 				A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */,
-				A5F30EDB2B35E2DA00241D40 /* MapViewControllerYa.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
 				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
 				A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */,
