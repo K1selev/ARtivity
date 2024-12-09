@@ -17,8 +17,11 @@ import MapKit
 class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
 
-    var post: EventsModel?
-    var postDetail: EventDetails?
+//    var post: EventsModel?
+//    var postDetail: EventDetails?
+    
+    var event: EventDetailsTest?
+    
     var pointInf = [PointDetail]()
 
     var topView = AppHeaderView()
@@ -106,27 +109,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.delegate = self
-        getPostDetails { posts in
-        }
+//        getPostDetails { posts in
+//        }
+        setupDataInf()
         getPoints()
     }
     
     private func setupMap(latitude: Double, longitude: Double) {
-
-//        mapView.mapWindow.map.move(
-//            with: YMKCameraPosition(
-//                target: YMKPoint(latitude: latitude,
-//                                 longitude: longitude),
-//                zoom: 12,
-//                azimuth: 0,
-//                tilt: 0
-//            ),
-//            animation: YMKAnimation(type: YMKAnimationType.linear, duration: 0),
-//            cameraCallback: nil)
-//        mapView.mapWindow.map.logo.setAlignmentWith(YMKLogoAlignment(
-//            horizontalAlignment: .left,
-//            verticalAlignment: YMKLogoVerticalAlignment.bottom)
-//        )
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 //        currentMapLocation = location
 //        currentZoom = 1 / pow(2, 1)
@@ -134,26 +123,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         mapView.setRegion(newRegion, animated: true)
     }
     
-    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
-
-        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
-        
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPost = EventDetails()
-
-            let lastPost = self.postDetail
-                if let childSnapshot = snapshot as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = EventDetails.parse(childSnapshot.key, data)
-//                   childSnapshot.key != lastPost?.eventId
-                {
-                    self.postDetail = post
-                    self.setupDataInf()
-                }
-        })
-    }
-
-
     private func setupUI() {
         view.backgroundColor = UIColor(named: "appBackground")
         imageViewPost.backgroundColor = .systemGray5
@@ -457,7 +426,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
 
     func setupNoDataInf() {
-//        ratingText.text = ""
         ratingImg.image = UIImage(named: "starIcon")
         languageImage.image = UIImage(named: "globeIcone")
         ARImage.image = UIImage(named: "cameraIcon")
@@ -506,13 +474,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
     
     func setupDataInf() {
-        if postDetail?.eventLanguage == "rus" {
+        if event?.eventLanguage == "rus" {
             languageText.text = "Русский язык экскурсии"
         }
-        if postDetail?.eventAR == true {
+        if event?.eventAR == true {
             ARText.text = "Ориентируйся с помощью дополненной реальности"
         }
-        descriptionText.text = postDetail?.description
+        descriptionText.text = event?.description
         
         let width = 300.0
         let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
@@ -525,29 +493,36 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             setupPointView3()
         }
         
-        for images in postDetail?.eventPhotos ?? [] {
+        for images in event?.eventPhotos ?? [] {
             if images != "" {
                 let imagesUrl =  URL(string: (images))
                 ImageService.getImage(withURL: imagesUrl!) { image, url in
                     if imagesUrl?.absoluteString == url.absoluteString {
                         self.imageArray.append(image)
+//                        self.setupCollectionView()
                     }
                 }
             }
         }
-        self.setupCollectionView()
+        if imageArray.count == event?.eventPhotos?.count {
+            self.setupCollectionView()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.setupCollectionView()
+            }
+        }
         
         self.makeConstraints(height: height)
     }
     
     func setupPointView1() {
         
-        let ref = Database.database().reference().child("points").child(postDetail?.eventPoints?.first ?? "0")
+        let ref = Database.database().reference().child("points").child(event?.eventPoints?.first ?? "0")
         
         ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
             var tempPost = PointDetail()
 
-            let lastPost = self.postDetail
+            let lastPost = self.event
                 if let childSnapshot = snapshot as? DataSnapshot,
                    let data = childSnapshot.value as? [String: Any],
                    let point = PointDetail.parse(childSnapshot.key, data)
@@ -617,18 +592,18 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     
     func setupPointView3() {
         
-        let ref = Database.database().reference().child("points").child(postDetail?.eventPoints?.last ?? "0")
+        let ref = Database.database().reference().child("points").child(event?.eventPoints?.last ?? "0")
         
         ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
             var tempPost = PointDetail()
 
-            let lastPost = self.postDetail
+            let lastPost = self.event
                 if let childSnapshot = snapshot as? DataSnapshot,
                    let data = childSnapshot.value as? [String: Any],
                    let point = PointDetail.parse(childSnapshot.key, data)
                 {
                     
-                    self.pointNumber3.text = "\(self.postDetail?.eventPoints?.count ?? 3)"
+                    self.pointNumber3.text = "\(self.event?.eventPoints?.count ?? 3)"
                     self.pointName3.text = point.name
                     self.pointDescription3.text = point.address
                 }
@@ -661,8 +636,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     //MARK: кринжанул
     
     func loadImageView() {
-        guard let img = post?.eventImage else { return }
-        if let imageUrlTemp = post?.eventImage {
+        guard let img = event?.eventImage else { return }
+        if let imageUrlTemp = event?.eventImage {
             if imageUrlTemp != "" {
                 let imagesUrl =  URL(string: (imageUrlTemp))
 //
@@ -679,12 +654,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                 self.imageViewPost.image = UIImage(systemName: "photo")
             }
         }
+//        setupCollectionView()
     }
 
     func setupData() {
-        ratingText.text = "\(post?.eventRating ?? 0.0)"
-        eventName.text = post?.eventName
-        if let distance = post?.eventDistance {
+        ratingText.text = "\(event?.eventRating ?? 0.0)"
+        eventName.text = event?.eventName
+        if let distance = event?.eventDistance {
             let distanceText: String
             if distance >= 1000 {
                 let distanceDouble = Double(distance)/1000.0
@@ -694,7 +670,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             }
             distanceLabel.text = distanceText
         }
-        if let points = post?.eventPoint {
+        if let points = event?.eventPoints?.count {
             if points == 1 {
                 pointsLabel.text = "\(points) точка"
             } else if points < 5 {
@@ -704,11 +680,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             }
         }
 
-        if let time = post?.eventTime {
-            if time < 60 {
-                timeLabel.text = "\(time) минут"
+        if let time = event?.eventTime {
+            if time / 60 < 60 {
+                timeLabel.text = "\(time / 60) минут"
             } else {
-                timeLabel.text = "\(time/60) часа"
+                timeLabel.text = "\(time/3600) часа"
             }
         }
 
@@ -725,7 +701,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                    let data = childSnapshot.value as? [String: Any],
                    let post = PointDetail.parse(childSnapshot.key, data) {
                     let pointId = childSnapshot.key
-                    guard let pointDetail = self.postDetail?.eventPoints else { return }
+                    guard let pointDetail = self.event?.eventPoints else { return }
                     for item in pointDetail {
                         if item == pointId {
                             tempPoint.insert(post, at: 0)
@@ -780,6 +756,12 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             self.mapView.addOverlay(route.polyline, level: .aboveRoads)
             let routeRect = route.polyline.boundingMapRect
             self.mapView.setRegion(MKCoordinateRegion(routeRect), animated: true)
+            
+            let distanceInMeters = route.distance
+            print("Route distance: \(distanceInMeters) meters")
+            
+            let travelTimeInSeconds = route.expectedTravelTime
+            print("Route expected travel time: \(travelTimeInSeconds) seconds")
         }
     }
 
@@ -811,7 +793,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return post?.eventPoint ?? 1
+            return event?.eventPoints?.count ?? 1
         case 1:
             return 0
         default:
@@ -842,7 +824,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         let vc = PointViewController()
         vc.pointInf = point
         vc.pointInfo = pointInf
-        vc.post = post
+        vc.post = event
         vc.postItem = indexPath.row
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
@@ -862,7 +844,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                 let vc = PointViewController()
                 vc.pointInf = point
                 vc.pointInfo = pointInf
-                vc.post = post
+                vc.post = event
                 vc.postItem = 0
                 vc.modalPresentationStyle = .fullScreen
                 present(vc, animated: true)

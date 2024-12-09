@@ -77,17 +77,22 @@ class CustomTextFieldCreate: UITextField, UITextFieldDelegate {
     
     private var placeholderText = String()
     private var bgColor = UIColor()
+    private var nameText = String()
     var borderColor = UIColor.gray.cgColor
     
-    convenience init(placeholderText: String, color: UIColor) {
+    convenience init(placeholderText: String, color: UIColor, nameText: String) {
         self.init()
         self.placeholderText = placeholderText
         self.bgColor = color
+        self.nameText = nameText
         entryField()
     }
     
     private func entryField() {
         self.textColor = .black
+        if nameText != "" {
+            self.text = nameText
+        }
         self.attributedPlaceholder = NSAttributedString(
             string: placeholderText,
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray,

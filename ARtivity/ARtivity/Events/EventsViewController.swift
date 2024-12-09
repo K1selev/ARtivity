@@ -35,12 +35,12 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var hasFetched = false
     var tableView: UITableView!
     var cellHeights: [IndexPath: CGFloat] = [:]
-    var posts = [EventsModel]()
+    var event = [EventDetailsTest]()
     let nothingLabel = UILabel()
     var fetchingMore = false
     var endReached = false
     let leadingScreensForBatching: CGFloat = 3.0
-    var refreshControl: UIRefreshControl!
+//    var refreshControl: UIRefreshControl!
     private let buttonNewPost = UIButton()
     var lastUploadedPostID: String?
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -49,12 +49,12 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let buttonCreatePost = UIButton()
     
     var postsRef: DatabaseReference {
-        return Database.database().reference().child("events")
+        return Database.database().reference().child("event")
     }
 
     var oldPostsQuery: DatabaseQuery {
         var queryRef: DatabaseQuery
-        let lastPost = posts.last
+        let lastPost = event.last
         if lastPost != nil {
             let lastTimestamp = (lastPost!.eventTimestamp?.timeIntervalSince1970)! * 1000
             queryRef = postsRef.queryOrdered(byChild: "eventTimestamp").queryEnding(atValue: lastTimestamp)
@@ -66,7 +66,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     var newPostsQuery: DatabaseQuery {
         var queryRef: DatabaseQuery
-        let firstPost = posts.first
+        let firstPost = event.first
         if firstPost != nil {
             let firstTimestamp = (firstPost!.eventTimestamp?.timeIntervalSince1970 ?? 0) * 1000
             queryRef = postsRef.queryOrdered(byChild: "eventTimestamp").queryStarting(atValue: firstTimestamp)
@@ -178,9 +178,9 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         buttonNewPost.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
 
-        refreshControl = UIRefreshControl()
-        tableView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+//        refreshControl = UIRefreshControl()
+//        tableView.refreshControl = refreshControl
+//        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
 
         buttonNewPost.backgroundColor = .orange
         buttonNewPost.setTitle("new post", for: .normal)
@@ -379,19 +379,19 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        })
 //        posts.removeAll()
         beginBatchFetch()
-        self.refreshControl.endRefreshing()
+//        self.refreshControl.endRefreshing()
     }
 
-    func fetchPosts(completion: @escaping (_ posts: [EventsModel]) -> Void) {
+    func fetchPosts(completion: @escaping (_ postsTest: [EventDetailsTest]) -> Void) {
 
         oldPostsQuery.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPosts = [EventsModel]()
+            var tempPosts = [EventDetailsTest]()
 
-            let lastPost = self.posts.last
+            let lastPost = self.event.last
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
                    let data = childSnapshot.value as? [String: Any],
-                   let post = EventsModel.parse(childSnapshot.key, data),
+                   let post = EventDetailsTest.parse(childSnapshot.key, data),
                    childSnapshot.key != lastPost?.eventId {
 
                     tempPosts.insert(post, at: 0)
@@ -409,7 +409,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return posts.count
+            return event.count
         case 1:
             return fetchingMore ? 1 : 0
         default:
@@ -420,7 +420,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventsTableViewCell", for: indexPath) as! EventsTableViewCell
-            cell.set(post: posts[indexPath.row])
+            cell.set(post: event[indexPath.row])
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell
@@ -430,10 +430,10 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let post = posts[indexPath.row]
+        let post = event[indexPath.row]
         print("SELECTED POST: \(post.eventId ?? "")")
         let vc = EventViewController()
-        vc.post = post
+        vc.event = post
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
@@ -442,7 +442,6 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cellHeights[indexPath] = cell.frame.size.height
         cell.selectionStyle = .none
         cell.backgroundColor = UIColor(named: "appBackground")
-        //        cell.selectedBackgroundView?.backgroundColor = .blue// Asset.backgroungGray.color
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -459,10 +458,10 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func beginBatchFetch() {
         fetchingMore = true
         self.tableView.reloadSections(IndexSet(integer: 1), with: .fade)
-        posts.removeAll()
+        event.removeAll()
         
         fetchPosts { newPosts in
-            self.posts.append(contentsOf: newPosts)
+            self.event.append(contentsOf: newPosts)
             self.fetchingMore = false
             self.endReached = newPosts.isEmpty
             UIView.performWithoutAnimation {
@@ -483,9 +482,9 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         postListenerHandle = newPostsQuery.observe(.childAdded, with: { snapshot in
 
-            if snapshot.key != self.posts.first?.eventId,
+            if snapshot.key != self.event.first?.eventId,
                let data = snapshot.value as? [String: Any],
-               let post = EventsModel.parse(snapshot.key, data) {
+               let post = EventDetailsTest.parse(snapshot.key, data) {
 
                 self.stopListeningForNewPosts()
 
@@ -509,7 +508,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @objc func buttonMapClicked() {
         let vc = MapViewController()
         vc.modalPresentationStyle = .fullScreen
-        vc.posts = posts
+        vc.posts = event
         present(vc, animated: true)
     }
     @objc func buttonProfileClicked() {
@@ -564,47 +563,47 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @objc func filterDistanceLessKMBtnClicked() {
-        posts = posts.filter{ $0.eventDistance ?? 0 < 1000 }
+        event = event.filter{ $0.eventDistance ?? 0 < 1000 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     
     @objc func filterDistanceMoreKMLessThreeKMBtnClicked() {
-        posts = posts.filter{ $0.eventDistance ?? 0 >= 1000 &&  $0.eventDistance ?? 0 <= 3000 }
+        event = event.filter{ $0.eventDistance ?? 0 >= 1000 &&  $0.eventDistance ?? 0 <= 3000 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     
     @objc func filterDistanceMoreThreeKMBtnClicked() {
-        posts = posts.filter{ $0.eventDistance ?? 0 > 3000 }
+        event = event.filter{ $0.eventDistance ?? 0 > 3000 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     
     @objc func filterTimeLessHourBtnClicked() {
-        posts = posts.filter{ $0.eventTime ?? 0 < 60 }
+        event = event.filter{ $0.eventTime ?? 0 < 60 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     @objc func filterTimeMoreHourLessThreeHourBtnClicked() {
-        posts = posts.filter{ $0.eventTime ?? 0 >= 60 &&  $0.eventTime ?? 0 <= 180 }
+        event = event.filter{ $0.eventTime ?? 0 >= 60 &&  $0.eventTime ?? 0 <= 180 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     @objc func filterTimeMoreThreeHourBtnClicked() {
-        posts = posts.filter{ $0.eventTime ?? 0 > 180 }
+        event = event.filter{ $0.eventTime ?? 0 > 180 }
         tableView.reloadData()
         tapTitle()
         filtersView.isHidden = true
     }
     func getFilteredData(searchedText: String = String()) {
-        let filteredListData: [EventsModel] = posts.filter{ $0.eventName!.lowercased().contains(searchedText.lowercased()) }
-        posts = filteredListData
+        let filteredListData: [EventDetailsTest] = event.filter{ $0.eventName!.lowercased().contains(searchedText.lowercased()) }
+        event = filteredListData
         tableView.reloadData()
     }
     

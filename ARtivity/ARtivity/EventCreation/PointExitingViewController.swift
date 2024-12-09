@@ -10,8 +10,8 @@ import PhotosUI
 class PointExitingViewController: UIViewController {
     
     
-    var post: EventsModel? = nil
-    var postDetail: EventDetails?
+//    var post: EventsModel? = nil
+//    var postDetail: EventDetails?
     var pointInf = [PointDetail]()
     var filterName = String()
     var pointsArrayEvent = [String]()
@@ -28,6 +28,10 @@ class PointExitingViewController: UIViewController {
     private var searchBar: UISearchBar!
     
     let ref = Database.database().reference()
+    
+    var imagesEvent: [UIImage] = []
+    var nameEvent: String?
+    var descrEvent: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,24 +64,6 @@ class PointExitingViewController: UIViewController {
         makeConstraints()
     }
     
-    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
-        
-        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
-        
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPost = EventDetails()
-            
-            let lastPost = self.postDetail
-            if let childSnapshot = snapshot as? DataSnapshot,
-               let data = childSnapshot.value as? [String: Any],
-               let post = EventDetails.parse(childSnapshot.key, data)
-            {
-                self.postDetail = post
-            }
-        })
-    }
-    
-    
     private func setupUI() {
         view.backgroundColor = UIColor(named: "appBackground")
         
@@ -104,7 +90,7 @@ class PointExitingViewController: UIViewController {
         tableView.separatorStyle = .none
         self.tableView.keyboardDismissMode = .onDrag
         
-        setupData()
+//        setupData()
         setupNoDataInf()
     }
     
@@ -150,10 +136,6 @@ class PointExitingViewController: UIViewController {
         createPoint.addTarget(self, action: #selector(self.createPointButtonPressed), for: .touchUpInside)
     }
     
-    func setupData() {
-        pointName.text = post?.eventName
-    }
-    
     func getPoints() {
         
         let ref = Database.database().reference().child("points")
@@ -185,19 +167,18 @@ class PointExitingViewController: UIViewController {
     
     @objc func buttonBackClicked() {
         let vc = EventCreationViewController()
+        vc.images = imagesEvent
+        vc.eventNameT = nameEvent
+        vc.commentTextView.text = descrEvent
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: 700)
-//    }
-    
     @objc func createPointButtonPressed() {
-        let vc = EventCreationViewController()
-        vc.pointsArrayEvent = pointsArrayEvent
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+//        let vc = EventCreationViewController()
+//        vc.pointsArrayEvent = pointsArrayEvent
+//        vc.modalPresentationStyle = .fullScreen
+//        self.present(vc, animated: true)
     }
     
     func getFilteredData(searchedText: String = String()) {
@@ -246,6 +227,9 @@ extension PointExitingViewController: UITableViewDelegate, UITableViewDataSource
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = EventCreationViewController()
+        vc.images = imagesEvent
+        vc.eventNameT = nameEvent
+        vc.commentTextView.text = descrEvent
         pointsArrayEvent.append(pointInf[indexPath.row].id!)
         vc.pointsArrayEvent = pointsArrayEvent
         vc.modalPresentationStyle = .fullScreen
