@@ -18,7 +18,9 @@ class MapViewController: UIViewController {
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     let zoomInButton = MapButton(icon: UIImage(named: "plusIcon")!)
     let zoomOutButton = MapButton(icon: UIImage(named: "minusIcon")!)
-    var posts = [EventsModel]()
+    
+    var posts = [EventDetailsTest]()
+    
     var currentZoom: Double = 0.05
     var currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 55.7602196, longitude: 37.6186409)
     
@@ -49,31 +51,15 @@ class MapViewController: UIViewController {
         view.backgroundColor = UIColor(named: "appBackground")
     }
     
-//    func getPoints() {
-//            let ref = Database.database().reference().child("points")
-//            ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-//                var tempPoint = [PointDetail]()
-//                for child in snapshot.children {
-//                    if let childSnapshot = child as? DataSnapshot,
-//                       let data = childSnapshot.value as? [String: Any],
-//                       let post = PointDetail.parse(childSnapshot.key, data) {
-//                        if post.isFirstPoint ?? false {
-//                            let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-//                            self.addAnnotation(location: currentMapLocation)
-//                        }
-//                    }
-//                }
-//            })
-//        }
     
     func getPoints() {
-            let ref = Database.database().reference().child("eventDetails")
+            let ref = Database.database().reference().child("event")
             ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-                var tempPoint = [EventDetails]()
+                var tempPoint = [EventDetailsTest]()
                 for child in snapshot.children {
                     if let childSnapshot = child as? DataSnapshot,
                        let data = childSnapshot.value as? [String: Any],
-                       let post = EventDetails.parse(childSnapshot.key, data) {
+                       let post = EventDetailsTest.parse(childSnapshot.key, data) {
                         let refPoint = Database.database().reference().child("points").child(post.eventPoints?.first ?? "0")
                         refPoint.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
                             var tempPoint = PointDetail()

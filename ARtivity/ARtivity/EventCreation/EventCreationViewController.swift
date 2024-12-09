@@ -18,11 +18,13 @@ import MapKit
 class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
 
-    var post: EventsModel? = nil
-    var postDetail: EventDetails?
+//    var post: EventsModel? = nil
+//    var postDetail: EventDetails?
     var pointsArrayEvent = [String]()
     var pointInf = [PointDetail]()
     var tableViewHeight = 0
+    var eventTime = 0
+    var eventDist = 0
 
     var topView = AppHeaderView()
     var tableView: UITableView!
@@ -38,6 +40,10 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    
+    var eventNameT: String?
+    
+    let activityIndicator = UIActivityIndicatorView()
     
     let mapView: MKMapView = {
         let mapView = MKMapView()
@@ -66,7 +72,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         return textView
     }()
     
-    private var images: [UIImage] = [] {
+    var images: [UIImage] = [] {
         didSet {
             if images.isEmpty {
                 addImagesLabel.isHidden = false
@@ -132,25 +138,50 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         return sv
     }()
     
+    lazy var eventNameTextView = CustomTextFieldCreate()
     
-    lazy var eventNameTextView: UITextView = {
-        let textView = UITextView()
-        textView.backgroundColor = UIColor.white
-        textView.text = "Название экскурсии"
-        textView.textColor = UIColor.gray
-        textView.textContainerInset = UIEdgeInsets(top: 14, left: 9, bottom: 14, right: 12)
-        textView.layer.cornerRadius = 12
-        textView.layer.borderColor = UIColor.lightGray.cgColor
-        textView.layer.borderWidth = 1
-        textView.autocorrectionType = .no
-        textView.spellCheckingType = .no
-        textView.isScrollEnabled = false
-
-        textView.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.width.equalTo(UIScreen.main.bounds.width - 68)
-        }
-        return textView
+    
+    private let customAlertLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Успешно добавлено"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 30)
+        return label
+    }()
+    private let customAlert: UIView = {
+        let customAlertView = UIView()
+        customAlertView.backgroundColor = UIColor(named: "mainGreen")
+        customAlertView.layer.cornerRadius = 30
+        return customAlertView
+    }()
+    
+    private let customAlertLabelError: UILabel = {
+        let label = UILabel()
+        label.text = "Не добавлено"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 30)
+        return label
+    }()
+    
+    private let customAlertSubLabelError: UILabel = {
+        let label = UILabel()
+        label.text = "Все поля должны быть заполнены"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
+    
+    private let customAlertError: UIView = {
+        let customAlertView = UIView()
+        customAlertView.backgroundColor = .red
+        customAlertView.layer.cornerRadius = 30
+        return customAlertView
     }()
     
     private var createEvent = UIButton()
@@ -167,6 +198,37 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        createEvent.isUserInteractionEnabled = true
+        topView.isUserInteractionEnabled = true
+        
+        self.customAlert.addSubview(customAlertLabel)
+        customAlertLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        self.customAlertError.addSubview(customAlertLabelError)
+        self.customAlertError.addSubview(customAlertSubLabelError)
+        customAlertLabelError.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-15)
+        }
+        customAlertSubLabelError.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(15)
+        }
+        
+        
+        
+        if eventNameT != nil {
+            eventNameTextView = CustomTextFieldCreate(placeholderText: "Название экскурсии",
+                                                      color: .white, nameText: eventNameT ?? "")
+        } else {
+            eventNameTextView = CustomTextFieldCreate(placeholderText: "Название экскурсии",
+                                                      color: .white, nameText: "")
+        }
+        
         self.setupUI()
         setupImagesMenu()
         setupAddPoints()
@@ -192,24 +254,24 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         mapView.setRegion(newRegion, animated: true)
     }
     
-    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
-
-        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
-        
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPost = EventDetails()
-
-            let lastPost = self.postDetail
-                if let childSnapshot = snapshot as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = EventDetails.parse(childSnapshot.key, data)
-//                   childSnapshot.key != lastPost?.eventId
-                {
-                    self.postDetail = post
-                    self.setupDataInf()
-                }
-        })
-    }
+//    func getPostDetails(completion: @escaping (_ posts: EventDetails) -> Void) {
+//
+//        let ref = Database.database().reference().child("eventDetails").child(post?.id ?? "0")
+//        
+//        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+//            var tempPost = EventDetails()
+//
+//            let lastPost = self.postDetail
+//                if let childSnapshot = snapshot as? DataSnapshot,
+//                   let data = childSnapshot.value as? [String: Any],
+//                   let post = EventDetails.parse(childSnapshot.key, data)
+////                   childSnapshot.key != lastPost?.eventId
+//                {
+//                    self.postDetail = post
+//                    self.setupDataInf()
+//                }
+//        })
+//    }
 
 
     private func setupUI() {
@@ -224,11 +286,11 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         mapImage.image = UIImage(named: "mapPreview")
         
         tableView = UITableView(frame: view.bounds, style: .plain)
-        if postDetail == nil {
-            tableView.isHidden = true
-        } else {
-            tableView.isHidden = false
-        }
+//        if postDetail == nil {
+//            tableView.isHidden = true
+//        } else {
+//            tableView.isHidden = false
+//        }
         
         tableView.backgroundColor = UIColor(named: "appBackground")
         tableView.register(EventPointTableViewCell.self, forCellReuseIdentifier: "EventPointTableViewCell")
@@ -252,11 +314,20 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
          mapView].forEach {
             scrollView.addSubview($0)
         }
+        
+        customAlert.isHidden = true
+        customAlert.layer.zPosition = 1000
+        view.addSubview(customAlert)
+        
+        
+        customAlertError.isHidden = true
+        customAlertError.layer.zPosition = 1000
+        view.addSubview(customAlertError)
+        
         scrollView.addSubview(tableView)
         view.addSubview(topView)
         view.addSubview(createEvent)
         
-        setupData()
         setupNoDataInf()
     }
     
@@ -308,6 +379,20 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             make.height.equalTo(20)
         }
         
+        customAlert.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(80)
+        }
+        
+        customAlertError.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(80)
+        }
+        
         tableViewHeight = (pointsArrayEvent.count ?? 0) * 60
         
         tableView.snp.makeConstraints { make in
@@ -318,11 +403,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         }
         
         addPoint.snp.makeConstraints { make in
-//            if self.pointsArray?.isEmpty ?? true {
-//                make.top.equalTo(pointsMainText.snp.bottom).offset(10)
-//            } else {
             make.top.equalTo(tableView.snp.bottom).offset(10)
-//            }
             make.centerX.equalToSuperview()
             make.height.equalTo(20)
         }
@@ -406,30 +487,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
     
     func setupDataInf() {
-        descriptionText.text = postDetail?.description
+//        descriptionText.text = postDetail?.description
         
         let width = 300.0
         let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
-        
-        for images in postDetail?.eventPhotos ?? [] {
-            if images != "" {
-                let imagesUrl =  URL(string: (images))
-                ImageService.getImage(withURL: imagesUrl!) { image, url in
-                    if imagesUrl?.absoluteString == url.absoluteString {
-                        self.imageArray.append(image)
-                    }
-                }
-            }
-        }
-        self.setupCollectionView()
-        
         self.makeConstraints(height: height)
+        self.setupCollectionView()
     }
 
-    func setupData() {
-        eventName.text = post?.eventName
-    }
-    
     private func setupImagesMenu() {
         print(images)
         if images.count < 5 {
@@ -582,6 +647,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             self.mapView.addOverlay(route.polyline, level: .aboveRoads)
             let routeRect = route.polyline.boundingMapRect
             self.mapView.setRegion(MKCoordinateRegion(routeRect), animated: true)
+            
+            let distanceInMeters = route.distance
+            eventDist = Int(route.distance)
+            print("Route distance: \(distanceInMeters) meters")
+            
+            let travelTimeInSeconds = route.expectedTravelTime
+            eventTime = Int(route.expectedTravelTime)
+            print("Route expected travel time: \(travelTimeInSeconds) seconds")
         }
     }
 
@@ -605,10 +678,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     override func viewDidAppear(_ animated: Bool) {
         scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: CGFloat(tableViewHeight + 750))
     }
-    
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 2
-//    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return pointInf.count
@@ -627,10 +696,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cellHeights[indexPath] = cell.frame.size.height
         cell.selectionStyle = .none
-//        cell.backgroundColor =  .systemGray5
-        //        cell.selectedBackgroundView?.backgroundColor = .blue// Asset.backgroungGray.color
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -651,45 +717,108 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
     
     @objc func createEventButtonPressed() {
-//        if pointInf.isEmpty {
-//            print("empty points")
-//        }
-//        if eventNameTextView.text == "Название экскурсии" {
-//            eventNameTextView.layer.borderColor = UIColor.red.cgColor
-//            print("another name")
-//        }
-//        if eventNameTextView.text != "Название экскурсии" {
-//            eventNameTextView.layer.borderColor = UIColor.lightGray.cgColor
-//        }
-//        if commentTextView.text == "Описание экскурсии" {
-//            commentTextView.layer.borderColor = UIColor.red.cgColor
-//            print("another comment")
-//        }
-//        if commentTextView.text != "Описание экскурсии" {
-//            commentTextView.layer.borderColor = UIColor.lightGray.cgColor
-//        }
-//        if !pointInf.isEmpty &&
-//            eventNameTextView.text != "Название экскурсии" &&
-//            commentTextView.text != "Описание экскурсии" {
-//            print(pointInf)
-//            //            if canCreate {
-//            
-//            print("create")
-//            //            }
-//        }
-        
-        print("create")
-        
+        if eventNameTextView.text != "" &&
+            commentTextView.text != "Описание экскурсии" &&
+            pointInf.count >= 2 &&
+            images.count != 0 {
+            self.uploadData()
+            print("create")
+            createEvent.isUserInteractionEnabled = false
+            topView.isUserInteractionEnabled = false
+            activityIndicator.color = .black
+            activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+            createEvent.addSubview(activityIndicator)
+            activityIndicator.snp.makeConstraints { make in
+                make.center.equalToSuperview()
+            }
+            createEvent.setTitle("", for: .normal)
+            activityIndicator.startAnimating()
+        } else {
+            print("not create")
+            customAlertError.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.customAlertError.isHidden = true
+            }
+        }
+    }
+    
+    private func uploadData() {
+        StorageService.shared.uploadPostImages(self.images, imageCategory: "events") { urls in
+            print(urls)
+            var pointsArray = [""]
+            for point in self.pointInf {
+                pointsArray.append(point.id ?? "")
+            }
+            pointsArray.removeFirst()
+            let id = self.randomAlphanumericString(15)
+            let user = Auth.auth().currentUser
+            let author = EventAuthorModel (authorId: user?.uid ?? "smbd", authorName: user?.displayName ?? "smbd")
+            let data = EventDetailsTest(
+                id: id,
+                eventId: id,
+                description: self.commentTextView.text,
+                eventPoints: pointsArray,
+                eventPhotos: urls,
+                eventLanguage: "rus",
+                eventAR: true,
+                eventDistance: self.eventDist,
+                eventImage: urls.first,
+                eventName: self.eventNameTextView.text,
+                eventPointCount: pointsArray.count,
+                eventRating: 0.0,
+                eventTime: self.eventTime,
+                eventTimestamp: Date.now,
+                eventAuthor: author
+            )
+            StorageService.shared.createNewEvent(data: data) { success in
+                print(success)
+                self.pointsArrayEvent.append(success)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    self.customAlert.isHidden = true
+                    let vc = EventsViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.removeFromSuperview()
+                self.createEvent.setTitle("Сохранить экскурсию", for: .normal)
+            }
+            print(id)
+            self.customAlert.isHidden = false
+//            self.images.removeAll()
+//            self.pointNameTextView.text = ""
+//            self.addressText.text = "Добавьте адрес"
+//            self.commentTextView.text = "Описание точки"
+//            self.addressTextLatitude = nil
+//            self.addressTextLongitude = nil
+//            self.mapView.removeAnnotations(self.mapView.annotations)
+//            self.activityIndicator.startAnimating()
+//            self.activityIndicator.removeFromSuperview()
+//            self.createPoint.setTitle("Добавить точку", for: .normal)
+        }
+    }
+    
+    private func randomAlphanumericString(_ length: Int) -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let randomString = (0..<length).map { _ in String(letters.randomElement()!) }.reduce("", +)
+        return randomString
     }
     
     @objc func addButtonPressed() {
         let vc = PointCreationViewController()
+        vc.imagesEvent = images
+        vc.nameEvent = eventNameTextView.text
+        vc.descrEvent = commentTextView.text
+        vc.pointsArrayEvent = pointsArrayEvent
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
     
     @objc func addExistingButtonPressed() {
         let vc = PointExitingViewController()
+        vc.imagesEvent = images
+        vc.nameEvent = eventNameTextView.text
+        vc.descrEvent = commentTextView.text
         vc.pointsArrayEvent = pointsArrayEvent
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)

@@ -20,7 +20,7 @@ class EventsTableViewCell: UITableViewCell {
     private var eventImageView = UIImageView()
     private var eventRaiting = UILabel()
 
-    var post: EventsModel?
+    var post: EventDetailsTest?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -102,7 +102,7 @@ class EventsTableViewCell: UITableViewCell {
             make.height.equalTo(26)
         }
     }
-    func set(post: EventsModel) {
+    func set(post: EventDetailsTest) {
         self.post = post
         if let imageUrlTemp = post.eventImage {
             if imageUrlTemp != "" {
@@ -137,7 +137,7 @@ class EventsTableViewCell: UITableViewCell {
         distanceLabel.layer.masksToBounds = true
         distanceLabel.textColor = .white
         
-        if let points = post.eventPoint {
+        if let points = post.eventPoints?.count {
             if points == 1 {
                 pointsLabel.text = "  \(points) точка  "
             } else if points < 5 {
@@ -152,10 +152,10 @@ class EventsTableViewCell: UITableViewCell {
         pointsLabel.textColor = .white
         
         if let time = post.eventTime {
-            if time < 60 {
-                timeLabel.text = "  \(time) минут  "
+            if time / 60 < 60 {
+                timeLabel.text = "  \(time / 60) минут  "
             } else {
-                timeLabel.text = "  \(time/60) часа  "
+                timeLabel.text = "  \(time/3600) часа  "
             }
         }
         timeLabel.backgroundColor = .systemGray3

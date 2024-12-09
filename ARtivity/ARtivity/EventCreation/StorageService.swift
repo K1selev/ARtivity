@@ -51,12 +51,26 @@ class StorageService {
         }
     }
     
-    func createNewPoint(data: PointDetail, completion: @escaping (_ success: Bool) -> Void) {
+    func createNewPoint(data: PointDetail, completion: @escaping (_ id: String) -> Void) {
         let adRef = databaseReference.child("points").childByAutoId()
         adRef.setValue(data.representation) { (error, _) in
             if let error = error {
-                completion(false)
+                completion("false")
                 print("Error: \(error.localizedDescription)")
+            } else {
+                completion(adRef.key ?? "no")
+            }
+        }
+    }
+    
+    func createNewEvent(data: EventDetailsTest, completion: @escaping (_ id: String) -> Void) {
+        let adRef = databaseReference.child("event").childByAutoId()
+        adRef.setValue(data.representation) { (error, _) in
+            if let error = error {
+                completion("false")
+                print("Error: \(error.localizedDescription)")
+            } else {
+                completion(adRef.key ?? "no")
             }
         }
     }

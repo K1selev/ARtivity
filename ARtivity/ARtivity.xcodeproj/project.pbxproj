@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */; };
 		A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A508C6572CFF5D3A007E527D /* MapViewController.swift */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
@@ -45,7 +44,6 @@
 		A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB52B2276A900E40ABE /* LoadingCell.swift */; };
 		A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BB92B230CC900E40ABE /* DatabaseManager.swift */; };
 		A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5327BBB2B2312CD00E40ABE /* ImageService.swift */; };
-		A543C8B92C29E2D400B1CD49 /* YBaseMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */; };
 		A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */; };
 		A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */; };
 		A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5478E2F2CEF5FD5003D479B /* StorageService.swift */; };
@@ -79,7 +77,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.debug.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.debug.xcconfig"; sourceTree = "<group>"; };
 		A508C6572CFF5D3A007E527D /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
@@ -117,7 +114,6 @@
 		A5327BB52B2276A900E40ABE /* LoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCell.swift; sourceTree = "<group>"; };
 		A5327BB92B230CC900E40ABE /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		A5327BBB2B2312CD00E40ABE /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
-		A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YBaseMapView.swift; sourceTree = "<group>"; };
 		A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extention.swift"; sourceTree = "<group>"; };
 		A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChipsFilterButton.swift; sourceTree = "<group>"; };
 		A5478E2F2CEF5FD5003D479B /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -134,8 +130,6 @@
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
-		DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARtivity.release.xcconfig"; path = "Target Support Files/Pods-ARtivity/Pods-ARtivity.release.xcconfig"; sourceTree = "<group>"; };
-		F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARtivity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,7 +153,6 @@
 				A53248822B159D10008AD9DF /* SnapKit in Frameworks */,
 				A5D2EEE82B173BEF00B0151A /* FirebaseFirestore in Frameworks */,
 				A52F12172CAEF2F800C3274B /* Reusable in Frameworks */,
-				13752DFEEB3E5A4B2023C453 /* Pods_ARtivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,18 +162,8 @@
 		6BA279DFA48BA693F71D30E9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */,
-				DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		73575B4A29F6EE080D592FD6 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F927A3E9ECFA246D3E1DA578 /* Pods_ARtivity.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A52F11F42CAE886E00C3274B /* EventCreation */ = {
@@ -203,7 +186,6 @@
 				A53248692B159A82008AD9DF /* ARtivity */,
 				A53248682B159A82008AD9DF /* Products */,
 				6BA279DFA48BA693F71D30E9 /* Pods */,
-				73575B4A29F6EE080D592FD6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -270,7 +252,6 @@
 			isa = PBXGroup;
 			children = (
 				A508C6572CFF5D3A007E527D /* MapViewController.swift */,
-				A543C8B82C29E2D400B1CD49 /* YBaseMapView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -356,11 +337,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A532487B2B159A83008AD9DF /* Build configuration list for PBXNativeTarget "ARtivity" */;
 			buildPhases = (
-				ECAF64656A59B2126CEE79F5 /* [CP] Check Pods Manifest.lock */,
 				A53248632B159A82008AD9DF /* Sources */,
 				A53248642B159A82008AD9DF /* Frameworks */,
 				A53248652B159A82008AD9DF /* Resources */,
-				F3EBC92C89625FFD9BF9C3A6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -441,48 +420,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		ECAF64656A59B2126CEE79F5 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ARtivity-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F3EBC92C89625FFD9BF9C3A6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ARtivity/Pods-ARtivity-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		A53248632B159A82008AD9DF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -504,7 +441,6 @@
 				A532486F2B159A82008AD9DF /* ViewController.swift in Sources */,
 				A532486B2B159A82008AD9DF /* AppDelegate.swift in Sources */,
 				A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */,
-				A543C8B92C29E2D400B1CD49 /* YBaseMapView.swift in Sources */,
 				A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */,
 				A5327BB12B22604900E40ABE /* DatabaseRepresentation.swift in Sources */,
 				A5D2EF002B17997400B0151A /* UserProfile.swift in Sources */,
@@ -677,7 +613,6 @@
 		};
 		A532487C2B159A83008AD9DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0AEFC540279C3BE39C31A998 /* Pods-ARtivity.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -706,7 +641,6 @@
 		};
 		A532487D2B159A83008AD9DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DAA8EF7B7992FA62CF8B24B0 /* Pods-ARtivity.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

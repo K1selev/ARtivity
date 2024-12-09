@@ -17,10 +17,8 @@ import MapKit
 
 class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
-
-    var post: EventsModel? = nil
-    var postDetail: EventDetails?
     var pointInf = [PointDetail]()
+    var pointsArrayEvent = [String]()
 
     var topView = AppHeaderView()
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -176,6 +174,10 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     }()
 
     let ref = Database.database().reference()
+    
+    var imagesEvent: [UIImage] = []
+    var nameEvent: String?
+    var descrEvent: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -187,7 +189,7 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         }
         
         pointNameTextView = CustomTextFieldCreate(placeholderText: "Название точки",
-                                     color: .white)
+                                                  color: .white, nameText: "")
         self.setupUI()
         setupImagesMenu()
        
@@ -201,8 +203,8 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.delegate = self
-        getPoints()
-        setupDataInf()
+//        getPoints()
+//        setupDataInf()
     }
     
     private func randomAlphanumericString(_ length: Int) -> String {
@@ -252,9 +254,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(customAlert)
         view.addSubview(topView)
         view.addSubview(createPoint)
-        
-        setupData()
+        self.setupCollectionView()
         setupNoDataInf()
+        let width = 300.0
+        let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
+        self.makeConstraints(height: height)
     }
     
     private func setupCollectionView() {
@@ -394,31 +398,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         createPoint.addTarget(self, action: #selector(self.createPointButtonPressed), for: .touchUpInside)
     }
     
-    func setupDataInf() {
-        descriptionText.text = postDetail?.description
-        
-        let width = 300.0
-        let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
-        
-        for images in postDetail?.eventPhotos ?? [] {
-            if images != "" {
-                let imagesUrl =  URL(string: (images))
-                ImageService.getImage(withURL: imagesUrl!) { image, url in
-                    if imagesUrl?.absoluteString == url.absoluteString {
-                        self.imageArray.append(image)
-                    }
-                }
-            }
-        }
-        self.setupCollectionView()
-        
-        self.makeConstraints(height: height)
-    }
-
-    func setupData() {
-        pointName.text = post?.eventName
-    }
-    
     private func setupImagesMenu() {
         print(images)
         if images.count < 5 {
@@ -512,39 +491,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         
     }
     
-    func getPoints() {
-
-        let ref = Database.database().reference().child("points")
-        
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPoint = [PointDetail]()
-            for child in snapshot.children {
-                if let childSnapshot = child as? DataSnapshot,
-                   let data = childSnapshot.value as? [String: Any],
-                   let post = PointDetail.parse(childSnapshot.key, data) {
-                    let pointId = childSnapshot.key
-                    guard let pointDetail = self.postDetail?.eventPoints else { return }
-                    for item in pointDetail {
-                        if item == pointId {
-                            tempPoint.insert(post, at: 0)
-                            self.pointInf.append(post)
-                            if self.isLogin {
-                                self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                if post.isFirstPoint ?? false {
-                                    self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-                                }
-                            } else {
-                                if post.isFirstPoint ?? false {
-                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
-    }
-
     @objc func buttonProfileClicked()
     {
         if isLogin {
@@ -559,6 +505,9 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     
     @objc func buttonBackClicked() {
         let vc = EventCreationViewController()
+        vc.images = imagesEvent
+        vc.eventNameT = nameEvent
+        vc.commentTextView.text = descrEvent
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
@@ -571,16 +520,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         return 2
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return post?.eventPoint ?? 1
-        case 1:
-            return 0
-        default:
-            return 0
-        }
-    }
     
     @objc func createPointButtonPressed() {
         
@@ -593,7 +532,6 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             print("create")
             activityIndicator.color = .black
             activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-            
             createPoint.addSubview(activityIndicator)
             activityIndicator.snp.makeConstraints { make in
                 make.center.equalToSuperview()
@@ -618,12 +556,20 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
                                    urlNet: "")
             StorageService.shared.createNewPoint(data: data) { success in
                 print(success)
+                self.pointsArrayEvent.append(success)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    self.customAlert.isHidden = true
+                    let vc = EventCreationViewController()
+                    vc.images = self.imagesEvent
+                    vc.eventNameT = self.nameEvent
+                    vc.commentTextView.text = self.descrEvent
+                    vc.pointsArrayEvent = self.pointsArrayEvent
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
             }
             print(id)
             self.customAlert.isHidden = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                self.customAlert.isHidden = true
-            }
             self.images.removeAll()
             self.pointNameTextView.text = ""
             self.addressText.text = "Добавьте адрес"

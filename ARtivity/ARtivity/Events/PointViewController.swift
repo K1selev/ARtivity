@@ -15,7 +15,7 @@ import MapKit
 class PointViewController: UIViewController, UIScrollViewDelegate{
     
     var pointInf: PointDetail?
-    var post: EventsModel?
+    var post: EventDetailsTest? //EventsModel?
     var postItem: Int?
     var pointInfo: [PointDetail]?
     
@@ -281,7 +281,14 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
                 }
             }
         }
-        self.setupCollectionView()
+        if imageArray.count == pointInf?.photos?.count {
+            self.setupCollectionView()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.setupCollectionView()
+            }
+        }
+//        self.setupCollectionView()
     }
     
     
@@ -319,7 +326,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     @objc func buttonBackClicked() {
         if postItem ?? 0 == 0 {
             let vc = EventViewController()
-            vc.post = post
+            vc.event = post
             vc.modalPresentationStyle = .fullScreen
             present(vc, animated: false)
         } else {
@@ -355,7 +362,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     
     @objc func didTapFinishButton() {
         let vc = EventViewController()
-        vc.post = post
+        vc.event = post
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: false)
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 import Firebase
-import YandexMapsMobile
+//import YandexMapsMobile
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,10 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
-        
-        YMKMapKit.setApiKey("d1266444-1b01-4f7c-b574-283d02a68af5")
-        YMKMapKit.setLocale("ru_RU")
-        YMKMapKit.sharedInstance()
+//        
+//        YMKMapKit.setApiKey("d1266444-1b01-4f7c-b574-283d02a68af5")
+//        YMKMapKit.setLocale("ru_RU")
+//        YMKMapKit.sharedInstance()
 //        let authListener = Auth.auth().addStateDidChangeListener { _, user in
 //
 //            if user != nil {
