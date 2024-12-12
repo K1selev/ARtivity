@@ -298,7 +298,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         tableView.dataSource = self
         tableView.reloadData()
         tableView.rowHeight = 60
-        tableView.isEditing = true
+        tableView.isEditing = false
         tableView.isScrollEnabled = false
         
         view.addSubview(scrollView)
@@ -812,6 +812,11 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         vc.pointsArrayEvent = pointsArrayEvent
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
+        
+        
+//        let vc = RecordVC()
+//        vc.modalPresentationStyle = .fullScreen
+//        present(vc, animated: true)
     }
     
     @objc func addExistingButtonPressed() {

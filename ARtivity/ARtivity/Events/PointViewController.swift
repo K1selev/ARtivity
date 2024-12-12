@@ -11,6 +11,7 @@ import Firebase
 import SnapKit
 import CoreLocation
 import MapKit
+import AVFoundation
 
 class PointViewController: UIViewController, UIScrollViewDelegate{
     
@@ -31,6 +32,19 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
     
+    
+    private let playerMainText = UILabel()
+    var player: AVPlayer?
+    var playerItem: AVPlayerItem?
+    var playerObserver: Any?
+    private var isPlaying = false
+
+    // UI элементы
+    private let playPauseButton = UIButton(type: .system)
+    private let progressSlider = UISlider()
+    private let rewindButton = UIButton(type: .system)
+    private let forwardButton = UIButton(type: .system)
+    
     let mapView: MKMapView = {
         let mapView = MKMapView()
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -50,8 +64,8 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         return collectionView
     }()
     
-    private let urlText = UILabel()
-    private let urlMainText = UILabel()
+//    private let urlText = UILabel()
+//    private let urlMainText = UILabel()
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -65,6 +79,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         super.viewDidLoad()
         mapView.delegate = self
         self.setupUI()
+        self.setupAudioPlayer()
         self.setupDataInf()
         self.setupMap(latitude: pointInf?.latitude ?? 0.0, 
                       longitude: pointInf?.longitude ?? 0.0)
@@ -93,17 +108,45 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         
         mapImage.image = UIImage(named: "mapPreview")
         
+        let playImage = UIImage(systemName: "play.fill") // Иконка "Play"
+        playPauseButton.setImage(playImage, for: .normal)
+        playPauseButton.tintColor = .black
+        playPauseButton.addTarget(self, action: #selector(playPauseTapped), for: .touchUpInside)
+        let rewindImage = UIImage(systemName: "gobackward.10")
+        rewindButton.setImage(rewindImage, for: .normal)
+        rewindButton.tintColor = .black
+        rewindButton.addTarget(self, action: #selector(rewindTapped), for: .touchUpInside)
+        let forwardImage = UIImage(systemName: "goforward.10")
+        forwardButton.setImage(forwardImage, for: .normal)
+        forwardButton.tintColor = .black
+        forwardButton.addTarget(self, action: #selector(forwardTapped), for: .touchUpInside)
+        
+        
+        progressSlider.minimumValue = 0
+        progressSlider.maximumValue = 1
+        progressSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+        progressSlider.thumbTintColor = .white // Цвет "ползунка"
+        progressSlider.minimumTrackTintColor = UIColor(named: "mainGreen") // Цвет для области до ползунка
+        progressSlider.maximumTrackTintColor = .lightGray
+        
         //        pointView2.addBlurToView()
         view.addSubview(scrollView)
         [imageViewPost,
          pointName,
          descriptionMainText,
          descriptionText,
+         playerMainText,
+         playPauseButton,
+         rewindButton,
+         forwardButton,
+         progressSlider,
+         
          galeryMainText,
          photoCollectionView,
-         mapView,
-         urlMainText,
-         urlText].forEach {
+         mapView
+//         urlMainText,
+//         urlText
+        ].forEach {
             scrollView.addSubview($0)
         }
         //        view.sendSubviewToBack(scrollView)
@@ -199,8 +242,38 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
             make.trailing.equalToSuperview().offset(-34)
         }
         
-        galeryMainText.snp.makeConstraints { make in
+        playerMainText.snp.makeConstraints { make in
             make.top.equalTo(descriptionText.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.height.equalTo(20)
+        }
+        
+        rewindButton.snp.makeConstraints { make in
+            make.top.equalTo(playerMainText.snp.bottom).offset(15)
+            make.centerX.equalTo(view.snp.centerX).offset(-100)
+            make.width.height.equalTo(50)
+        }
+        
+        playPauseButton.snp.makeConstraints { make in
+            make.top.equalTo(playerMainText.snp.bottom).offset(15)
+            make.centerX.equalTo(view.snp.centerX)
+            make.width.height.equalTo(50)
+        }
+        
+        forwardButton.snp.makeConstraints { make in
+            make.top.equalTo(playerMainText.snp.bottom).offset(15)
+            make.centerX.equalTo(view.snp.centerX).offset(100)
+            make.width.height.equalTo(50)
+        }
+        
+        progressSlider.snp.makeConstraints { make in
+            make.leading.equalTo(view.snp.leading).offset(34)
+            make.trailing.equalTo(view.snp.trailing).offset(-34)
+            make.top.equalTo(playPauseButton.snp.bottom).offset(5)
+        }
+        
+        galeryMainText.snp.makeConstraints { make in
+            make.top.equalTo(progressSlider.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -219,17 +292,17 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
             make.height.equalTo(243)
         }
         
-        urlMainText.snp.makeConstraints { make in
-            make.top.equalTo(mapView.snp.bottom).offset(15)
-            make.leading.equalToSuperview().offset(34)
-            make.height.equalTo(20)
-        }
-        urlText.snp.makeConstraints { make in
-            make.top.equalTo(urlMainText.snp.bottom).offset(5)
-            make.leading.equalToSuperview().offset(34)
-            make.trailing.equalToSuperview().offset(-34)
-            make.height.equalTo(20)
-        }
+//        urlMainText.snp.makeConstraints { make in
+//            make.top.equalTo(mapView.snp.bottom).offset(15)
+//            make.leading.equalToSuperview().offset(34)
+//            make.height.equalTo(20)
+//        }
+//        urlText.snp.makeConstraints { make in
+//            make.top.equalTo(urlMainText.snp.bottom).offset(5)
+//            make.leading.equalToSuperview().offset(34)
+//            make.trailing.equalToSuperview().offset(-34)
+//            make.height.equalTo(20)
+//        }
         
     }
     
@@ -237,14 +310,16 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         
         descriptionMainText.text = "Описание"
         galeryMainText.text = "Фотографии с мест экскурсии"
-        urlMainText.text = "Официальный сайт"
+//        urlMainText.text = "Официальный сайт"
+        playerMainText.text = "Аудиогид"
         
         pointName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         descriptionMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         galeryMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        urlMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        urlText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
+//        urlMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        playerMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+//        urlText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         
         descriptionText.numberOfLines = 0
         
@@ -269,7 +344,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         
         pointName.text = pointInf?.name
         descriptionText.text = pointInf?.description
-        urlText.text = pointInf?.urlNet
+//        urlText.text = pointInf?.urlNet
         
         for images in pointInf?.photos ?? [] {
             if images != "" {
@@ -325,6 +400,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     
     @objc func buttonBackClicked() {
         if postItem ?? 0 == 0 {
+            player?.pause()
             let vc = EventViewController()
             vc.event = post
             vc.modalPresentationStyle = .fullScreen
@@ -343,11 +419,12 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        let heightView = 910 + descriptionText.bounds.size.height
+        let heightView = 950 + descriptionText.bounds.size.height
         scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: heightView)
     }
     
     @objc func didTapGoNextButton() {
+        player?.pause()
         postItem! += 1
         let point = pointInfo?[postItem ?? 0]
         print("SELECTED POINT: \(point?.id ?? "")")
@@ -361,6 +438,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     }
     
     @objc func didTapFinishButton() {
+        player?.pause()
         let vc = EventViewController()
         vc.event = post
         vc.modalPresentationStyle = .fullScreen
@@ -375,6 +453,74 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
         annotation.title = name
         self.mapView.addAnnotation(annotation)
     }
+    
+    func setupAudioPlayer() {
+        // URL аудиофайла (замените ссылкой на ваш файл)
+        guard let url = URL(string: pointInf?.urlNet ?? "") else {
+            print("Неверный URL")
+            return
+        }
+        
+        // Инициализация AVPlayerItem и AVPlayer
+        playerItem = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: playerItem)
+        
+        // Добавление наблюдателя для обновления интерфейса
+        playerObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.01, preferredTimescale: 100), queue: .main) { [weak self] time in
+            let currentTime = CMTimeGetSeconds(time)
+            let duration = CMTimeGetSeconds(self?.playerItem?.duration ?? CMTime.zero)
+            self?.updateSlider(currentTime: currentTime, duration: duration)
+        }
+    }
+
+    @objc func playPauseTapped() {
+        isPlaying.toggle() // Переключение состояния
+        
+        if isPlaying {
+//            let text = "Привет! Это пример синтеза речи на Swift."
+//            // Создание объекта для синтеза речи
+//            let utterance = AVSpeechUtterance(string: text)
+//            // Устанавливаем язык (например, русский)
+//            utterance.voice = AVSpeechSynthesisVoice(language: "ru-RU")
+//            // Устанавливаем скорость речи (0.0 - 1.0)
+//            utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+//            // Устанавливаем громкость (0.0 - 1.0)
+//            utterance.volume = 1.0
+//            // Запуск синтеза речи
+            player?.play()
+            playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal) // Установить иконку Pause
+        } else {
+            player?.pause()
+            playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal) // Установить иконку Play
+        }
+    }
+    
+    @objc func rewindTapped() {
+            guard let player = player else { return }
+            let currentTime = CMTimeGetSeconds(player.currentTime())
+            let newTime = max(currentTime - 10, 0) // Перемотка назад, минимальное время — 0
+            player.seek(to: CMTime(seconds: newTime, preferredTimescale: 1))
+        }
+
+        @objc func forwardTapped() {
+            guard let player = player, let duration = player.currentItem?.duration else { return }
+            let currentTime = CMTimeGetSeconds(player.currentTime())
+            let totalTime = CMTimeGetSeconds(duration)
+            let newTime = min(currentTime + 10, totalTime) // Перемотка вперед, максимальное время — длина трека
+            player.seek(to: CMTime(seconds: newTime, preferredTimescale: 1))
+        }
+    
+    @objc func sliderValueChanged(_ sender: UISlider) {
+        let duration = CMTimeGetSeconds(playerItem?.duration ?? CMTime.zero)
+        let newTime = Double(sender.value) * duration
+        player?.seek(to: CMTime(seconds: newTime, preferredTimescale: 1))
+    }
+
+    func updateSlider(currentTime: Double, duration: Double) {
+        guard duration > 0 else { return }
+        progressSlider.value = Float(currentTime / duration)
+    }
+
 }
 
 
