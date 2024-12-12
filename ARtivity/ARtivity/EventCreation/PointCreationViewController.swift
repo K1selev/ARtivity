@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseStorage
 import Firebase
 import SnapKit
 import CoreLocation
@@ -15,7 +16,7 @@ import AVFoundation
 import PhotosUI
 import MapKit
 
-class PointCreationViewController: UIViewController, UIScrollViewDelegate {
+class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     
     var pointInf = [PointDetail]()
     var pointsArrayEvent = [String]()
@@ -31,6 +32,18 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    
+    var audioRecorder: AVAudioRecorder?
+    var audioPlayer: AVAudioPlayer?
+    var audioFileURL: URL?
+    var displayLink: CADisplayLink?
+    var audioWaveformView = WaveformView()
+    
+    private let recordMainText = UILabel()
+    private let recordButton = UIButton(type: .system)
+    private let playButton = UIButton(type: .system)
+    private let sendButton = UIButton(type: .system)
+//    private let statusLabel = UILabel()
     
     let mapView: MKMapView = {
         let mapView = MKMapView()
@@ -182,6 +195,14 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        AVAudioSession.sharedInstance().requestRecordPermission { [weak self] allowed in
+            if allowed {
+                self?.setupAudioRecorder()
+            } else {
+                print("Permission denied")
+            }
+        }
+        
         mapView.delegate = self
         self.customAlert.addSubview(customAlertLabel)
         customAlertLabel.snp.makeConstraints { make in
@@ -232,6 +253,19 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         topView.rightButton.isHidden = true
         topView.title.isHidden = true
         
+        recordButton.setImage(UIImage(systemName: "mic"), for: .normal)
+        recordButton.addTarget(self, action: #selector(startRecording), for: .touchDown)
+        recordButton.addTarget(self, action: #selector(stopRecording), for: .touchUpInside)
+        recordButton.addTarget(self, action: #selector(stopRecording), for: .touchUpOutside)
+        recordButton.tintColor = .systemGreen
+        
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.addTarget(self, action: #selector(playRecording), for: .touchUpInside)
+        playButton.tintColor = .systemGreen
+        playButton.isEnabled = false
+        
+        audioWaveformView.backgroundColor = .clear
+        
         mapImage.image = UIImage(named: "mapPreview")
         
         view.addSubview(scrollView)
@@ -241,6 +275,10 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
          addressMainText,
          addressText,
          commentStackView,
+         recordMainText,
+         recordButton,
+         playButton,
+         audioWaveformView,
          galeryMainText,
          imagesStackView,
          collectionViewPhotos,
@@ -327,9 +365,35 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
             make.leading.equalToSuperview().offset(34)
         }
         
+        recordMainText.snp.makeConstraints { make in
+            make.top.equalTo(addressText.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.height.equalTo(20)
+        }
+        
+        recordButton.snp.makeConstraints { make in
+            make.top.equalTo(recordMainText.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.width.equalTo(50)
+            make.height.equalTo(50)
+        }
+        
+        playButton.snp.makeConstraints { make in
+            make.centerY.equalTo(recordButton.snp.centerY)
+            make.trailing.equalToSuperview().offset(-34)
+            make.width.height.equalTo(40)
+        }
+        
+        audioWaveformView.snp.makeConstraints { make in
+            make.centerY.equalTo(recordButton.snp.centerY)
+            make.leading.equalTo(recordButton.snp.trailing).offset(15)
+            make.trailing.equalTo(playButton.snp.leading).offset(-15)
+            make.height.equalTo(70)
+        }
+        
 
         galeryMainText.snp.makeConstraints { make in
-            make.top.equalTo(addressText.snp.bottom).offset(15)
+            make.top.equalTo(recordButton.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
         }
@@ -370,6 +434,7 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         
         createMainText.text = "Создание точки"
         descriptionMainText.text = "Описание"
+        recordMainText.text = "Аудиогид"
         galeryMainText.text = "Фотографии точки экскурсии"
         addressMainText.text = "Адрес точки на карте"
         
@@ -379,6 +444,7 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         descriptionText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         addressMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         addressText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
+        recordMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         galeryMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         
         addressText.addTapGestureRecognizer {
@@ -542,45 +608,95 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func uploadData() {
-        StorageService.shared.uploadPostImages(self.images, imageCategory: "points") { urls in
-            print(urls)
-            let id = self.randomAlphanumericString(15)
-            let data = PointDetail(id: id,
-                                   address: self.addressText.text,
-                                   description: self.commentTextView.text,
-                                   isFirstPoint: false,
-                                   latitude: self.addressTextLatitude,
-                                   longitude: self.addressTextLongitude,
-                                   name: self.pointNameTextView.text,
-                                   photos: urls,
-                                   urlNet: "")
-            StorageService.shared.createNewPoint(data: data) { success in
-                print(success)
-                self.pointsArrayEvent.append(success)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    self.customAlert.isHidden = true
-                    let vc = EventCreationViewController()
-                    vc.images = self.imagesEvent
-                    vc.eventNameT = self.nameEvent
-                    vc.commentTextView.text = self.descrEvent
-                    vc.pointsArrayEvent = self.pointsArrayEvent
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+//        guard let audioFileURL = self.audioFileURL else { return }
+//        let timeStamp = Int(NSDate.timeIntervalSinceReferenceDate*1000)
+//        let audioRef = Storage.storage().reference().child("audio/\(timeStamp).m4a")
+//        
+//        audioRef.putFile(from: audioFileURL, metadata: nil) { (metadata, error) in
+//            if let error = error {
+//                print("Error uploading: \(error.localizedDescription)")
+//                return
+//            }
+//            print("Upload successful")
+//            audioRef.downloadURL { (url, error) in
+//                if let error = error {
+//                    print("Error getting download URL: \(error.localizedDescription)")
+//                } else {
+//                    print("Download URL: \(url?.absoluteString ?? "")")
+        guard let audioFileURL = audioFileURL else {
+            print("Audio file URL is nil. Cannot proceed with upload.")
+            return
+        }
+
+        do {
+            let fileData = try Data(contentsOf: audioFileURL)
+            print("Preparing to upload file of size: \(fileData.count) bytes")
+
+            let timeStamp = Int(Date.timeIntervalSinceReferenceDate * 1000)
+            let audioRef = Storage.storage().reference().child("audio/\(timeStamp).m4a")
+
+            audioRef.putData(fileData, metadata: nil) { metadata, error in
+                if let error = error {
+                    print("Error occurred during upload: \(error.localizedDescription)")
+                    return
+                }
+                
+                print("File uploaded successfully to Firebase Storage.")
+                audioRef.downloadURL { url, error in
+                    if let error = error {
+                        print("Error retrieving download URL: \(error.localizedDescription)")
+                    } else if let downloadURL = url {
+                        print("Download URL: \(downloadURL.absoluteString)")
+                    }
+                    StorageService.shared.uploadPostImages(self.images, imageCategory: "points") { urls in
+                        print(urls)
+                        
+                        let storage = Storage.storage()
+                        //            let storageRef = storage.reference()
+                        
+                        let id = self.randomAlphanumericString(15)
+                        let data = PointDetail(id: id,
+                                               address: self.addressText.text,
+                                               description: self.commentTextView.text,
+                                               isFirstPoint: false,
+                                               latitude: self.addressTextLatitude,
+                                               longitude: self.addressTextLongitude,
+                                               name: self.pointNameTextView.text,
+                                               photos: urls,
+                                               urlNet: url?.absoluteString)
+                        StorageService.shared.createNewPoint(data: data) { success in
+                            print(success)
+                            self.pointsArrayEvent.append(success)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                                self.customAlert.isHidden = true
+                                let vc = EventCreationViewController()
+                                vc.images = self.imagesEvent
+                                vc.eventNameT = self.nameEvent
+                                vc.commentTextView.text = self.descrEvent
+                                vc.pointsArrayEvent = self.pointsArrayEvent
+                                vc.modalPresentationStyle = .fullScreen
+                                self.present(vc, animated: true)
+                            }
+                        }
+                        print(id)
+                        self.customAlert.isHidden = false
+                        self.images.removeAll()
+                        self.pointNameTextView.text = ""
+                        self.addressText.text = "Добавьте адрес"
+                        self.commentTextView.text = "Описание точки"
+                        self.addressTextLatitude = nil
+                        self.addressTextLongitude = nil
+                        self.mapView.removeAnnotations(self.mapView.annotations)
+                        self.activityIndicator.startAnimating()
+                        self.activityIndicator.removeFromSuperview()
+                        self.createPoint.setTitle("Добавить точку", for: .normal)
+                    }
                 }
             }
-            print(id)
-            self.customAlert.isHidden = false
-            self.images.removeAll()
-            self.pointNameTextView.text = ""
-            self.addressText.text = "Добавьте адрес"
-            self.commentTextView.text = "Описание точки"
-            self.addressTextLatitude = nil
-            self.addressTextLongitude = nil
-            self.mapView.removeAnnotations(self.mapView.annotations)
-            self.activityIndicator.startAnimating()
-            self.activityIndicator.removeFromSuperview()
-            self.createPoint.setTitle("Добавить точку", for: .normal)
-        }
+            } catch {
+                print("Error reading file data: \(error.localizedDescription)")
+            }
+//        }
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
@@ -615,6 +731,92 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate {
         alertController.addAction(alertCancel)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func setupAudioRecorder() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playAndRecord, mode: .default)
+            try audioSession.setActive(true)
+        } catch {
+            print("Error setting up audio session")
+        }
+        
+        let fileManager = FileManager.default
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        audioFileURL = documentsDirectory.appendingPathComponent("recording.m4a")
+        
+        let settings: [String: Any] = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 44100.0,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFileURL!, settings: settings)
+            audioRecorder?.delegate = self
+            audioRecorder?.isMeteringEnabled = true
+            audioRecorder?.prepareToRecord()
+        } catch {
+            print("Error setting up audio recorder")
+        }
+    }
+    
+    @objc func startRecording() {
+        audioWaveformView.clear()
+        guard let audioRecorder = audioRecorder else { return }
+        if !audioRecorder.isRecording {
+            audioRecorder.record()
+            startUpdatingWaveform()
+            recordButton.setImage(UIImage(systemName: "mic.fill"), for: .normal)
+        }
+    }
+    
+    @objc func stopRecording() {
+        guard let audioRecorder = audioRecorder else { return }
+        if audioRecorder.isRecording {
+            audioRecorder.stop()
+            stopUpdatingWaveform()
+            recordButton.setImage(UIImage(systemName: "mic"), for: .normal)
+            playButton.isEnabled = true
+            sendButton.isEnabled = true
+        }
+    }
+    
+    @objc func playRecording() {
+        guard let audioFileURL = audioFileURL else { return }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: audioFileURL)
+            audioPlayer?.delegate = self
+            audioPlayer?.play()
+            playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+        } catch {
+            print("Error playing audio")
+        }
+    }
+    
+    func startUpdatingWaveform() {
+        displayLink = CADisplayLink(target: self, selector: #selector(updateWaveform))
+        displayLink?.add(to: .main, forMode: .default)
+    }
+    
+    func stopUpdatingWaveform() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+    
+    @objc func updateWaveform() {
+        guard let audioRecorder = audioRecorder, audioRecorder.isRecording else { return }
+        audioRecorder.updateMeters()
+        let power = audioRecorder.averagePower(forChannel: 0)
+        audioWaveformView.addSample(value: power)
+    }
+    
+    // MARK: - AVAudioPlayerDelegate
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
     }
 }
 

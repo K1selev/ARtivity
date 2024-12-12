@@ -73,6 +73,8 @@
 		A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */; };
 		A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */; };
 		A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */; };
+		A5F2E4BD2D08AA00002F00EA /* RecordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */; };
+		A5F2E4BF2D099516002F00EA /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E4BE2D099515002F00EA /* WaveformView.swift */; };
 		A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -129,6 +131,8 @@
 		A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
+		A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordVC.swift; sourceTree = "<group>"; };
+		A5F2E4BE2D099515002F00EA /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,6 +173,7 @@
 		A52F11F42CAE886E00C3274B /* EventCreation */ = {
 			isa = PBXGroup;
 			children = (
+				A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */,
 				A5478E2F2CEF5FD5003D479B /* StorageService.swift */,
 				A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */,
 				A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */,
@@ -293,6 +298,7 @@
 		A5D2EED72B17355700B0151A /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				A5F2E4BE2D099515002F00EA /* WaveformView.swift */,
 				A5D2EED82B17356F00B0151A /* CustomButton.swift */,
 				A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */,
 				A5327BAA2B224E0C00E40ABE /* AppMainHeaderView.swift */,
@@ -458,6 +464,7 @@
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
 				A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */,
 				A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */,
+				A5F2E4BD2D08AA00002F00EA /* RecordVC.swift in Sources */,
 				A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */,
 				A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */,
 				A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */,
@@ -468,6 +475,7 @@
 				A53166AC2B4B44D100A8B64F /* UserInfoHeader.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
+				A5F2E4BF2D099516002F00EA /* WaveformView.swift in Sources */,
 				A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
 				A53166A82B4B44A700A8B64F /* SettingsCell.swift in Sources */,
@@ -626,6 +634,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -654,6 +663,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
