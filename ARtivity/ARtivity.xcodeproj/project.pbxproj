@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -136,6 +136,10 @@
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A5E633DA2D3302D9005813C7 /* Ads */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Ads; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		A53248642B159A82008AD9DF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -205,6 +209,7 @@
 		A53248692B159A82008AD9DF /* ARtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A5E633DA2D3302D9005813C7 /* Ads */,
 				A52F11F42CAE886E00C3274B /* EventCreation */,
 				A543C8BA2C2AB30D00B1CD49 /* Extentions */,
 				A5D2EED72B17355700B0151A /* Custom */,
@@ -350,6 +355,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A5E633DA2D3302D9005813C7 /* Ads */,
 			);
 			name = ARtivity;
 			packageProductDependencies = (

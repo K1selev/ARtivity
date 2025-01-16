@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import CoreLocation
+import CoreImage
 
 class EventsTableViewCell: UITableViewCell {
 
@@ -17,6 +18,7 @@ class EventsTableViewCell: UITableViewCell {
     private var distanceLabel = UILabel()
     private var pointsLabel = UILabel()
     private var eventNameLabel = UILabel()
+    private var eventPayedLabel = UILabel()
     private var eventImageView = UIImageView()
     private var eventRaiting = UILabel()
 
@@ -35,6 +37,13 @@ class EventsTableViewCell: UITableViewCell {
         
         cellView.backgroundColor = UIColor(named: "appCellsBackground")
         cellView.layer.cornerRadius = 8
+        
+        eventPayedLabel.isHidden = true
+        eventPayedLabel.text = "  Платная  "
+        eventPayedLabel.textColor = .white
+        eventPayedLabel.backgroundColor = .red
+        eventPayedLabel.layer.cornerRadius = 10
+        eventPayedLabel.layer.masksToBounds = true
 
         eventImageView.backgroundColor = .systemGray5
         eventImageView.layer.cornerRadius = 16
@@ -46,6 +55,7 @@ class EventsTableViewCell: UITableViewCell {
          distanceLabel,
          pointsLabel,
          eventNameLabel,
+         eventPayedLabel,
          eventImageView,
          eventRaiting
         ].forEach {
@@ -66,8 +76,16 @@ class EventsTableViewCell: UITableViewCell {
         eventNameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.leading.equalToSuperview().offset(20)
+            make.trailing.equalTo(eventPayedLabel).offset(5)
             make.height.equalTo(24)
         }
+        
+        eventPayedLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(24)
+        }
+        
         eventImageView.snp.makeConstraints { make in            make.top.equalTo(eventNameLabel.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
@@ -104,6 +122,9 @@ class EventsTableViewCell: UITableViewCell {
     }
     func set(post: EventDetailsTest) {
         self.post = post
+        if !(post.eventIsFree ?? true) {
+            eventPayedLabel.isHidden = false
+        }
         if let imageUrlTemp = post.eventImage {
             if imageUrlTemp != "" {
                 let imagesUrl =  URL(string: (imageUrlTemp))
@@ -111,7 +132,11 @@ class EventsTableViewCell: UITableViewCell {
                 self.eventImageView.image = nil
                 ImageService.getImage(withURL: imagesUrl!) { image, url in
                     if imagesUrl?.absoluteString == url.absoluteString {
-                        self.eventImageView.image = image
+                        if !(post.eventIsFree ?? true) {
+                            self.eventImageView.image = self.createBlurredImageWithLock(from: image ?? UIImage(systemName: "photo")!)
+                        } else {
+                            self.eventImageView.image = image
+                        }
                         self.eventImageView.clipsToBounds = true
                     } else {
                         print("Not the right image")
@@ -175,5 +200,46 @@ class EventsTableViewCell: UITableViewCell {
         authorLabel.layer.masksToBounds = true
         authorLabel.textColor = .white
     }
+    
+    func createBlurredImageWithLock(from originalImage: UIImage) -> UIImage? {
+        let lockIcon = UIImage(systemName: "lock.fill")?.withTintColor(UIColor(named: "mainGreen")!, renderingMode: .alwaysOriginal) // Иконка замка
+        
+        // 1. Размытие с помощью CIFilter
+        guard let ciImage = CIImage(image: originalImage) else { return nil }
+        let blurFilter = CIFilter(name: "CIGaussianBlur") // Используем явное имя фильтра
+        blurFilter?.setValue(ciImage, forKey: kCIInputImageKey)
+        blurFilter?.setValue(15, forKey: kCIInputRadiusKey) // Радиус размытия
+
+        guard let outputImage = blurFilter?.outputImage else { return nil }
+        
+        // Получение окончательного размытого изображения
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(outputImage, from: ciImage.extent) else { return nil }
+        let blurredImage = UIImage(cgImage: cgImage)
+
+        // 2. Наложение замка
+        let finalSize = originalImage.size
+        UIGraphicsBeginImageContextWithOptions(finalSize, false, 0)
+        
+        // Рисуем размытие
+        blurredImage.draw(in: CGRect(origin: .zero, size: finalSize))
+        
+        // Добавляем замок
+        if let lock = lockIcon {
+            let lockSize = CGSize(width: finalSize.width / 4, height: finalSize.width / 4) // Размер замка
+            let lockOrigin = CGPoint(
+                x: (finalSize.width - lockSize.width) / 2,
+                y: (finalSize.height - lockSize.height) / 2
+            )
+            lock.draw(in: CGRect(origin: lockOrigin, size: lockSize))
+        }
+        
+        // Получаем итоговое изображение
+        let finalImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return finalImage
+    }
+
 }
 
