@@ -24,9 +24,11 @@ class UserService {
                 let email = dict["email"] as? String,
                 let phone = dict["phone"] as? String,
                 let isMaker = dict["isMaker"] as? Bool,
+               let completedEvent = dict["completedEvent"] as? [String],
+               let userEvents = dict["userEvents"] as? [String],
                 let url = URL(string: phone) {
 
-                userProfile = UserProfile(uid: snapshot.key, accountCompleted: accountCompleted, email: email, name: name, phone: phone, isMaker: isMaker)
+                userProfile = UserProfile(uid: snapshot.key, accountCompleted: accountCompleted, email: email, name: name, phone: phone, isMaker: isMaker, completedEvent: completedEvent, userEvents: userEvents)
             }
 
             completion(userProfile)

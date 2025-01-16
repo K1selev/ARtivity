@@ -73,6 +73,8 @@
 		A5D2EF082B1B937E00B0151A /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */; };
 		A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */; };
 		A5D2EF0D2B1B980600B0151A /* ForgotPassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */; };
+		A5E5AA522D3964CF007ADEF5 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E5AA512D3964CA007ADEF5 /* History.swift */; };
+		A5E5AA542D396679007ADEF5 /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E5AA532D396678007ADEF5 /* HistoryTableViewCell.swift */; };
 		A5F2E4BD2D08AA00002F00EA /* RecordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */; };
 		A5F2E4BF2D099516002F00EA /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E4BE2D099515002F00EA /* WaveformView.swift */; };
 		A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */; };
@@ -131,6 +133,8 @@
 		A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A5D2EF0A2B1B97E500B0151A /* ForgotPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordPresenter.swift; sourceTree = "<group>"; };
 		A5D2EF0C2B1B980600B0151A /* ForgotPassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassViewController.swift; sourceTree = "<group>"; };
+		A5E5AA512D3964CA007ADEF5 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		A5E5AA532D396678007ADEF5 /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
 		A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordVC.swift; sourceTree = "<group>"; };
 		A5F2E4BE2D099515002F00EA /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		A5F30EDF2B3BC88800241D40 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
@@ -238,6 +242,8 @@
 		A53248832B159D1F008AD9DF /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				A5E5AA532D396678007ADEF5 /* HistoryTableViewCell.swift */,
+				A5E5AA512D3964CA007ADEF5 /* History.swift */,
 				A53166A52B4B447400A8B64F /* ProfileViewController.swift */,
 				A53166A72B4B44A700A8B64F /* SettingsCell.swift */,
 				A53166A92B4B44BB00A8B64F /* SettingsSection.swift */,
@@ -449,6 +455,7 @@
 				A53166A62B4B447400A8B64F /* ProfileViewController.swift in Sources */,
 				A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */,
 				A52F12102CAEB93400C3274B /* ErrorView.swift in Sources */,
+				A5E5AA522D3964CF007ADEF5 /* History.swift in Sources */,
 				A53166AA2B4B44BB00A8B64F /* SettingsSection.swift in Sources */,
 				A5327BBA2B230CC900E40ABE /* DatabaseManager.swift in Sources */,
 				A527AFF52CEA0D0D00086737 /* PointExitingViewController.swift in Sources */,
@@ -476,6 +483,7 @@
 				A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */,
 				A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */,
 				A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */,
+				A5E5AA542D396679007ADEF5 /* HistoryTableViewCell.swift in Sources */,
 				A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */,
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,

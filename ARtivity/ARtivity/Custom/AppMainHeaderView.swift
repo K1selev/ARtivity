@@ -42,15 +42,8 @@ class AppMainHeaderView: UIView {
                 guard let makerNonOpt = maker else {
                     return
                 }
-//                isMaker = makerNonOpt as! Int
-//                if isMaker == 1 {
-//                    button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
-//                    button.tintColor = UIColor(named: "mainGreen") ?? .green
-//                    button.setTitle("", for: .normal)
-//                } else {
                     button.setImage(UIImage(named: "profileAvaDef"), for: .normal)
                     button.setTitle(" \(user.email ?? "User name")", for: .normal)
-//                }
             })
            
         } else {
