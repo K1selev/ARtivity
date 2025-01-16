@@ -8,8 +8,11 @@
 import UIKit
 import SnapKit
 import Firebase
+import AVFoundation
 
 var isMaker = 0
+var tapCount = 0
+var videoShown = false
 
 class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -105,6 +108,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         view.backgroundColor = UIColor(named: "appBackground")
         tableView = UITableView(frame: view.bounds, style: .plain)
         tableView.register(EventsTableViewCell.self, forCellReuseIdentifier: "EventsTableViewCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "AdCell")
         tableView.register(LoadingCell.self, forCellReuseIdentifier: "loadingCell")
         tableView.backgroundColor = UIColor(named: "appBackground")
         searchBar = UISearchBar()
@@ -401,6 +405,23 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             return completion(tempPosts)
         })
     }
+    
+    func showVideo() {
+        guard !videoShown else { return }
+        videoShown = true
+        let videoVC = WebViewController()
+        videoVC.onFinish = {
+            self.openNewPage()
+        }
+        videoVC.modalPresentationStyle = .fullScreen
+        present(videoVC, animated: true)
+    }
+    
+    func openNewPage() {
+        let webVC = WebViewController()
+        navigationController?.pushViewController(webVC, animated: true)
+    }
+    
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -409,7 +430,8 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return event.count
+            let adCount = event.count / tableViewAdsMinus
+            return event.count + adCount
         case 1:
             return fetchingMore ? 1 : 0
         default:
@@ -419,9 +441,17 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "EventsTableViewCell", for: indexPath) as! EventsTableViewCell
-            cell.set(post: event[indexPath.row])
-            return cell
+            if isAdCell(at: indexPath.row) {
+                let adCell = tableView.dequeueReusableCell(withIdentifier: "AdCell", for: indexPath)
+                configureAdImgCell(adCell, indexPath: indexPath)
+                return adCell
+                
+            } else {
+                let dataIndex = getDataIndex(for: indexPath.row)
+                let cell = tableView.dequeueReusableCell(withIdentifier: "EventsTableViewCell", for: indexPath) as! EventsTableViewCell
+                cell.set(post: event[dataIndex])
+                return cell
+            }
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell
             cell.spinner.startAnimating()
@@ -430,12 +460,25 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let post = event[indexPath.row]
-        print("SELECTED POST: \(post.eventId ?? "")")
-        let vc = EventViewController()
-        vc.event = post
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+        if isAdCell(at: indexPath.row) {
+        } else {
+            let dataIndex = getDataIndex(for: indexPath.row)
+            let post = event[dataIndex]
+            print("SELECTED POST: \(post.eventId ?? "")")
+            if event[dataIndex].eventIsFree ?? true {
+                tapCount += 1
+                if tapCount % tapBeforeShowVideo == 0 {
+                    videoShown = false
+                    showVideo()
+                }
+                let vc = EventViewController()
+                vc.event = post
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true)
+            } else {
+                print("SELECTED POST is not free")
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -443,6 +486,12 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.selectionStyle = .none
         cell.backgroundColor = UIColor(named: "appBackground")
     }
+    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if indexPath.row % 3 == 2 { // Ad cell
+//            return 250 // Set the desired height for ad cells
+//        }
+//    }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
@@ -470,6 +519,134 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 self.listenForNewPosts()
             }
         }
+    }
+    
+    private func isAdCell(at row: Int) -> Bool {
+        return row % tableViewAds == tableViewAdsMinus
+    }
+    
+//    private func configureAdLocalCell(_ cell: UITableViewCell) {
+//        removeOldPlayerLayer(from: cell)
+//        
+//        // Load video from local bundle
+//        guard let videoPath = Bundle.main.path(forResource: "adVideo", ofType: "mp4") else {
+//            print("Error: Video file not found in the bundle.")
+//            return
+//        }
+//        
+//        let videoURL = URL(fileURLWithPath: videoPath)
+//        let player = AVPlayer(url: videoURL)
+//        let playerLayer = AVPlayerLayer(player: player)
+//        
+//        playerLayer.frame = CGRect(x: 0, y: 0, width: cell.contentView.bounds.width, height: 200)
+//        playerLayer.videoGravity = .resizeAspectFill
+//        cell.contentView.layer.insertSublayer(playerLayer, at: 0)
+//        
+//        player.play()
+//        
+//        // Loop the video
+//        player.actionAtItemEnd = .none
+//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
+//            player.seek(to: .zero)
+//            player.play()
+//        }
+//    }
+//    
+//    private func configureAdVideoCell(_ cell: UITableViewCell) {
+//        // Убедимся, что старое видео удалено
+//        removeOldPlayerLayer(from: cell)
+//        
+//        cell.contentView.backgroundColor = .clear
+//        
+//        // Создаём AVPlayer для воспроизведения видео
+//        let url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!
+////        let videoURL = URL(string: "https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/bigbuck_bunny_8bit_15000kbps_1080p_60.0fps_h264.mp4")!
+//        // Создаем плеер
+//        let player = AVPlayer(url: url)
+//        let playerLayer = AVPlayerLayer(player: player)
+//        
+//        // Убедимся, что слой добавлен в нужное место
+//        // Настройка: задаём фрейм ячейки (ширину и высоту видео), это важно
+//        playerLayer.frame = CGRect(x: 10, y: 40, width: 100/*cell.contentView.bounds.width*/, height: 200)
+//        playerLayer.videoGravity = .resizeAspectFill
+//        playerLayer.zPosition = -1 // Чтобы видео не перекрывало UI элементы
+//        
+//        // Добавляем AVPlayerLayer в ячейку
+//        cell.contentView.layer.insertSublayer(playerLayer, at: 0)
+//        
+//        // Начинаем воспроизведение видео автоматически
+//        player.play()
+//        
+//        // Настройка: чтобы видео воспроизводилось бесконечно
+//        player.actionAtItemEnd = .none
+//        
+//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
+//            player.seek(to: .zero)
+//            player.play()
+//        }
+//        
+//        // Обновляем ячейку
+//        cell.contentView.layoutIfNeeded()
+//    }
+//        
+//        /// Удаляем старый слой плеера, чтобы избежать многократного добавления
+//    private func removeOldPlayerLayer(from cell: UITableViewCell) {
+//        for sublayer in cell.contentView.layer.sublayers ?? [] {
+//            if sublayer is AVPlayerLayer {
+//                sublayer.removeFromSuperlayer()
+//            }
+//        }
+//    }
+       
+    
+    
+    private func configureAdImgCell(_ cell: UITableViewCell, indexPath: IndexPath) {
+        removeOldImageView(from: cell)
+        let adImages = ["ad_3", "ad_2", "ad_1"]
+        let adImageView = UIImageView()
+        adImageView.translatesAutoresizingMaskIntoConstraints = false
+        adImageView.contentMode = .scaleAspectFill
+        adImageView.clipsToBounds = true
+
+        let imageIndex = indexPath.row / 3 % adImages.count
+        adImageView.image = UIImage(named: adImages[imageIndex])
+
+        cell.contentView.addSubview(adImageView)
+        
+        adImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.bottom.equalToSuperview().offset(-20)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
+        }
+        
+        let adLabel = UILabel()
+        adLabel.text = " Реклама  "
+        adLabel.textColor = .white
+        adLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        adLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        adLabel.textAlignment = .center
+        adLabel.layer.cornerRadius = 4
+        adLabel.clipsToBounds = true
+        
+        cell.contentView.addSubview(adLabel)
+            adLabel.snp.makeConstraints { make in
+                make.trailing.equalToSuperview().offset(-32)
+                make.top.equalToSuperview().offset(8)
+            }
+    }
+    
+    private func removeOldImageView(from cell: UITableViewCell) {
+        for subview in cell.contentView.subviews {
+            if subview is UIImageView {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+
+    
+    private func getDataIndex(for row: Int) -> Int {
+        return row - row / tableViewAds
     }
 
     var postListenerHandle: UInt?

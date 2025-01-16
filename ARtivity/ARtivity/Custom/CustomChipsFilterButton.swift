@@ -18,7 +18,7 @@ class CustomChipsFilterButton: UIButton {
     
     convenience init(title: String) {
         self.init(type: .custom)
-        self.textColor = UIColor(named: "appTextMain")!
+        self.textColor = .white //UIColor(named: "appTextMain")!
         self.title = title
         self.background = UIColor(named: "mainGreen")!
         setup()

@@ -185,6 +185,7 @@ struct EventDetailsTest {
     var eventTime: Int?
     var eventTimestamp: Date?
     var eventAuthor: EventAuthorModel?
+    var eventIsFree: Bool?
 }
 
 extension EventDetailsTest: DatabaseRepresentation {
@@ -203,7 +204,8 @@ extension EventDetailsTest: DatabaseRepresentation {
             "eventRating": eventRating,
             "eventTime": eventTime,
             "eventAuthor": eventAuthor?.representation,
-            "eventTimestamp": eventTimestamp?.timeIntervalSince1970
+            "eventTimestamp": eventTimestamp?.timeIntervalSince1970,
+            "eventIsFree": eventIsFree
         ]
         return rep
     }
@@ -226,7 +228,8 @@ extension EventDetailsTest: DatabaseRepresentation {
            let eventPointCount = data["eventPointCount"] as? Int,
            let eventRating = data["eventRating"] as? Double,
            let eventTime = data["eventTime"] as? Int,
-           let eventTimestamp = data["eventTimestamp"] as? Double
+           let eventTimestamp = data["eventTimestamp"] as? Double,
+           let eventIsFree = data["eventIsFree"] as? Bool
             
         {
             
@@ -246,7 +249,8 @@ extension EventDetailsTest: DatabaseRepresentation {
                                     eventRating: eventRating,
                                     eventTime: eventTime,
                                     eventTimestamp: crDate,
-                                    eventAuthor: eventAuthor)
+                                    eventAuthor: eventAuthor,
+                                    eventIsFree: eventIsFree)
         }
         return nil
     }
