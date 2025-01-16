@@ -439,10 +439,51 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     
     @objc func didTapFinishButton() {
         player?.pause()
+        // update user inf
+        updateUserInfo()
         let vc = EventViewController()
         vc.event = post
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: false)
+    }
+    
+    func updateUserInfo() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let databaseRef = Database.database().reference().child("users/\(uid)")
+        databaseRef.observeSingleEvent(of: .value, with: { snapshot in
+            let userProfile = snapshot.value as? [String: Any]
+            print(userProfile)
+            
+            var events = [""]
+            if let completedEvents = userProfile?["completedEvent"] as? [String] {
+                events.remove(at: 0)
+                for item in completedEvents {
+                    events.append(item)
+                }
+            }
+            if !events.contains(self.post?.eventId ?? "") {
+                guard let event = self.post?.eventId else {
+                    return
+                }
+                events.append(event)
+            }
+            
+            let userObject = [
+                "name": userProfile?["username"],
+                "email": userProfile?["email"],
+                "accountCompleted": true,
+                "phone": "no number yet",
+                "userEvents": "",
+                "completedEvent": events,
+                "isMaker": userProfile?["isMaker"],
+            ] as [String: Any]
+
+                databaseRef.setValue(userObject) { error, _ in
+                    //                completion(error == nil)
+                }
+           //}
+        // post?.eventId
+    })
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {

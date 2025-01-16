@@ -314,8 +314,11 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                 present(PlugViewController(), animated: true) // Заглушка
 //                print(TextConstantsProfile.titleAchievements)
             case 2:
-                present(PlugViewController(), animated: true) // Заглушка
+//                present(PlugViewController(), animated: true) // Заглушка
 //                print(TextConstantsProfile.titleHistory)
+                let vc = HistoryViewController()
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
             case 3:
                 showMailComposer(message: "TextConstantsProfile.beGuideMessage")
             case 4:

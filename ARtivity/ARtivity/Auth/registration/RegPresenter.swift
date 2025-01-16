@@ -68,8 +68,9 @@ class RegPresenter: RegScreenPresenter {
            "email": email,
            "accountCompleted": true,
            "phone": "no number yet",
+           "userEvents": "",
+           "completedEvent": "",
            "isMaker": isMaker,
-//           "photoURL": "url" // profileImageURL.absoluteString
        ] as [String: Any]
 
        databaseRef.setValue(userObject) { error, _ in
