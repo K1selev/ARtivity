@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 // MARK: - SectionType
 
@@ -52,7 +53,11 @@ enum AccountOptions: Int, CaseIterable, SectionType {
         case .history:
             return "История прогулок"
         case .beGuide:
-            return "Стать экскурсоводом"
+            if isMaker == 1 {
+                return "Созданные экскурсии"
+            } else {
+                return "Стать экскурсоводом"
+            }
         case .changeTheme:
             return "Сменить тему"
         }
@@ -67,7 +72,11 @@ enum AccountOptions: Int, CaseIterable, SectionType {
         case .history:
             return "doc.text"
         case .beGuide:
-            return "person.badge.plus"
+            if isMaker == 1 {
+                return "folder"
+            } else {
+                return "person.badge.plus"
+            }
         case .changeTheme:
             return "cloud.sun"
         }

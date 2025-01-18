@@ -152,6 +152,7 @@ private let imagePicker = UIImagePickerController()
 
 final class ProfileViewController: UIViewController {
     
+    var events = [EventDetailsTest]()
     private let userInfoHeader = UserInfoHeader(frame: .zero)
     private var tableView = UITableView()
     lazy var leftButton: UIButton = {
@@ -311,16 +312,23 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                 present(PlugViewController(), animated: true) // Заглушка
 //                print(TextConstantsProfile.titlePersonalData)
             case 1:
-                present(PlugViewController(), animated: true) // Заглушка
-//                print(TextConstantsProfile.titleAchievements)
-            case 2:
 //                present(PlugViewController(), animated: true) // Заглушка
-//                print(TextConstantsProfile.titleHistory)
+//                print(TextConstantsProfile.titleAchievements)
+                let vc = AchievementsViewController()
+                vc.events = events
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+            case 2:
                 let vc = HistoryViewController()
                 vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true)
             case 3:
-                showMailComposer(message: "TextConstantsProfile.beGuideMessage")
+                if isMaker == 1 {
+                    present(PlugViewController(), animated: true)
+                    print("созданные экскурсии")
+                } else {
+                    showMailComposer(message: "TextConstantsProfile.beGuideMessage")
+                }
             case 4:
                 print("changeTheme")
             default:

@@ -128,7 +128,6 @@ class EventsTableViewCell: UITableViewCell {
         if let imageUrlTemp = post.eventImage {
             if imageUrlTemp != "" {
                 let imagesUrl =  URL(string: (imageUrlTemp))
-                
                 self.eventImageView.image = nil
                 ImageService.getImage(withURL: imagesUrl!) { image, url in
                     if imagesUrl?.absoluteString == url.absoluteString {
@@ -187,8 +186,11 @@ class EventsTableViewCell: UITableViewCell {
         timeLabel.layer.cornerRadius = 10
         timeLabel.layer.masksToBounds = true
         timeLabel.textColor = .white
-        
-        eventRaiting.text = "  \(post.eventRating ?? 0)  "
+        if post.eventRating == 0 {
+            eventRaiting.text = "  нет оценок  "
+        } else {
+            eventRaiting.text = "  " + String(format: "%.2f",(post.eventRating ?? 0.0)) + "  "
+        }
         eventRaiting.backgroundColor = .systemGray3
         eventRaiting.layer.cornerRadius = 10
         eventRaiting.layer.masksToBounds = true
@@ -202,7 +204,7 @@ class EventsTableViewCell: UITableViewCell {
     }
     
     func createBlurredImageWithLock(from originalImage: UIImage) -> UIImage? {
-        let lockIcon = UIImage(systemName: "lock.fill")?.withTintColor(UIColor(named: "mainGreen")!, renderingMode: .alwaysOriginal) // Иконка замка
+        let lockIcon = UIImage(systemName: "lock.fill")?.withTintColor(UIColor(named: "mainGreen")!) // Иконка замка
         
         // 1. Размытие с помощью CIFilter
         guard let ciImage = CIImage(image: originalImage) else { return nil }
@@ -219,6 +221,7 @@ class EventsTableViewCell: UITableViewCell {
 
         // 2. Наложение замка
         let finalSize = originalImage.size
+//        let finalSize =
         UIGraphicsBeginImageContextWithOptions(finalSize, false, 0)
         
         // Рисуем размытие
@@ -231,6 +234,10 @@ class EventsTableViewCell: UITableViewCell {
                 x: (finalSize.width - lockSize.width) / 2,
                 y: (finalSize.height - lockSize.height) / 2
             )
+//            let lockOrigin = CGPoint(
+//                x: 150,
+//                y: 150
+//            )
             lock.draw(in: CGRect(origin: lockOrigin, size: lockSize))
         }
         
