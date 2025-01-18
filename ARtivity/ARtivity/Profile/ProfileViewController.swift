@@ -324,13 +324,18 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                 self.present(vc, animated: true)
             case 3:
                 if isMaker == 1 {
-                    present(PlugViewController(), animated: true)
-                    print("созданные экскурсии")
+//                    present(PlugViewController(), animated: true)
+//                    print("созданные экскурсии")
+                    let vc = CreatedEventsViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
                 } else {
                     showMailComposer(message: "TextConstantsProfile.beGuideMessage")
                 }
             case 4:
                 print("changeTheme")
+                let vc = TestVCCity()
+                self.present(vc, animated: true)
             default:
                 print("no action")
             }

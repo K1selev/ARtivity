@@ -470,16 +470,12 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
                 "email": userProfile?["email"],
                 "accountCompleted": true,
                 "phone": "no number yet",
-                "userEvents": "",
+                "userEvents": userProfile?["userEvents"],
                 "completedEvent": events,
                 "isMaker": userProfile?["isMaker"],
             ] as [String: Any]
-
                 databaseRef.setValue(userObject) { error, _ in
-                    //                completion(error == nil)
                 }
-           //}
-        // post?.eventId
     })
     }
     

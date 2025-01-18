@@ -482,7 +482,6 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 let post = event[dataIndex]
                 videoShown = false
                 showVideo(post: post)
-//                print("SELECTED POST is not free")
             }
         }
     }
