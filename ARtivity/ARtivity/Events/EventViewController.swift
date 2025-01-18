@@ -658,7 +658,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
 
     func setupData() {
-        ratingText.text = "\(event?.eventRating ?? 0.0)"
+        ratingText.text = String(format: "%.2f",(event?.eventRating ?? 0.0)) //"\(event?.eventRating ?? 0.0)"
         eventName.text = event?.eventName
         if let distance = event?.eventDistance {
             let distanceText: String
@@ -808,8 +808,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                 cell.set(point: pointInf[indexPath.row])
                 cell.numberLabel.text = "\(indexPath.row + 1)"
             }
-//            cell.set(point: pointInf[indexPath.row])
-//            cell.set(post: posts[indexPath.row])
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell

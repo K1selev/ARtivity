@@ -17,6 +17,8 @@ class HistoryViewController: UIViewController {
     private let navigationBarView = UIView()
     
     var events = [""]
+    var eventsName = [""]
+    var eventsImgs = [""]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,8 +100,23 @@ class HistoryViewController: UIViewController {
                     for item in completedEvents {
                         self.events.append(item)
                     }
-//                    completedTours = ["Исторический парк", "Городская башня", "Национальный музей"]
-                    self.tableView.reloadData()
+                    for event in self.events {
+                            let databaseRef = Database.database().reference().child("event/\(event)")
+                            databaseRef.observeSingleEvent(of: .value, with: { snapshot in
+                                let eventInfo = snapshot.value as? [String: Any]
+                                if let eventName = eventInfo?["eventName"] as? String {
+                                    self.eventsName.append(eventName)
+                                    print(self.eventsName)
+                                    if let eventImg = eventInfo?["eventImage"] as? String {
+                                        self.eventsImgs.append(eventImg)
+                                        print(self.eventsImgs)
+                                        self.tableView.reloadData()
+                                    }
+                                }
+                            })
+//                        self.tableView.reloadData()
+                    }
+//                    self.tableView.reloadData()
                 }
         })
     }
@@ -112,28 +129,28 @@ class HistoryViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension HistoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        return eventsName.count - 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as? HistoryTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: events[indexPath.row])
+        cell.configure(with: eventsName[indexPath.row + 1], img: eventsImgs[indexPath.row + 1])
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 100 // Высота ячейки
+            return 150 // Высота ячейки
         }
 }
 
 // MARK: - UITableViewDelegate
 extension HistoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let tourName = events[indexPath.row]
-        let alert = UIAlertController(title: "Информация", message: "Вы выбрали экскурсию: \(tourName)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "ОК", style: .default))
-        present(alert, animated: true)
+//        tableView.deselectRow(at: indexPath, animated: true)
+//        let tourName = eventsName[indexPath.row + 1]
+//        let alert = UIAlertController(title: "Информация", message: "Вы выбрали экскурсию: \(tourName)", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "ОК", style: .default))
+//        present(alert, animated: true)
     }
 }

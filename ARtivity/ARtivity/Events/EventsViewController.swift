@@ -406,19 +406,21 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
     }
     
-    func showVideo() {
+    func showVideo(post: EventDetailsTest) {
         guard !videoShown else { return }
         videoShown = true
         let videoVC = WebViewController()
+        videoVC.event = post
         videoVC.onFinish = {
-            self.openNewPage()
+            self.openNewPage(post: post)
         }
         videoVC.modalPresentationStyle = .fullScreen
         present(videoVC, animated: true)
     }
     
-    func openNewPage() {
+    func openNewPage(post: EventDetailsTest) {
         let webVC = WebViewController()
+        webVC.event = post
         navigationController?.pushViewController(webVC, animated: true)
     }
     
@@ -469,14 +471,18 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 tapCount += 1
                 if tapCount % tapBeforeShowVideo == 0 {
                     videoShown = false
-                    showVideo()
+                    showVideo(post: post)
                 }
                 let vc = EventViewController()
                 vc.event = post
                 vc.modalPresentationStyle = .fullScreen
                 present(vc, animated: true)
             } else {
-                print("SELECTED POST is not free")
+                let dataIndex = getDataIndex(for: indexPath.row)
+                let post = event[dataIndex]
+                videoShown = false
+                showVideo(post: post)
+//                print("SELECTED POST is not free")
             }
         }
     }
@@ -487,12 +493,6 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.backgroundColor = UIColor(named: "appBackground")
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if indexPath.row % 3 == 2 { // Ad cell
-//            return 250 // Set the desired height for ad cells
-//        }
-//    }
-
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -524,81 +524,6 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private func isAdCell(at row: Int) -> Bool {
         return row % tableViewAds == tableViewAdsMinus
     }
-    
-//    private func configureAdLocalCell(_ cell: UITableViewCell) {
-//        removeOldPlayerLayer(from: cell)
-//        
-//        // Load video from local bundle
-//        guard let videoPath = Bundle.main.path(forResource: "adVideo", ofType: "mp4") else {
-//            print("Error: Video file not found in the bundle.")
-//            return
-//        }
-//        
-//        let videoURL = URL(fileURLWithPath: videoPath)
-//        let player = AVPlayer(url: videoURL)
-//        let playerLayer = AVPlayerLayer(player: player)
-//        
-//        playerLayer.frame = CGRect(x: 0, y: 0, width: cell.contentView.bounds.width, height: 200)
-//        playerLayer.videoGravity = .resizeAspectFill
-//        cell.contentView.layer.insertSublayer(playerLayer, at: 0)
-//        
-//        player.play()
-//        
-//        // Loop the video
-//        player.actionAtItemEnd = .none
-//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
-//            player.seek(to: .zero)
-//            player.play()
-//        }
-//    }
-//    
-//    private func configureAdVideoCell(_ cell: UITableViewCell) {
-//        // Убедимся, что старое видео удалено
-//        removeOldPlayerLayer(from: cell)
-//        
-//        cell.contentView.backgroundColor = .clear
-//        
-//        // Создаём AVPlayer для воспроизведения видео
-//        let url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!
-////        let videoURL = URL(string: "https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/bigbuck_bunny_8bit_15000kbps_1080p_60.0fps_h264.mp4")!
-//        // Создаем плеер
-//        let player = AVPlayer(url: url)
-//        let playerLayer = AVPlayerLayer(player: player)
-//        
-//        // Убедимся, что слой добавлен в нужное место
-//        // Настройка: задаём фрейм ячейки (ширину и высоту видео), это важно
-//        playerLayer.frame = CGRect(x: 10, y: 40, width: 100/*cell.contentView.bounds.width*/, height: 200)
-//        playerLayer.videoGravity = .resizeAspectFill
-//        playerLayer.zPosition = -1 // Чтобы видео не перекрывало UI элементы
-//        
-//        // Добавляем AVPlayerLayer в ячейку
-//        cell.contentView.layer.insertSublayer(playerLayer, at: 0)
-//        
-//        // Начинаем воспроизведение видео автоматически
-//        player.play()
-//        
-//        // Настройка: чтобы видео воспроизводилось бесконечно
-//        player.actionAtItemEnd = .none
-//        
-//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
-//            player.seek(to: .zero)
-//            player.play()
-//        }
-//        
-//        // Обновляем ячейку
-//        cell.contentView.layoutIfNeeded()
-//    }
-//        
-//        /// Удаляем старый слой плеера, чтобы избежать многократного добавления
-//    private func removeOldPlayerLayer(from cell: UITableViewCell) {
-//        for sublayer in cell.contentView.layer.sublayers ?? [] {
-//            if sublayer is AVPlayerLayer {
-//                sublayer.removeFromSuperlayer()
-//            }
-//        }
-//    }
-       
-    
     
     private func configureAdImgCell(_ cell: UITableViewCell, indexPath: IndexPath) {
         removeOldImageView(from: cell)
@@ -694,6 +619,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             print("already loged in")
 //            if isMaker != 1 {
                 let vc = ProfileViewController()
+                vc.events = event
                 vc.modalPresentationStyle = .fullScreen
                 present(vc, animated: true)
 //            } else {

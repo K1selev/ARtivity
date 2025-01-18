@@ -9,6 +9,7 @@ class WebViewController: UIViewController {
     var playerViewController: AVPlayerViewController!
     var closeButton = UIButton()
     var skipButton = UIButton()
+    var event: EventDetailsTest?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,12 +59,20 @@ class WebViewController: UIViewController {
 
     @objc func skipButtonTapped() {
         onFinish?()
-        dismiss(animated: true)
+//        dismiss(animated: true)
+        let vc = EventViewController()
+        vc.event = event
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
     
     @objc func closeButtonTapped() {
         onFinish?()
-        dismiss(animated: true)
+//        dismiss(animated: true)
+        let vc = EventViewController()
+        vc.event = event
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

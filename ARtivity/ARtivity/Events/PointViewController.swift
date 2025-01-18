@@ -19,6 +19,7 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     var post: EventDetailsTest? //EventsModel?
     var postItem: Int?
     var pointInfo: [PointDetail]?
+    var selectedRating: Int = 0
     
     var topView = AppHeaderView()
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -439,12 +440,8 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
     
     @objc func didTapFinishButton() {
         player?.pause()
-        // update user inf
         updateUserInfo()
-        let vc = EventViewController()
-        vc.event = post
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: false)
+        showRatingAlert()
     }
     
     func updateUserInfo() {
@@ -461,8 +458,8 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
                     events.append(item)
                 }
             }
-            if !events.contains(self.post?.eventId ?? "") {
-                guard let event = self.post?.eventId else {
+            if !events.contains(self.post?.id ?? "") {
+                guard let event = self.post?.id else {
                     return
                 }
                 events.append(event)
@@ -484,6 +481,107 @@ class PointViewController: UIViewController, UIScrollViewDelegate{
            //}
         // post?.eventId
     })
+    }
+    
+    @objc func showRatingAlert() {
+        // Создаем представление алерта
+        let alertView = UIView()
+        alertView.backgroundColor = .white
+        alertView.layer.cornerRadius = 12
+        alertView.layer.shadowColor = UIColor.black.cgColor
+        alertView.layer.shadowOpacity = 0.3
+        alertView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        alertView.layer.shadowRadius = 8
+        
+        view.addSubview(alertView)
+        
+        alertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(300)
+            make.height.equalTo(150)
+        }
+        
+        let starsStackView = UIStackView()
+        starsStackView.axis = .horizontal
+        starsStackView.alignment = .center
+        starsStackView.distribution = .fillEqually
+        starsStackView.spacing = 8
+        
+        var starButtons: [UIButton] = []
+        
+        for i in 1...5 {
+            let starButton = UIButton(type: .system)
+            starButton.setTitle("★", for: .normal)
+            starButton.titleLabel?.font = UIFont.systemFont(ofSize: 32)
+            starButton.setTitleColor(.lightGray, for: .normal) // Начальный цвет
+            starButton.tag = i // Устанавливаем номер звезды
+            starButton.addTarget(self, action: #selector(starTapped(_:)), for: .touchUpInside)
+            
+            starButtons.append(starButton)
+            starsStackView.addArrangedSubview(starButton)
+        }
+        
+        alertView.addSubview(starsStackView)
+        starsStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-20)
+        }
+        
+        let closeButton = UIButton(type: .system)
+        closeButton.setTitle("  Оценить  ", for: .normal)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        closeButton.setTitleColor(.black, for: .normal)
+        closeButton.backgroundColor = UIColor(named: "mainGreen")
+        closeButton.layer.cornerRadius = 8
+        closeButton.layer.masksToBounds = true
+        closeButton.addTarget(self, action: #selector(closeAlert), for: .touchUpInside)
+        
+        alertView.addSubview(closeButton)
+        closeButton.snp.makeConstraints { make in
+            make.top.equalTo(starsStackView.snp.bottom).offset(16)
+            make.centerX.equalToSuperview()
+        }
+        
+        alertView.tag = 100
+        alertView.accessibilityElements = starButtons
+    }
+        
+    @objc func starTapped(_ sender: UIButton) {
+        guard let alertView = view.viewWithTag(100) else { return }
+        guard let starButtons = alertView.accessibilityElements as? [UIButton] else { return }
+        
+        selectedRating = sender.tag
+        
+        for button in starButtons {
+            button.setTitleColor(button.tag <= selectedRating ? UIColor(named: "mainGreen") : .lightGray, for: .normal)
+        }
+    }
+        
+    @objc func closeAlert() {
+        print(selectedRating)
+        if post?.eventRating! == 0 {
+            post?.eventRating! = Double(selectedRating)
+        }
+        let rating = ((post?.eventRating! ?? Double(selectedRating)) + Double(selectedRating)) / 2
+        post?.eventRating = rating
+        if post != nil {
+            print(post)
+            print("event/\(post!.id ?? "")")
+            print(post)
+            let postid = "event/\(post!.id ?? "")"
+            let databaseRef = Database.database().reference().child(postid)
+            
+            let data = post
+            databaseRef.setValue(data?.representation)
+        }
+        view.subviews
+            .filter { $0.tag == 100 }
+            .forEach { $0.removeFromSuperview() }
+        
+        let vc = EventViewController()
+        vc.event = post
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: false)
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {

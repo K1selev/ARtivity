@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5054D812D3BD76800C09CD8 /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5054D802D3BD75B00C09CD8 /* Achievement.swift */; };
+		A5054D832D3BDC1300C09CD8 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5054D822D3BDC1200C09CD8 /* CircularProgressView.swift */; };
+		A5054D852D3BDFE800C09CD8 /* AchievementCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5054D842D3BDFE700C09CD8 /* AchievementCell.swift */; };
 		A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A508C6572CFF5D3A007E527D /* MapViewController.swift */; };
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
@@ -81,6 +84,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A5054D802D3BD75B00C09CD8 /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
+		A5054D822D3BDC1200C09CD8 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		A5054D842D3BDFE700C09CD8 /* AchievementCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCell.swift; sourceTree = "<group>"; };
 		A508C6572CFF5D3A007E527D /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
@@ -242,6 +248,8 @@
 		A53248832B159D1F008AD9DF /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				A5054D842D3BDFE700C09CD8 /* AchievementCell.swift */,
+				A5054D802D3BD75B00C09CD8 /* Achievement.swift */,
 				A5E5AA532D396678007ADEF5 /* HistoryTableViewCell.swift */,
 				A5E5AA512D3964CA007ADEF5 /* History.swift */,
 				A53166A52B4B447400A8B64F /* ProfileViewController.swift */,
@@ -309,6 +317,7 @@
 		A5D2EED72B17355700B0151A /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				A5054D822D3BDC1200C09CD8 /* CircularProgressView.swift */,
 				A5F2E4BE2D099515002F00EA /* WaveformView.swift */,
 				A5D2EED82B17356F00B0151A /* CustomButton.swift */,
 				A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */,
@@ -478,13 +487,16 @@
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
 				A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */,
+				A5054D812D3BD76800C09CD8 /* Achievement.swift in Sources */,
 				A52F120E2CAEAF2800C3274B /* EventCreationViewController.swift in Sources */,
 				A5F2E4BD2D08AA00002F00EA /* RecordVC.swift in Sources */,
 				A52F12142CAEF1FE00C3274B /* SelectedImagesCell.swift in Sources */,
 				A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */,
 				A532486D2B159A82008AD9DF /* SceneDelegate.swift in Sources */,
+				A5054D852D3BDFE800C09CD8 /* AchievementCell.swift in Sources */,
 				A5E5AA542D396679007ADEF5 /* HistoryTableViewCell.swift in Sources */,
 				A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */,
+				A5054D832D3BDC1300C09CD8 /* CircularProgressView.swift in Sources */,
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,
 				A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */,

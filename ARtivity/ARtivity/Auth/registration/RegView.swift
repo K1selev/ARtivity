@@ -28,9 +28,9 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
     private var passwordField = CustomTextField()
     private var repeatPasswordField = CustomTextField()
     
-    private var checkboxIsMaker = UIButton()
-    private var isMakerText = UILabel()
-    
+//    private var checkboxIsMaker = UIButton()
+//    private var isMakerText = UILabel()
+//    
     private var isMaker = false
     
     override func viewDidLoad() {
@@ -53,8 +53,8 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
         logoAppText.font = UIFont(name: "Arial", size: 38)
         logoAppText.textColor = UIColor(named: "mainGreen")
         
-        isMakerText.text = "Хотите стать экскурсоводом?"
-        isMakerText.font = UIFont(name: "Arial", size: 14)
+//        isMakerText.text = "Хотите стать экскурсоводом?"
+//        isMakerText.font = UIFont(name: "Arial", size: 14)
         
         nameField.returnKeyType = .next
         emailField.returnKeyType = .next
@@ -69,7 +69,7 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
         continueButton.addTarget(self, action: #selector(didTapButtonContinue), for: .touchUpInside)
         buttonSignIn.addTarget(self, action: #selector(didTapButtonBack), for: .touchUpInside)
         
-        checkboxIsMaker.addTarget(self, action: #selector(didTapMakerBtn), for: .touchUpInside)
+//        checkboxIsMaker.addTarget(self, action: #selector(didTapMakerBtn), for: .touchUpInside)
         self.hideKeyboardWhenTappedAround()
         
         [logoAppText,
@@ -79,8 +79,8 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
          repeatPasswordField,
          passwordField,
          continueButton,
-         isMakerText,
-         checkboxIsMaker,
+//         isMakerText,
+//         checkboxIsMaker,
          buttonSignIn,
          signInText].forEach {
             view.addSubview($0)
@@ -145,18 +145,18 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
             make.height.equalTo(45)
         }
         
-        isMakerText.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(continueButton.snp.bottom).offset(20)
-            make.height.equalTo(45)
-        }
-        
-        checkboxIsMaker.snp.makeConstraints { make in
-            make.trailing.equalTo(isMakerText.snp.leading).offset(-10)
-            make.centerY.equalTo(isMakerText.snp.centerY)
-            make.height.equalTo(20)
-            make.width.equalTo(20)
-        }
+//        isMakerText.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(continueButton.snp.bottom).offset(20)
+//            make.height.equalTo(45)
+//        }
+//        
+//        checkboxIsMaker.snp.makeConstraints { make in
+//            make.trailing.equalTo(isMakerText.snp.leading).offset(-10)
+//            make.centerY.equalTo(isMakerText.snp.centerY)
+//            make.height.equalTo(20)
+//            make.width.equalTo(20)
+//        }
         
         signInText.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-80)
@@ -175,9 +175,9 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
         buttonSignIn.setTitle("Войти", for: .normal)
         buttonSignIn.setTitleColor(UIColor(named: "mainGreen"), for: .normal)
         
-        checkboxIsMaker.setTitle("", for: .normal)
-        checkboxIsMaker.setImage(UIImage(systemName: "square"), for: .normal)
-        checkboxIsMaker.tintColor = UIColor.black
+//        checkboxIsMaker.setTitle("", for: .normal)
+//        checkboxIsMaker.setImage(UIImage(systemName: "square"), for: .normal)
+//        checkboxIsMaker.tintColor = UIColor.black
         
         signInText.text = "Зарегистрированы?"
         
@@ -371,9 +371,9 @@ class RegView: UIViewController, UITextFieldDelegate, RegScreenView {
     @objc private func didTapMakerBtn() {
         isMaker.toggle()
         if isMaker {
-        checkboxIsMaker.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+//        checkboxIsMaker.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
         } else {
-        checkboxIsMaker.setImage(UIImage(systemName: "square"), for: .normal)
+//        checkboxIsMaker.setImage(UIImage(systemName: "square"), for: .normal)
         }
     }}
 

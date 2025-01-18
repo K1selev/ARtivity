@@ -246,6 +246,7 @@ extension EventDetailsTest: DatabaseRepresentation {
                                     eventDistance: eventDistance,
                                     eventImage: eventImage,
                                     eventName: eventName,
+                                    eventPointCount: eventPointCount,
                                     eventRating: eventRating,
                                     eventTime: eventTime,
                                     eventTimestamp: crDate,

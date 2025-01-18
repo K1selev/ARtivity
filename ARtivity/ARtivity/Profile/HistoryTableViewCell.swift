@@ -16,18 +16,12 @@ class HistoryTableViewCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        label.textColor = UIColor.systemGreen
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = UIColor.black
         return label
     }()
     
-    private let iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "leaf.circle.fill") // Символ листа
-        imageView.tintColor = UIColor.systemGreen
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
+    private var iconImageView = UIImageView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -42,11 +36,15 @@ class HistoryTableViewCell: UITableViewCell {
         cardView.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(8)
         }
+        iconImageView.layer.cornerRadius = 12
         
         iconImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(16)
-            make.width.height.equalTo(40)
+            make.leading.equalToSuperview().offset(20)
+            make.width.equalTo(150)
+            make.top.equalToSuperview().offset(16)
+            make.bottom.equalToSuperview().offset(-16)
+//            make.height.equalTo(100)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -60,7 +58,22 @@ class HistoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with title: String) {
+    func configure(with title: String, img: String) {
         titleLabel.text = title
+        if img != "" {
+            let imagesUrl =  URL(string: (img))
+            
+            self.imageView?.image = nil
+            ImageService.getImage(withURL: imagesUrl!) { image, url in
+                if imagesUrl?.absoluteString == url.absoluteString {
+                    self.iconImageView.image = image
+                    self.iconImageView.clipsToBounds = true
+                } else {
+                    print("Not the right image")
+                }
+            }
+        } else {
+            self.imageView?.image = UIImage(systemName: "leaf.circle.fill")
+        }
     }
 }

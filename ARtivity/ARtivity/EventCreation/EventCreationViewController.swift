@@ -39,9 +39,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private let descriptionText = UILabel()
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
+    
+    private var checkboxIsFree = UIButton()
+    private var isFreeText = UILabel()
+    
     private let mapImage = UIImageView()
     
     var eventNameT: String?
+    private var isFree = true
     
     let activityIndicator = UIActivityIndicatorView()
     
@@ -199,6 +204,9 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        isFreeText.text = "Сделать экскурсию платной?"
+        isFreeText.font = UIFont(name: "Arial", size: 14)
+        checkboxIsFree.addTarget(self, action: #selector(didTapFreeBtn), for: .touchUpInside)
         
         createEvent.isUserInteractionEnabled = true
         topView.isUserInteractionEnabled = true
@@ -282,15 +290,18 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                                      for:.touchUpInside)
         topView.rightButton.addTarget(self,action:#selector(buttonProfileClicked),
                                       for:.touchUpInside)
+        checkboxIsFree.setTitle("", for: .normal)
+        checkboxIsFree.setImage(UIImage(systemName: "square"), for: .normal)
+        checkboxIsFree.tintColor = UIColor.black
         
         mapImage.image = UIImage(named: "mapPreview")
         
         tableView = UITableView(frame: view.bounds, style: .plain)
-//        if postDetail == nil {
-//            tableView.isHidden = true
-//        } else {
-//            tableView.isHidden = false
-//        }
+        //        if postDetail == nil {
+        //            tableView.isHidden = true
+        //        } else {
+        //            tableView.isHidden = false
+        //        }
         
         tableView.backgroundColor = UIColor(named: "appBackground")
         tableView.register(EventPointTableViewCell.self, forCellReuseIdentifier: "EventPointTableViewCell")
@@ -311,6 +322,8 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
          imagesStackView,
          collectionViewPhotos,
          addPoint,
+         isFreeText,
+         checkboxIsFree,
          mapView].forEach {
             scrollView.addSubview($0)
         }
@@ -445,9 +458,22 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             make.height.equalTo(100)
         }
 
+        checkboxIsFree.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(34)
+//            make.trailing.equalTo(isFreeText.snp.leading).offset(-10)
+            make.centerY.equalTo(isFreeText.snp.centerY)
+            make.height.equalTo(20)
+            make.width.equalTo(20)
+        }
+        
+        isFreeText.snp.makeConstraints { make in
+            make.leading.equalTo(checkboxIsFree.snp.trailing).offset(10)
+            make.top.equalTo(imagesStackView.snp.bottom)
+            make.height.equalTo(45)
+        }
 
         mapView.snp.makeConstraints { make in
-            make.top.equalTo(imagesStackView.snp.bottom).offset(15)
+            make.top.equalTo(isFreeText.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
             make.trailing.equalToSuperview().offset(-34)
             make.height.equalTo(243)
@@ -742,6 +768,15 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         }
     }
     
+    @objc private func didTapFreeBtn() {
+        isFree.toggle()
+        if isFree {
+            checkboxIsFree.setImage(UIImage(systemName: "square"), for: .normal)
+        } else {
+            checkboxIsFree.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+        }
+    }
+    
     private func uploadData() {
         StorageService.shared.uploadPostImages(self.images, imageCategory: "events") { urls in
             print(urls)
@@ -768,7 +803,8 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                 eventRating: 0.0,
                 eventTime: self.eventTime,
                 eventTimestamp: Date.now,
-                eventAuthor: author
+                eventAuthor: author,
+                eventIsFree: self.isFree
             )
             StorageService.shared.createNewEvent(data: data) { success in
                 print(success)
