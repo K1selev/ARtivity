@@ -808,6 +808,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
             )
             StorageService.shared.createNewEvent(data: data) { success in
                 print(success)
+                self.updateUserInfo(id: success)
                 self.pointsArrayEvent.append(success)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     self.customAlert.isHidden = true
@@ -834,6 +835,36 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         }
     }
     
+    func updateUserInfo(id: String) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let databaseRef = Database.database().reference().child("users/\(uid)")
+        databaseRef.observeSingleEvent(of: .value, with: { snapshot in
+            let userProfile = snapshot.value as? [String: Any]
+            print(userProfile)
+            var events = [""]
+            events.remove(at: 0)
+            if let completedEvents = userProfile?["userEvents"] as? [String] {
+                for item in completedEvents {
+                    events.append(item)
+                }
+            }
+            if !events.contains(id ?? "") {
+                events.append(id)
+            }
+            let userObject = [
+                "name": userProfile?["username"],
+                "email": userProfile?["email"],
+                "accountCompleted": true,
+                "phone": "no number yet",
+                "userEvents": events,
+                "completedEvent": userProfile?["completedEvent"],
+                "isMaker": userProfile?["isMaker"],
+            ] as [String: Any]
+                databaseRef.setValue(userObject) { error, _ in
+                }
+    })
+    }
+    
     private func randomAlphanumericString(_ length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let randomString = (0..<length).map { _ in String(letters.randomElement()!) }.reduce("", +)
@@ -848,11 +879,6 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         vc.pointsArrayEvent = pointsArrayEvent
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
-        
-        
-//        let vc = RecordVC()
-//        vc.modalPresentationStyle = .fullScreen
-//        present(vc, animated: true)
     }
     
     @objc func addExistingButtonPressed() {

@@ -1,14 +1,15 @@
 //
-//  History.swift
+//  CreatedEvents.swift
 //  ARtivity
 //
-//  Created by Сергей Киселев on 16.01.2025.
+//  Created by Сергей Киселев on 18.01.2025.
 //
+
 import UIKit
 import SnapKit
 import Firebase
 
-class HistoryViewController: UIViewController {
+class CreatedEventsViewController: UIViewController {
     
     private let tableView = UITableView()
     private let headerView = UIView()
@@ -45,7 +46,7 @@ class HistoryViewController: UIViewController {
         view.addSubview(navigationBarView)
         
         let titleLabel = UILabel()
-        titleLabel.text = "История прогулок"
+        titleLabel.text = "Созданные экскурсии"
         titleLabel.textColor = .black
         
         let backButton = UIButton()
@@ -79,7 +80,7 @@ class HistoryViewController: UIViewController {
             let databaseRef = Database.database().reference().child("users/\(uid)")
             databaseRef.observeSingleEvent(of: .value, with: { snapshot in
                 let userProfile = snapshot.value as? [String: Any]
-                if let completedEvents = userProfile?["completedEvent"] as? [String] {
+                if let completedEvents = userProfile?["userEvents"] as? [String] {
                     self.events.remove(at: 0)
                     for item in completedEvents {
                         self.events.append(item)
@@ -109,7 +110,7 @@ class HistoryViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension HistoryViewController: UITableViewDataSource {
+extension CreatedEventsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return eventsName.count - 1
     }
@@ -127,7 +128,7 @@ extension HistoryViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension HistoryViewController: UITableViewDelegate {
+extension CreatedEventsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        tableView.deselectRow(at: indexPath, animated: true)
 //        let tourName = eventsName[indexPath.row + 1]
