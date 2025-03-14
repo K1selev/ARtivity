@@ -15,11 +15,8 @@ import AVFoundation
 import PhotosUI
 import MapKit
 
-class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UITextFieldDelegate  {
     
-
-//    var post: EventsModel? = nil
-//    var postDetail: EventDetails?
     var pointsArrayEvent = [String]()
     var pointInf = [PointDetail]()
     var tableViewHeight = 0
@@ -44,6 +41,18 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private var isFreeText = UILabel()
     
     private let mapImage = UIImageView()
+    
+    private let cities = [
+        "Москва", "Санкт-Петербург", "Минск", "Киев", "Алматы", "Ташкент", "Бишкек", "Ереван", "Баку", "Астана",
+        "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"
+    ]
+    
+    private let cityText = UILabel()
+    private var filteredCities: [String] = []
+    private let textField = UITextField()
+    private let dropdownTableView = UITableView()
+    private let clearButton = UIButton()
+    private var isDropdownVisible = false
     
     var eventNameT: String?
     private var isFree = true
@@ -241,7 +250,13 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         setupImagesMenu()
         setupAddPoints()
         mapView.delegate = self
-       
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+            // Скрытие клавиатуры
+    @objc private func hideKeyboard() {
+        view.endEditing(true) // Скрывает клавиатуру, завершая редактирование для всех UIResponder
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -309,7 +324,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         tableView.dataSource = self
         tableView.reloadData()
         tableView.rowHeight = 60
-        tableView.isEditing = false
+//        tableView.isEditing = false
         tableView.isScrollEnabled = false
         
         view.addSubview(scrollView)
@@ -317,6 +332,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
          eventNameTextView,
          pointsMainText,
          descriptionMainText,
+         cityText,
          commentStackView,
          galeryMainText,
          imagesStackView,
@@ -324,7 +340,8 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
          addPoint,
          isFreeText,
          checkboxIsFree,
-         mapView].forEach {
+         mapView,
+         dropdownTableView].forEach {
             scrollView.addSubview($0)
         }
         
@@ -340,6 +357,41 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         scrollView.addSubview(tableView)
         view.addSubview(topView)
         view.addSubview(createEvent)
+        
+        textField.placeholder = "Выберите город"
+        textField.layer.cornerRadius = 12
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.layer.borderWidth = 1
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+        textField.delegate = self
+        textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        view.addSubview(textField)
+        clearButton.setTitle("×", for: .normal)
+        clearButton.setTitleColor(.black, for: .normal)
+        clearButton.titleLabel?.font = UIFont.systemFont(ofSize: 24)
+        clearButton.addTarget(self, action: #selector(clearTextField), for: .touchUpInside)
+        clearButton.isHidden = true
+        view.addSubview(clearButton)
+        clearButton.snp.makeConstraints { make in
+            make.right.equalTo(textField.snp.right).offset(-10)
+            make.centerY.equalTo(textField)
+        }
+
+        dropdownTableView.delegate = self
+        dropdownTableView.dataSource = self
+        dropdownTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cityCell")
+        dropdownTableView.isHidden = true
+//        print("Dropdown TableView frame:", dropdownTableView.frame) // Проверяем размеры
+//        dropdownTableView.isUserInteractionEnabled = true
+//        dropdownTableView.allowsSelection = true
+//        self.view.bringSubviewToFront(dropdownTableView)
+//        dropdownTableView.delaysContentTouches = false
+//        dropdownTableView.canCancelContentTouches = true
+//        dropdownTableView.isScrollEnabled = false
+
+        filteredCities = cities
         
         setupNoDataInf()
     }
@@ -435,9 +487,29 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 //            make.height.equalTo(height)
 //            make.trailing.equalToSuperview().offset(-34)
         }
-
-        galeryMainText.snp.makeConstraints { make in
+        cityText.snp.makeConstraints { make in
             make.top.equalTo(commentStackView.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(34)
+            make.height.equalTo(20)
+        }
+        textField.snp.makeConstraints { make in
+            make.top.equalTo(cityText.snp.bottom).offset(10)
+//            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
+            make.leading.equalToSuperview().offset(34)
+            make.trailing.equalToSuperview().offset(-34)
+            make.height.equalTo(40)
+        }
+        
+        
+        dropdownTableView.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(20)
+            make.height.equalTo(200) // Ограничиваем высоту выпадающего списка
+        }
+
+        
+        galeryMainText.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(15)
 //            make.bottom.equalTo(photoCollectionView.snp.top).offset(-15)
             make.leading.equalToSuperview().offset(34)
             make.height.equalTo(20)
@@ -488,11 +560,13 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         createMainText.text = "Создание экскурсии"
         descriptionMainText.text = "Описание"
         galeryMainText.text = "Фотографии с мест экскурсии"
+        cityText.text = "Выберите город экскурсии"
         
         eventName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         createMainText.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         pointsMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        cityText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionText.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         galeryMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         
@@ -706,19 +780,51 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableView == self.tableView {
             return pointInf.count
+        } else {
+            return filteredCities.count
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EventPointTableViewCell", for: indexPath) as! EventPointTableViewCell
-        if pointInf.isEmpty == false {
-            cell.set(point: pointInf[indexPath.row])
-            cell.numberLabel.text = "\(indexPath.row + 1)"
+        if tableView == self.tableView {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "EventPointTableViewCell", for: indexPath) as! EventPointTableViewCell
+            if pointInf.isEmpty == false {
+                cell.set(point: pointInf[indexPath.row])
+                cell.numberLabel.text = "\(indexPath.row + 1)"
+            }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
+            cell.textLabel?.text = filteredCities[indexPath.row]
+            cell.selectionStyle = .default
+//            cell.contentView.isUserInteractionEnabled = false
+            return cell
         }
-        return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Did select row at: \(indexPath.row)")
+        if tableView == self.tableView {
+        } else {
+            let selectedCity = filteredCities[indexPath.row]
+            textField.text = selectedCity
+            hideDropdown()
+//            dropdownTableView.isHidden = true
+//            textField.text = selectedCity
+            textField.resignFirstResponder()
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        print("Cell highlighted at \(indexPath.row)")
+        
+    }
+    func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
+        print("didUnhighlightRowAt called for row: \(indexPath.row)")
+        dropdownTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        self.tableView(dropdownTableView, didSelectRowAt: indexPath)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -794,8 +900,9 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                 description: self.commentTextView.text,
                 eventPoints: pointsArray,
                 eventPhotos: urls,
-                eventLanguage: "rus",
-                eventAR: true,
+                eventCity: self.textField.text,
+                eventQuest: false,
+                eventQuestId: "",
                 eventDistance: self.eventDist,
                 eventImage: urls.first,
                 eventName: self.eventNameTextView.text,
@@ -812,9 +919,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                 self.pointsArrayEvent.append(success)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     self.customAlert.isHidden = true
-                    let vc = EventsViewController()
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.showCustomAlert(id: success, event: data)
                 }
                 self.activityIndicator.stopAnimating()
                 self.activityIndicator.removeFromSuperview()
@@ -834,6 +939,26 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
 //            self.createPoint.setTitle("Добавить точку", for: .normal)
         }
     }
+    
+    func showCustomAlert(id: String, event: EventDetailsTest) {
+        let alert = CustomAlertView(frame: self.view.bounds)
+        alert.onYesButtonTapped = {
+            print("Пользователь выбрал 'Да'")
+            let vc = CreateQuestViewController()
+            vc.id = id
+            vc.event = event
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+        alert.onNoButtonTapped = {
+            print("Пользователь выбрал 'Нет'")
+            let vc = EventsViewController()
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+        self.view.addSubview(alert)
+    }
+
     
     func updateUserInfo(id: String) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -900,6 +1025,71 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         self.mapView.addAnnotation(annotation)
         self.setupMap(latitude: latitude, longitude: longitude, delta: 0.01)
     }
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        guard let searchText = textField.text else { return }
+
+        if searchText.isEmpty {
+            filteredCities = cities
+        } else {
+            filteredCities = cities.filter { $0.lowercased().contains(searchText.lowercased()) }
+        }
+
+        dropdownTableView.reloadData()
+
+        if !searchText.isEmpty {
+            showDropdown()
+        } else {
+            hideDropdown()
+        }
+    }
+
+    @objc private func clearTextField() {
+        textField.text = ""
+        filteredCities = cities
+        dropdownTableView.reloadData()
+        hideDropdown()
+        textField.resignFirstResponder()
+    }
+
+    @objc private func hideDropdown() {
+        isDropdownVisible = false
+        dropdownTableView.isHidden = true
+        clearButton.isHidden = true
+    }
+
+    private func showDropdown() {
+        isDropdownVisible = true
+        dropdownTableView.isHidden = false
+        clearButton.isHidden = false
+    }
+
+    // MARK: - UITableViewDataSource
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return filteredCities.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "cityCell", for: indexPath)
+//        cell.textLabel?.text = filteredCities[indexPath.row]
+//        return cell
+//    }
+//
+//    // MARK: - UITableViewDelegate
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let selectedCity = filteredCities[indexPath.row]
+//        textField.text = selectedCity
+//        hideDropdown()
+//        textField.resignFirstResponder()
+//    }
+
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        textField.text = ""
+        filteredCities = cities
+        dropdownTableView.reloadData()
+        return false
+    }
+
 }
 
 

@@ -12,7 +12,7 @@ import CoreLocation
 import Firebase
 
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController  {
     
     var topView = AppHeaderView()
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
@@ -20,6 +20,10 @@ class MapViewController: UIViewController {
     let zoomOutButton = MapButton(icon: UIImage(named: "minusIcon")!)
     
     var posts = [EventDetailsTest]()
+    
+    var pointName = ""
+    var pointDescription = ""
+    var pointImages = [""]
     
     var currentZoom: Double = 0.05
     var currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 55.7602196, longitude: 37.6186409)
@@ -40,7 +44,9 @@ class MapViewController: UIViewController {
         return mapView
     }()
     
-    var annotationsArray = [MKPointAnnotation]()
+    var annotationsArray = [CustomAnnotation]()
+    var tapCountForAnnotations: [ObjectIdentifier: Int] = [:]
+    private let customView = CustomBottomView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +54,24 @@ class MapViewController: UIViewController {
         setConstraints()
         setupActions()
         getPoints()
+        setupCustomView()
         view.backgroundColor = UIColor(named: "appBackground")
+    }
+    
+    private func setupCustomView() {
+        view.addSubview(customView)
+        customView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview().offset(300)
+            make.height.equalTo(300)
+        }
+        
+        customView.isHidden = true
+        customView.closeButton.addTarget(self, action: #selector(hideCustomView), for: .touchUpInside)
+        customView.parentVC = self
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(hideCustomView))
+        swipeGesture.direction = .down
+        customView.addGestureRecognizer(swipeGesture)
     }
     
     
@@ -68,7 +91,7 @@ class MapViewController: UIViewController {
                                let point = PointDetail.parse(childSnapshot.key, data)
                             {
                                 let currentMapLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: point.latitude ?? 0.0, longitude: point.longitude ?? 0.0)
-                                self.addAnnotation(location: currentMapLocation, title: point.name ?? "", subtitle: point.address ?? "")
+                                self.addAnnotation(location: currentMapLocation, title: post.eventName ?? "", subtitle: post.description ?? "", imgs: post.eventPhotos ?? [""], id: point.id ?? "")
                             }
                         })
                     }
@@ -77,8 +100,6 @@ class MapViewController: UIViewController {
         }
 
     private func setupActions() {
-//        mapView.annotations
-//        annotationView.image = UIImage(named: "yourImagename”)
         moveToLocation(latitude: 55.7602196, longitude: 37.6186409, zoom: 1)
         
         zoomInButton.addTapGestureRecognizer {
@@ -115,12 +136,15 @@ class MapViewController: UIViewController {
         }
     }
     
-    func addAnnotation(location: CLLocationCoordinate2D, title: String, subtitle: String){
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = location
-            annotation.title = title
+    
+    func addAnnotation(location: CLLocationCoordinate2D, title: String, subtitle: String, imgs: [String], id: String){
+        let annotation = CustomAnnotation()
+        annotation.coordinate = location
+        annotation.title = title
         annotation.subtitle = subtitle
-            self.mapView.addAnnotation(annotation)
+        annotation.images = imgs
+        annotation.id = id
+        self.mapView.addAnnotation(annotation)
     }
     
     func moveToLocation(latitude: Double, longitude: Double, zoom: Double) {
@@ -163,7 +187,39 @@ extension MapViewController: MKMapViewDelegate {
         currentMapLocation = annotation.coordinate
         let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: currentZoom, longitudeDelta: currentZoom))
         mapView.setRegion(region, animated: true)
+        
+        guard let annotation = view.annotation as? CustomAnnotation else { return }
+//        if let annotationTitle = view.annotation?.title ?? nil {
+//            if let annotationSubtitle = view.annotation?.subtitle ?? nil {
+//                if let annotationImgs = annotation?.images ?? nil {
+        showCustomView(with: annotation.title!, description: annotation.subtitle!, images: annotation.images, id: annotation.id)
+//                }
+//            }
+//        }
     }
+    
+    @objc private func hideCustomView() {
+            UIView.animate(withDuration: 0.3) {
+                self.customView.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(300)
+                }
+                self.view.layoutIfNeeded()
+            } completion: { _ in
+                self.customView.isHidden = true
+            }
+        }
+
+    private func showCustomView(with title: String, description: String, images: [String], id: String ) {
+            customView.isHidden = false
+        customView.configure(with: title, description: description, images: images, id: id)
+
+            UIView.animate(withDuration: 0.3) {
+                self.customView.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
 }
 
 extension MapViewController {
@@ -171,7 +227,6 @@ extension MapViewController {
     func setConstraints() {
         
         view.addSubview(topView)
-//        view.addSubview(userLocationButton)
         view.addSubview(mapView)
         view.addSubview(zoomStackView)
         
@@ -228,4 +283,9 @@ class MapButton: UIButton {
         self.backgroundColor = .white
         self.setTitle("", for: .normal)
     }
+}
+
+class CustomAnnotation: MKPointAnnotation {
+    var images: [String] = []
+    var id: String = ""
 }

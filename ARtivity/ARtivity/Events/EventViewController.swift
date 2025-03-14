@@ -16,10 +16,6 @@ import MapKit
 
 class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
-
-//    var post: EventsModel?
-//    var postDetail: EventDetails?
-    
     var event: EventDetailsTest?
     
     var pointInf = [PointDetail]()
@@ -36,7 +32,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     private let ratingImg = UIImageView()
     private let ratingText = UILabel()
     private let languageImage = UIImageView()
-    private let languageText = UILabel()
+    private let cityLabelText = UILabel()
     private let ARImage = UIImageView()
     private let ARText = UILabel()
     private let lineView = UIView()
@@ -67,6 +63,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     private let galeryMainText = UILabel()
     private let galeryphotos = UIImageView()
     private let mapImage = UIImageView()
+    
+    private let questButton = UIButton()
     
     let mapView: MKMapView = {
         let mapView = MKMapView()
@@ -152,6 +150,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         tableView.rowHeight = 60
 //        tableView.separatorStyle = .none
         
+        questButton.isHidden = true
+        questButton.backgroundColor = .clear
+        questButton.setImage(UIImage(named: "cameraIcon"), for: .normal)
+        questButton.setTitle("", for: .normal)
+        
         //MARK: it will be a simple tableViewCell
 
         
@@ -165,7 +168,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                  ratingImg,
                  ratingText,
                  languageImage,
-                 languageText,
+                 cityLabelText,
                  ARImage,
                  ARText,
                  lineView,
@@ -193,6 +196,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         }
 //        view.sendSubviewToBack(scrollView)
         view.addSubview(topView)
+        view.addSubview(questButton)
         view.addSubview(goTripButton)
         
         distanceLabel.textAlignment = .center
@@ -211,7 +215,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         photoCollectionView.showsHorizontalScrollIndicator = false
     }
 
-    func makeConstraints(height: CGFloat) {
+    func makeConstraints(height: CGFloat, isQuest: Bool) {
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -225,13 +229,27 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             make.height.equalTo(50)
         }
         
-        
-        goTripButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-40)
-            make.leading.equalToSuperview().offset(28)
-            make.trailing.equalToSuperview().offset(-28)
-            make.height.equalTo(45)
+        if isQuest {
+            questButton.snp.makeConstraints { make in
+                make.trailing.equalToSuperview().offset(-28)
+                make.bottom.equalToSuperview().offset(-40)
+                make.height.equalTo(45)
+                make.width.equalTo(45)
+            }
+            
+            goTripButton.snp.makeConstraints { make in
+                make.bottom.equalToSuperview().offset(-40)
+                make.leading.equalToSuperview().offset(28)
+                make.trailing.equalTo(questButton.snp.leading).offset(-20)
+                make.height.equalTo(45)
+            }
+        } else {
+            goTripButton.snp.makeConstraints { make in
+                make.bottom.equalToSuperview().offset(-40)
+                make.leading.equalToSuperview().offset(28)
+                make.trailing.equalToSuperview().offset(-28)
+                make.height.equalTo(45)
+            }
         }
         
         imageViewPost.snp.makeConstraints { make in
@@ -263,7 +281,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             make.leading.equalToSuperview().offset(34)
             make.width.height.equalTo(20)
         }
-        languageText.snp.makeConstraints { make in
+        cityLabelText.snp.makeConstraints { make in
             make.top.equalTo(languageImage)
             make.leading.equalTo(languageImage.snp.trailing).offset(15)
             make.height.equalTo(20)
@@ -455,7 +473,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         galeryMainText.text = "Фотографии с мест экскурсии"
         
         eventName.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        languageText.font = UIFont.systemFont(ofSize: 12.0)
+        cityLabelText.font = UIFont.systemFont(ofSize: 12.0)
         ARText.font = UIFont.systemFont(ofSize: 12.0)
         pointsMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         descriptionMainText.font = UIFont.systemFont(ofSize: 14, weight: .bold)
@@ -471,19 +489,36 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         goTripButton.layer.cornerRadius = 14
         goTripButton.addTarget(self, action: #selector(self.goTripButtonPressed), for: .touchUpInside)
         
+        
+        questButton.setTitleColor(.black, for: .normal)
+        questButton.isUserInteractionEnabled = true
+        questButton.backgroundColor = UIColor(named: "mainGreen")
+        questButton.layer.cornerRadius = 14
+        questButton.addTarget(self, action: #selector(self.goQuestButtonPressed), for: .touchUpInside)
+        
     }
     
     func setupDataInf() {
-        if event?.eventLanguage == "rus" {
-            languageText.text = "Русский язык экскурсии"
-        }
-        if event?.eventAR == true {
-            ARText.text = "Ориентируйся с помощью дополненной реальности"
+//        if event?.eventCity == "rus" {
+            cityLabelText.text = event?.eventCity//"Русский язык экскурсии"
+//        }
+        let isQuest = event?.eventQuest
+        
+        if isQuest == true {
+            ARText.text = "Проходите квесты по экскурсии"
+        } else {
+            ARText.text = "Квесты пока не доступны"
         }
         descriptionText.text = event?.description
         
         let width = 300.0
         let height = descriptionText.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
+        
+        if isQuest == true {
+            questButton.isHidden = false
+        } else {
+            questButton.isHidden = true
+        }
         
         if isLogin {
             
@@ -512,7 +547,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             }
         }
         
-        self.makeConstraints(height: height)
+        self.makeConstraints(height: height, isQuest: isQuest ?? false)
     }
     
     func setupPointView1() {
@@ -710,7 +745,6 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
                                 self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 if post.isFirstPoint ?? false {
                                     self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
                                 }
                             } else {
                                 if post.isFirstPoint ?? false {
@@ -851,6 +885,13 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             let vc = AuthViewController()
             present(vc, animated: true)
         }
+    }
+    
+    @objc func goQuestButtonPressed() {
+        let vc = QuestListViewController()
+        vc.event = event
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {

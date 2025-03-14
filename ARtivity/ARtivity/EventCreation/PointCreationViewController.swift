@@ -45,6 +45,9 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
     private let sendButton = UIButton(type: .system)
 //    private let statusLabel = UILabel()
     
+    private let ttsButton = UIButton(type: .system)
+    private let synthesizer = AVSpeechSynthesizer()
+    
     let mapView: MKMapView = {
         let mapView = MKMapView()
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -213,9 +216,14 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
                                                   color: .white, nameText: "")
         self.setupUI()
         setupImagesMenu()
-       
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
-    
+
+            // Скрытие клавиатуры
+    @objc private func hideKeyboard() {
+        view.endEditing(true) // Скрывает клавиатуру, завершая редактирование для всех UIResponder
+    }
     override func viewWillDisappear(_ animated: Bool) {
         for view in self.view.subviews {
             view.removeFromSuperview()
@@ -264,6 +272,11 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
         playButton.tintColor = .systemGreen
         playButton.isEnabled = false
         
+        ttsButton.setImage(UIImage(systemName: "text.bubble"), for: .normal)
+        ttsButton.addTarget(self, action: #selector(ttsButtonTapped), for: .touchUpInside)
+        ttsButton.tintColor = .systemGreen
+                
+        
         audioWaveformView.backgroundColor = .clear
         
         mapImage.image = UIImage(named: "mapPreview")
@@ -277,6 +290,7 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
          commentStackView,
          recordMainText,
          recordButton,
+         ttsButton,
          playButton,
          audioWaveformView,
          galeryMainText,
@@ -384,12 +398,25 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
             make.width.height.equalTo(40)
         }
         
-        audioWaveformView.snp.makeConstraints { make in
+        ttsButton.snp.makeConstraints { make in
             make.centerY.equalTo(recordButton.snp.centerY)
             make.leading.equalTo(recordButton.snp.trailing).offset(15)
+            make.width.height.equalTo(50)
+        }
+                
+        audioWaveformView.snp.makeConstraints { make in
+            make.centerY.equalTo(recordButton.snp.centerY)
+            make.leading.equalTo(ttsButton.snp.trailing).offset(15)
             make.trailing.equalTo(playButton.snp.leading).offset(-15)
             make.height.equalTo(70)
         }
+        
+//        audioWaveformView.snp.makeConstraints { make in
+//            make.centerY.equalTo(recordButton.snp.centerY)
+//            make.leading.equalTo(recordButton.snp.trailing).offset(15)
+//            make.trailing.equalTo(playButton.snp.leading).offset(-15)
+//            make.height.equalTo(70)
+//        }
         
 
         galeryMainText.snp.makeConstraints { make in
@@ -606,6 +633,41 @@ class PointCreationViewController: UIViewController, UIScrollViewDelegate, AVAud
             createPoint.setTitle("", for: .normal)
         }
     }
+    
+    @objc private func ttsButtonTapped() {
+            guard let textToSpeak = commentTextView.text,
+                  textToSpeak != "Описание точки" else {
+                return
+            }
+            
+            let utterance = AVSpeechUtterance(string: textToSpeak)
+            utterance.voice = AVSpeechSynthesisVoice(language: "ru-RU")
+            utterance.rate = 0.5
+            
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            audioFileURL = documentsPath.appendingPathComponent("tts_recording.m4a")
+            
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default)
+                try AVAudioSession.sharedInstance().setActive(true)
+                
+                let settings: [String: Any] = [
+                    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                    AVSampleRateKey: 44100.0,
+                    AVNumberOfChannelsKey: 1,
+                    AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+                ]
+                
+                audioRecorder = try AVAudioRecorder(url: audioFileURL!, settings: settings)
+                audioRecorder?.delegate = self
+                audioRecorder?.record()
+                synthesizer.speak(utterance)
+                playButton.isEnabled = true
+                
+            } catch {
+                print("Error setting up audio session: \(error.localizedDescription)")
+            }
+        }
     
     private func uploadData() {
 //        guard let audioFileURL = self.audioFileURL else { return }
@@ -909,5 +971,40 @@ extension PointCreationViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         mapView.setRegion(region, animated: true)
+    }
+}
+
+
+// Add AVSpeechSynthesizerDelegate methods
+extension PointCreationViewController: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        // Stop recording when speech synthesis is complete
+        let audioEngine = AVAudioEngine()
+        audioEngine.mainMixerNode.removeTap(onBus: 0)
+        audioEngine.stop()
+        
+        // Reset audio session
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+        } catch {
+            print("Error stopping audio session: \(error.localizedDescription)")
+        }
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        // Optionally show some UI indication that synthesis has started
+        print("Started speaking")
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance) {
+        print("Paused speaking")
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
+        print("Continued speaking")
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        print("Cancelled speaking")
     }
 }

@@ -18,6 +18,7 @@ class CreatedEventsViewController: UIViewController {
     var events = [""]
     var eventsName = [""]
     var eventsImgs = [""]
+    var eventsFull: [EventDetailsTest] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,6 +103,19 @@ class CreatedEventsViewController: UIViewController {
                     }
                 }
         })
+        let dbRef = Database.database().reference().child("event/")
+        dbRef.observeSingleEvent(of: .value, with: { snapshot in
+            var tempPosts = [EventDetailsTest]()
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let data = childSnapshot.value as? [String: Any],
+                   let post = EventDetailsTest.parse(childSnapshot.key, data)
+                {
+                    tempPosts.insert(post, at: 0)
+                }
+            }
+            self.eventsFull = tempPosts
+        })
     }
     
     @objc private func backButtonTapped() {
@@ -123,17 +137,36 @@ extension CreatedEventsViewController: UITableViewDataSource {
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 150 // Высота ячейки
+            return 150
         }
 }
 
-// MARK: - UITableViewDelegate
 extension CreatedEventsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//        let tourName = eventsName[indexPath.row + 1]
-//        let alert = UIAlertController(title: "Информация", message: "Вы выбрали экскурсию: \(tourName)", preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "ОК", style: .default))
-//        present(alert, animated: true)
+        let tourName = eventsName[indexPath.row + 1]
+        for item in eventsFull {
+            if item.eventName == tourName {
+                print("o da")
+                if !(item.eventQuest ?? true) {
+                    let alert = CustomAlertView(frame: self.view.bounds)
+                    alert.onYesButtonTapped = {
+                        print("Пользователь выбрал 'Да'")
+                        let vc = CreateQuestViewController()
+                        vc.id = item.id ?? ""
+                        vc.event = item
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                    }
+                    alert.onNoButtonTapped = {
+                        print("Пользователь выбрал 'Нет'")
+                    }
+                    self.view.addSubview(alert)
+                } else {
+                    let alert = UIAlertController(title: "Информация", message: "Вы выбрали экскурсию: \(tourName)", preferredStyle: .alert)
+                           alert.addAction(UIAlertAction(title: "ОК", style: .default))
+                           present(alert, animated: true)
+                }
+            }
+        }
     }
 }

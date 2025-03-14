@@ -334,7 +334,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             case 4:
                 print("changeTheme")
-                let vc = TestVCCity()
+                let vc = TestVCEditAccont()
                 self.present(vc, animated: true)
             default:
                 print("no action")
