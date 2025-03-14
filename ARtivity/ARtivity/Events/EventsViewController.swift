@@ -18,8 +18,22 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     private var searchBar: UISearchBar!
 //    let searchBarController = UISearchController(searchResultsController: nil)
+    private var filterCityBtn = UIButton()
     private var filterBtn = UIButton()
     private var filtersView = UIView()
+    
+    private let citiesTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.isHidden = true
+        tableView.layer.cornerRadius = 8
+        tableView.clipsToBounds = true
+        tableView.layer.borderWidth = 1
+        tableView.layer.borderColor = UIColor.systemGray5.cgColor
+        return tableView
+    }()
+    private let cities = ["Москва", "Санкт-Петербург", "Минск", "Киев", "Алматы", "Ташкент", "Бишкек", "Ереван", "Баку", "Астана", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"
+                      ]
+    private var isTableViewVisible = false
     
     private let filterLabel = UILabel()
     private let filterDistanceLabel = UILabel()
@@ -48,7 +62,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var lastUploadedPostID: String?
     let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
     
-    
+    private let buttonResetFilter = UIButton()
     private let buttonCreatePost = UIButton()
     
     var postsRef: DatabaseReference {
@@ -83,6 +97,7 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewWillAppear(animated)
         
         self.buttonCreatePost.isHidden = true
+        self.buttonResetFilter.isHidden = true
         
         guard let user = Auth.auth().currentUser else { return}
         let ref = Database.database().reference()
@@ -147,14 +162,32 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         buttonCreatePost.addTarget(self,action:#selector(createPost),
                                     for:.touchUpInside)
         
+        buttonResetFilter.setTitle("  Сбросить фильтры  ", for: .normal)
+//        buttonResetFilter.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+//        buttonResetFilter.tintColor = UIColor(named: "mainGreen") ?? .green
+        buttonResetFilter.setTitleColor(.white, for: .normal)
+        buttonResetFilter.backgroundColor = UIColor(named: "mainGreen") ?? .green
+        buttonResetFilter.contentVerticalAlignment = .fill
+        buttonResetFilter.contentHorizontalAlignment = .fill
+        buttonResetFilter.addTarget(self,action:#selector(resetFilter),
+                                    for:.touchUpInside)
+        buttonResetFilter.layer.cornerRadius = 12
+        
+        citiesTableView.delegate = self
+        citiesTableView.dataSource = self
+        citiesTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CityCell")
+        
         view.addSubview(topView)
         view.addSubview(tableView)
         view.addSubview(buttonNewPost)
         view.addSubview(searchBar)
 //        view.addSubview(searchBarController.searchBar)
         view.addSubview(filterBtn)
+        view.addSubview(filterCityBtn)
         view.addSubview(filtersView)
+        view.addSubview(citiesTableView)
         view.addSubview(buttonCreatePost)
+        view.addSubview(buttonResetFilter)
         
         [filterLabel,
          filterDistanceLabel,
@@ -203,30 +236,23 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         filterBtn.addTarget(self,action:#selector(tapFilter),
                             for:.touchUpInside)
         
+        filterCityBtn.addTarget(self,action:#selector(toggleDropdownMenu),
+                            for:.touchUpInside)
+        
         beginBatchFetch()
 
         self.hideKeyboardWhenTappedAround()
         self.tableView.keyboardDismissMode = .onDrag
         
-//        searchBarController.searchBar.delegate = self
-////        searchBarController.obscuresBackgroundDuringPresentation = false
-////        searchBarController.searchBar.sizeToFit()
-//        searchBarController.searchBar.isHidden = true
-//        searchBarController.searchBar.tintColor = UIColor(named: "mainGreen")
-//        searchBarController.searchBar.backgroundImage = UIImage()
-//        if filterName == "" {
-//            searchBarController.searchBar.placeholder = "Найти"
-//        } else {
-//            searchBarController.searchBar.placeholder = filterName
-//        }
-        
-        
         searchBar.isHidden = true
         filterBtn.isHidden = true
+        filterCityBtn.isHidden = true
         filtersView.isHidden = true
         filtersView.backgroundColor = UIColor(named: "appBackground")
         filterBtn.setImage(UIImage(systemName: "line.3.horizontal.decrease.circle"), for: .normal)
         filterBtn.tintColor = UIColor(named: "mainGreen")
+        filterCityBtn.setImage(UIImage(named: "navMapPoint"), for: .normal)
+        filterCityBtn.tintColor = UIColor(named: "mainGreen")
         searchBar.tintColor = UIColor(named: "mainGreen")
         searchBar.backgroundImage = UIImage()
         searchBar.delegate = self
@@ -244,10 +270,25 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             make.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
+        
+        filterCityBtn.snp.makeConstraints { make in
+            make.centerY.equalTo(searchBar.snp.centerY)
+            make.leading.equalToSuperview().inset(20)
+            make.width.height.equalTo(20)
+        }
+        
+        citiesTableView.snp.makeConstraints { make in
+            make.top.equalTo(filterCityBtn.snp.bottom).offset(10)
+//            make.centerX.equalToSuperview()
+            make.leading.equalTo(filterCityBtn.snp.leading)
+            make.width.equalTo(200)
+            make.height.equalTo(300)
+        }
+
 
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom)
-            make.leading.equalToSuperview().inset(10)
+            make.leading.equalTo(filterCityBtn.snp.trailing).offset(10)
             make.trailing.equalToSuperview().inset(40)
         }
         
@@ -326,6 +367,12 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             make.height.equalTo(70)
             make.width.equalTo(70)
         }
+        
+        buttonResetFilter.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-40)
+            make.leading.equalToSuperview().offset(30)
+            make.height.equalTo(50)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -347,6 +394,16 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
 
     }
+    
+    @objc private func toggleDropdownMenu() {
+//        resetFilter()
+        isTableViewVisible.toggle()
+        if !isTableViewVisible {
+            beginBatchFetch()
+        }
+        citiesTableView.isHidden = !isTableViewVisible
+    }
+
 
     @objc func handleRefresh() {
         print("Refresh!")
@@ -430,66 +487,88 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            let adCount = event.count / tableViewAdsMinus
-            return event.count + adCount
-        case 1:
-            return fetchingMore ? 1 : 0
-        default:
-            return 0
+        if tableView == self.tableView {
+            switch section {
+            case 0:
+                let adCount = event.count / tableViewAdsMinus
+                return event.count + adCount
+            case 1:
+                return fetchingMore ? 1 : 0
+            default:
+                return 0
+            }
+        } else {
+            return cities.count
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            if isAdCell(at: indexPath.row) {
-                let adCell = tableView.dequeueReusableCell(withIdentifier: "AdCell", for: indexPath)
-                configureAdImgCell(adCell, indexPath: indexPath)
-                return adCell
-                
+        if tableView == self.tableView {
+            if indexPath.section == 0 {
+                if isAdCell(at: indexPath.row) {
+                    let adCell = tableView.dequeueReusableCell(withIdentifier: "AdCell", for: indexPath)
+                    configureAdImgCell(adCell, indexPath: indexPath)
+                    return adCell
+                    
+                } else {
+                    let dataIndex = getDataIndex(for: indexPath.row)
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "EventsTableViewCell", for: indexPath) as! EventsTableViewCell
+                    cell.set(post: event[dataIndex])
+                    return cell
+                }
             } else {
-                let dataIndex = getDataIndex(for: indexPath.row)
-                let cell = tableView.dequeueReusableCell(withIdentifier: "EventsTableViewCell", for: indexPath) as! EventsTableViewCell
-                cell.set(post: event[dataIndex])
+                let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell
+                cell.spinner.startAnimating()
                 return cell
             }
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell", for: indexPath) as! LoadingCell
-            cell.spinner.startAnimating()
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CityCell", for: indexPath)
+            cell.selectionStyle = .none
+            cell.textLabel?.text = cities[indexPath.row]
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 16)
             return cell
         }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if isAdCell(at: indexPath.row) {
-        } else {
-            let dataIndex = getDataIndex(for: indexPath.row)
-            let post = event[dataIndex]
-            print("SELECTED POST: \(post.eventId ?? "")")
-            if event[dataIndex].eventIsFree ?? true {
-                tapCount += 1
-                if tapCount % tapBeforeShowVideo == 0 {
-                    videoShown = false
-                    showVideo(post: post)
-                }
-                let vc = EventViewController()
-                vc.event = post
-                vc.modalPresentationStyle = .fullScreen
-                present(vc, animated: true)
+        if tableView == self.tableView {
+            if isAdCell(at: indexPath.row) {
             } else {
                 let dataIndex = getDataIndex(for: indexPath.row)
                 let post = event[dataIndex]
-                videoShown = false
-                showVideo(post: post)
+                print("SELECTED POST: \(post.eventId ?? "")")
+                if event[dataIndex].eventIsFree ?? true {
+                    tapCount += 1
+                    if tapCount % tapBeforeShowVideo == 0 {
+                        videoShown = false
+                        showVideo(post: post)
+                    }
+                    let vc = EventViewController()
+                    vc.event = post
+                    vc.modalPresentationStyle = .fullScreen
+                    present(vc, animated: true)
+                } else {
+                    let dataIndex = getDataIndex(for: indexPath.row)
+                    let post = event[dataIndex]
+                    videoShown = false
+                    showVideo(post: post)
+                }
             }
+        } else {
+            let selectedCity = cities[indexPath.row]
+            isTableViewVisible = false
+            citiesTableView.isHidden = true
+            print("Selected city: \(selectedCity)")
+            getFilteredCityData(searchedCity: selectedCity)
         }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellHeights[indexPath] = cell.frame.size.height
-        cell.selectionStyle = .none
-        cell.backgroundColor = UIColor(named: "appBackground")
+        if tableView == self.tableView {
+            cellHeights[indexPath] = cell.frame.size.height
+            cell.selectionStyle = .none
+            cell.backgroundColor = UIColor(named: "appBackground")
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -636,11 +715,13 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if isSearch {
             searchBar.isHidden = true
             filterBtn.isHidden = true
+            filterCityBtn.isHidden = true
             filtersView.isHidden = true
             isSearch = false
         } else {
             searchBar.isHidden = false
             filterBtn.isHidden = false
+            filterCityBtn.isHidden = false
 //            filtersView.isHidden = false
             isSearch = true
         }
@@ -665,54 +746,84 @@ class EventsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @objc func filterDistanceLessKMBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventDistance ?? 0 < 1000 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
         filtersView.isHidden = true
+        buttonCreatePost.isHidden = true
     }
     
     @objc func filterDistanceMoreKMLessThreeKMBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventDistance ?? 0 >= 1000 &&  $0.eventDistance ?? 0 <= 3000 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
         filtersView.isHidden = true
+        buttonCreatePost.isHidden = true
     }
     
     @objc func filterDistanceMoreThreeKMBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventDistance ?? 0 > 3000 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
         filtersView.isHidden = true
+        buttonCreatePost.isHidden = true
     }
     
     @objc func filterTimeLessHourBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventTime ?? 0 < 60 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
         filtersView.isHidden = true
+        buttonCreatePost.isHidden = true
     }
     @objc func filterTimeMoreHourLessThreeHourBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventTime ?? 0 >= 60 &&  $0.eventTime ?? 0 <= 180 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
+        buttonCreatePost.isHidden = true
         filtersView.isHidden = true
     }
     @objc func filterTimeMoreThreeHourBtnClicked() {
+        buttonResetFilter.isHidden = false
         event = event.filter{ $0.eventTime ?? 0 > 180 }
         tableView.reloadData()
-        tapTitle()
+//        tapTitle()
         filtersView.isHidden = true
+        buttonCreatePost.isHidden = true
     }
     func getFilteredData(searchedText: String = String()) {
+        buttonResetFilter.isHidden = false
         let filteredListData: [EventDetailsTest] = event.filter{ $0.eventName!.lowercased().contains(searchedText.lowercased()) }
         event = filteredListData
         tableView.reloadData()
+        buttonCreatePost.isHidden = true
+    }
+    
+    func getFilteredCityData(searchedCity: String = String()) {
+        buttonResetFilter.isHidden = false
+        let filteredListData: [EventDetailsTest] = event.filter{ $0.eventCity!.lowercased().contains(searchedCity.lowercased()) }
+        event = filteredListData
+        tableView.reloadData()
+        buttonCreatePost.isHidden = true
     }
     
     @objc func createPost() {
         let vc = EventCreationViewController()
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
+    }
+    
+    @objc func resetFilter() {
+        beginBatchFetch()
+        tapTitle()
+        toggleDropdownMenu()
+        buttonResetFilter.isHidden = true
+        buttonCreatePost.isHidden = false
     }
 }
 

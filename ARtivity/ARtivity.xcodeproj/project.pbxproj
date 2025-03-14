@@ -14,7 +14,9 @@
 		A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEC2B2664C4003A467A /* EventViewController.swift */; };
 		A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A516ADEE2B2669B2003A467A /* AppHeaderView.swift */; };
 		A51A43AD2D3C1AF9007EBDA7 /* CreatedEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51A43AC2D3C1AF0007EBDA7 /* CreatedEvents.swift */; };
-		A51A43AF2D3C209F007EBDA7 /* TestVCCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51A43AE2D3C2098007EBDA7 /* TestVCCity.swift */; };
+		A51A43AF2D3C209F007EBDA7 /* TestVCEditAccont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51A43AE2D3C2098007EBDA7 /* TestVCEditAccont.swift */; };
+		A51A43B12D3EA83D007EBDA7 /* CustomBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51A43B02D3EA83D007EBDA7 /* CustomBottomView.swift */; };
+		A51A43B42D402D9D007EBDA7 /* QuestListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51A43B32D402D9C007EBDA7 /* QuestListViewController.swift */; };
 		A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */; };
 		A527AFF52CEA0D0D00086737 /* PointExitingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */; };
 		A52F120C2CAEA0A300C3274B /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F120B2CAEA0A300C3274B /* PopupView.swift */; };
@@ -52,6 +54,8 @@
 		A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */; };
 		A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */; };
 		A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5478E2F2CEF5FD5003D479B /* StorageService.swift */; };
+		A58725082D4392EA00139658 /* CreateQuestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58725072D4392E900139658 /* CreateQuestViewController.swift */; };
+		A587250A2D43AE8200139658 /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58725092D43AE8100139658 /* CustomAlertView.swift */; };
 		A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED52B17300C00B0151A /* AuthViewController.swift */; };
 		A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED82B17356F00B0151A /* CustomButton.swift */; };
 		A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */; };
@@ -93,7 +97,9 @@
 		A516ADEC2B2664C4003A467A /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		A516ADEE2B2669B2003A467A /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
 		A51A43AC2D3C1AF0007EBDA7 /* CreatedEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedEvents.swift; sourceTree = "<group>"; };
-		A51A43AE2D3C2098007EBDA7 /* TestVCCity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestVCCity.swift; sourceTree = "<group>"; };
+		A51A43AE2D3C2098007EBDA7 /* TestVCEditAccont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestVCEditAccont.swift; sourceTree = "<group>"; };
+		A51A43B02D3EA83D007EBDA7 /* CustomBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBottomView.swift; sourceTree = "<group>"; };
+		A51A43B32D402D9C007EBDA7 /* QuestListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestListViewController.swift; sourceTree = "<group>"; };
 		A527AFF22CE8E36A00086737 /* PointCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointCreationViewController.swift; sourceTree = "<group>"; };
 		A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointExitingViewController.swift; sourceTree = "<group>"; };
 		A52F120B2CAEA0A300C3274B /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
@@ -131,6 +137,8 @@
 		A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extention.swift"; sourceTree = "<group>"; };
 		A543C8BD2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChipsFilterButton.swift; sourceTree = "<group>"; };
 		A5478E2F2CEF5FD5003D479B /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		A58725072D4392E900139658 /* CreateQuestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateQuestViewController.swift; sourceTree = "<group>"; };
+		A58725092D43AE8100139658 /* CustomAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertView.swift; sourceTree = "<group>"; };
 		A5D2EED52B17300C00B0151A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A5D2EED82B17356F00B0151A /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -188,10 +196,19 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A51A43B22D402D93007EBDA7 /* Quest */ = {
+			isa = PBXGroup;
+			children = (
+				A58725072D4392E900139658 /* CreateQuestViewController.swift */,
+				A51A43B32D402D9C007EBDA7 /* QuestListViewController.swift */,
+			);
+			path = Quest;
+			sourceTree = "<group>";
+		};
 		A52F11F42CAE886E00C3274B /* EventCreation */ = {
 			isa = PBXGroup;
 			children = (
-				A51A43AE2D3C2098007EBDA7 /* TestVCCity.swift */,
+				A51A43AE2D3C2098007EBDA7 /* TestVCEditAccont.swift */,
 				A5F2E4BC2D08A9F8002F00EA /* RecordVC.swift */,
 				A5478E2F2CEF5FD5003D479B /* StorageService.swift */,
 				A527AFF42CEA0D0400086737 /* PointExitingViewController.swift */,
@@ -224,6 +241,7 @@
 		A53248692B159A82008AD9DF /* ARtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A51A43B22D402D93007EBDA7 /* Quest */,
 				A5E633DA2D3302D9005813C7 /* Ads */,
 				A52F11F42CAE886E00C3274B /* EventCreation */,
 				A543C8BA2C2AB30D00B1CD49 /* Extentions */,
@@ -281,6 +299,7 @@
 		A53248852B159D36008AD9DF /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				A51A43B02D3EA83D007EBDA7 /* CustomBottomView.swift */,
 				A508C6572CFF5D3A007E527D /* MapViewController.swift */,
 			);
 			path = Map;
@@ -323,6 +342,7 @@
 		A5D2EED72B17355700B0151A /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				A58725092D43AE8100139658 /* CustomAlertView.swift */,
 				A5054D822D3BDC1200C09CD8 /* CircularProgressView.swift */,
 				A5F2E4BE2D099515002F00EA /* WaveformView.swift */,
 				A5D2EED82B17356F00B0151A /* CustomButton.swift */,
@@ -464,6 +484,7 @@
 				A516ADEF2B2669B2003A467A /* AppHeaderView.swift in Sources */,
 				A5327BAB2B224E0C00E40ABE /* AppMainHeaderView.swift in Sources */,
 				A5327BB62B2276A900E40ABE /* LoadingCell.swift in Sources */,
+				A587250A2D43AE8200139658 /* CustomAlertView.swift in Sources */,
 				A5D2EEDD2B173B7800B0151A /* AuthPresenter.swift in Sources */,
 				A5D2EF0B2B1B97E500B0151A /* ForgotPasswordPresenter.swift in Sources */,
 				A53166AE2B4B4A4000A8B64F /* ProfileViewConstants.swift in Sources */,
@@ -483,16 +504,19 @@
 				A52F12122CAECEFF00C3274B /* IconButton.swift in Sources */,
 				A5327BB42B2260BA00E40ABE /* EventAuthorModel.swift in Sources */,
 				A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */,
+				A51A43B42D402D9D007EBDA7 /* QuestListViewController.swift in Sources */,
 				A516ADED2B2664C4003A467A /* EventViewController.swift in Sources */,
 				A5327BA92B224D1200E40ABE /* EventsViewController.swift in Sources */,
 				A527AFF32CE8E37800086737 /* PointCreationViewController.swift in Sources */,
 				A53166B02B4B4B7100A8B64F /* PlugViewController.swift in Sources */,
+				A58725082D4392EA00139658 /* CreateQuestViewController.swift in Sources */,
 				A51A43AD2D3C1AF9007EBDA7 /* CreatedEvents.swift in Sources */,
 				A543C8BC2C2AB32200B1CD49 /* UIView+extention.swift in Sources */,
-				A51A43AF2D3C209F007EBDA7 /* TestVCCity.swift in Sources */,
+				A51A43AF2D3C209F007EBDA7 /* TestVCEditAccont.swift in Sources */,
 				A53166A22B4B0D0200A8B64F /* EventPointTableViewCell.swift in Sources */,
 				A5D2EF042B1B919E00B0151A /* RegPresenter.swift in Sources */,
 				A5327BAD2B2254BB00E40ABE /* EventsTableViewCell.swift in Sources */,
+				A51A43B12D3EA83D007EBDA7 /* CustomBottomView.swift in Sources */,
 				A5D2EEFE2B17993C00B0151A /* UserService.swift in Sources */,
 				A508C6582CFF5D3C007E527D /* MapViewController.swift in Sources */,
 				A5054D812D3BD76800C09CD8 /* Achievement.swift in Sources */,

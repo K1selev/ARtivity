@@ -75,8 +75,8 @@ import Foundation
 //    var description: String?
 //    var eventPoints: [String]?
 //    var eventPhotos: [String]?
-//    var eventLanguage: String?
-//    var eventAR: Bool?
+//    var eventCity: String?
+//    var eventQuest: Bool?
 //}
 //
 //extension EventDetails: DatabaseRepresentation {
@@ -86,8 +86,8 @@ import Foundation
 //            "description": description,
 //            "eventPoints": eventPoints,
 //            "eventPhotos": eventPhotos,
-//            "eventLanguage": eventLanguage,
-//            "eventAR": eventAR
+//            "eventCity": eventCity,
+//            "eventQuest": eventQuest
 //        ]
 //        return rep
 //    }
@@ -98,8 +98,8 @@ import Foundation
 //           let description = data["description"] as? String,
 //           let eventPoints = data["eventPoints"] as? [String],
 //           let eventPhotos = data["eventPhotos"] as? [String],
-//           let eventLanguage = data["eventLanguage"] as? String,
-//           let eventAR = data["eventAR"] as? Bool
+//           let eventCity = data["eventCity"] as? String,
+//           let eventQuest = data["eventQuest"] as? Bool
 //        {
 //            
 //            return EventDetails(id: key,
@@ -107,8 +107,8 @@ import Foundation
 //                               description: description,
 //                               eventPoints: eventPoints,
 //                               eventPhotos: eventPhotos,
-//                               eventLanguage: eventLanguage,
-//                               eventAR: eventAR)
+//                               eventCity: eventCity,
+//                               eventQuest: eventQuest)
 //        }
 //        return nil
 //    }
@@ -175,8 +175,9 @@ struct EventDetailsTest {
     var description: String?
     var eventPoints: [String]?
     var eventPhotos: [String]?
-    var eventLanguage: String?
-    var eventAR: Bool?
+    var eventCity: String?
+    var eventQuest: Bool?
+    var eventQuestId: String?
     var eventDistance: Int?
     var eventImage: String?
     var eventName: String?
@@ -195,8 +196,9 @@ extension EventDetailsTest: DatabaseRepresentation {
             "description": description,
             "eventPoints": eventPoints,
             "eventPhotos": eventPhotos,
-            "eventLanguage": eventLanguage,
-            "eventAR": eventAR,
+            "eventCity": eventCity,
+            "eventQuest": eventQuest,
+            "eventQuestId": eventQuestId,
             "eventDistance": eventDistance,
             "eventImage": eventImage,
             "eventName": eventName,
@@ -216,8 +218,9 @@ extension EventDetailsTest: DatabaseRepresentation {
            let description = data["description"] as? String,
            let eventPoints = data["eventPoints"] as? [String],
            let eventPhotos = data["eventPhotos"] as? [String],
-           let eventLanguage = data["eventLanguage"] as? String,
-           let eventAR = data["eventAR"] as? Bool,
+           let eventCity = data["eventCity"] as? String,
+           let eventQuest = data["eventQuest"] as? Bool,
+           let eventQuestId = data["eventQuestId"] as? String,
            let eventAuthor = data["eventAuthor"] as? [String: Any],
            let authorId = eventAuthor["authorId"] as? String,
            let authorName = eventAuthor["authorName"] as? String,
@@ -241,8 +244,9 @@ extension EventDetailsTest: DatabaseRepresentation {
                                     description: description,
                                     eventPoints: eventPoints,
                                     eventPhotos: eventPhotos,
-                                    eventLanguage: eventLanguage,
-                                    eventAR: eventAR,
+                                    eventCity: eventCity,
+                                    eventQuest: eventQuest,
+                                    eventQuestId: eventQuestId,
                                     eventDistance: eventDistance,
                                     eventImage: eventImage,
                                     eventName: eventName,

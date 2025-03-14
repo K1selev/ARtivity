@@ -111,4 +111,13 @@ class CustomTextFieldCreate: UITextField, UITextFieldDelegate {
             make.width.equalTo(UIScreen.main.bounds.width - 64)
         }
     }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("Клавиатура открылась")
+    }
+
+        // Завершение редактирования (при уходе фокуса)
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        print("Редактирование завершено")
+    }
+
 }

@@ -39,7 +39,11 @@ final class UserInfoHeader: UIView {
 
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.text = "Статус"
+        if isMaker == 1 {
+            label.text = "Экскурсовод"
+        } else {
+            label.text = "Пользователь"
+        }
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor(named: "appTextMain")
         return label
