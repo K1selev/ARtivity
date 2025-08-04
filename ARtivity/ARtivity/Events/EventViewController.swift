@@ -724,50 +724,115 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
         }
 
     }
+//    
+//    func getPoints() {
+//
+//        let ref = Database.database().reference().child("points")
+//        
+//        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+//            var tempPoint = [PointDetail]()
+//            for child in snapshot.children {
+//                if let childSnapshot = child as? DataSnapshot,
+//                   let data = childSnapshot.value as? [String: Any],
+//                   let post = PointDetail.parse(childSnapshot.key, data) {
+//                    let pointId = childSnapshot.key
+//                    guard let pointDetail = self.event?.eventPoints else { return }
+//                    for item in pointDetail {
+//                        if item == pointId {
+//                            tempPoint.insert(post, at: 0)
+//                            self.pointInf.append(post)
+//                            if self.isLogin {
+//                                self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+//                                if post.isFirstPoint ?? false {
+//                                    self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
+//                                }
+//                            } else {
+//                                if post.isFirstPoint ?? false {
+//                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
+//                                }
+//                            }
+//                        }
+//                    }
+//                    
+//                    let startLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.first?.latitude ?? 0.0,
+//                                                                                       longitude: self.pointInf.first?.longitude ?? 0.0)
+//                    
+//                    let endLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.last?.latitude ?? 0.0,
+//                                                                                     longitude: self.pointInf.last?.longitude ?? 0.0)
+//                    self.createRoute(from: startLocation, to: endLocation)
+//                }
+//            }
+//            self.tableView.reloadData()
+//        })
+//        if pointInf.isEmpty {
+//        }
+//    }
+//
     
     func getPoints() {
-
-        let ref = Database.database().reference().child("points")
+        guard let eventPointIDs = event?.eventPoints else { return }
         
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
-            var tempPoint = [PointDetail]()
+        let ref = Database.database().reference().child("points")
+        ref.observeSingleEvent(of: .value, with: { snapshot in
+            var allPointsDict = [String: PointDetail]()
+            
+            // 1. Сохраняем все точки в словарь
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
                    let data = childSnapshot.value as? [String: Any],
-                   let post = PointDetail.parse(childSnapshot.key, data) {
-                    let pointId = childSnapshot.key
-                    guard let pointDetail = self.event?.eventPoints else { return }
-                    for item in pointDetail {
-                        if item == pointId {
-                            tempPoint.insert(post, at: 0)
-                            self.pointInf.append(post)
-                            if self.isLogin {
-                                self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                if post.isFirstPoint ?? false {
-                                    self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0)
-                                }
-                            } else {
-                                if post.isFirstPoint ?? false {
-                                    self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                }
-                            }
-                        }
-                    }
-                    
-                    let startLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.first?.latitude ?? 0.0,
-                                                                                       longitude: self.pointInf.first?.longitude ?? 0.0)
-                    
-                    let endLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: self.pointInf.last?.latitude ?? 0.0,
-                                                                                     longitude: self.pointInf.last?.longitude ?? 0.0)
-                    self.createRoute(from: startLocation, to: endLocation)
+                   let point = PointDetail.parse(childSnapshot.key, data) {
+                    allPointsDict[childSnapshot.key] = point
                 }
             }
+            
+            // 2. Формируем массив в нужном порядке
+            var orderedPoints: [PointDetail] = []
+            
+            for pointId in eventPointIDs {
+                if let point = allPointsDict[pointId] {
+                    orderedPoints.append(point)
+                    
+                    // Обработка карты и аннотаций
+                    if self.isLogin {
+                        self.addPlacemarkOnMap(latitude: point.latitude ?? 0.0, longitude: point.longitude ?? 0.0, name: point.name ?? "smth")
+//                        if point.isFirstPoint ?? false {
+                            self.setupMap(latitude: point.latitude ?? 0.0, longitude: point.longitude ?? 0.0)
+//                        }
+                    } else {
+//                        if point.isFirstPoint ?? false {
+                            self.addPlacemarkOnMap(latitude: point.latitude ?? 0.0, longitude: point.longitude ?? 0.0, name: point.name ?? "smth")
+//                        }
+                    }
+                }
+            }
+
+            self.pointInf = orderedPoints
+            
+            if self.pointInf.count >= 2 {
+                let start = CLLocationCoordinate2D(latitude: self.pointInf.first?.latitude ?? 0.0,
+                                                   longitude: self.pointInf.first?.longitude ?? 0.0)
+                let end = CLLocationCoordinate2D(latitude: self.pointInf.last?.latitude ?? 0.0,
+                                                 longitude: self.pointInf.last?.longitude ?? 0.0)
+//                self.createRoute(from: start, to: end)
+                self.createFullRoute(with: self.pointInf)
+            }
+
             self.tableView.reloadData()
         })
-        if pointInf.isEmpty {
+    }
+
+    func createFullRoute(with points: [PointDetail]) {
+        guard points.count >= 2 else { return }
+
+        for i in 0..<points.count - 1 {
+            let source = CLLocationCoordinate2D(latitude: points[i].latitude ?? 0.0,
+                                                longitude: points[i].longitude ?? 0.0)
+            let destination = CLLocationCoordinate2D(latitude: points[i+1].latitude ?? 0.0,
+                                                     longitude: points[i+1].longitude ?? 0.0)
+            self.createRoute(from: source, to: destination)
         }
     }
-    
+
     func createRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
         let sourcePlacemark = MKPlacemark(coordinate: source)
         let destinationPlacemark = MKPlacemark(coordinate: destination)
@@ -885,6 +950,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
             let vc = AuthViewController()
             present(vc, animated: true)
         }
+        
+//        let arVC = ARNavigationViewController()
+//        arVC.points = self.pointInf
+//        arVC.modalPresentationStyle = .fullScreen
+//        present(arVC, animated: true)
     }
     
     @objc func goQuestButtonPressed() {
@@ -895,30 +965,12 @@ class EventViewController: UIViewController, UIScrollViewDelegate, UITableViewDe
     }
     
     func addPlacemarkOnMap(latitude: Double, longitude: Double, name: String) {
-//        let point = YMKPoint(latitude: latitude, longitude: longitude)
-//        let viewPlacemark: YMKPlacemarkMapObject = mapView.mapWindow.map.mapObjects.addPlacemark(with: point)
-//        
-//      // Настройка и добавление иконки
-//        viewPlacemark.setIconWith(
-//            UIImage(named: "map_search_result_primary")!,
-//            style: YMKIconStyle(
-//                anchor: CGPoint(x: 0.5, y: 0.5) as NSValue,
-//                rotationType: YMKRotationType.rotate.rawValue as NSNumber,
-//                zIndex: 0,
-//                flat: true,
-//                visible: true,
-//                scale: 1.5,
-//                tappableArea: nil
-//            )
-//        )
-//        viewPlacemark.userData = name
         let annotation = MKPointAnnotation()
         let location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: latitude,
                                                                       longitude: longitude)
         annotation.coordinate = location
         annotation.title = name
         self.mapView.addAnnotation(annotation)
-//}
     }
 }
 

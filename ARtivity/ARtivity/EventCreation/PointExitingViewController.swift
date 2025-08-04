@@ -140,7 +140,8 @@ class PointExitingViewController: UIViewController {
         
         let ref = Database.database().reference().child("points")
         
-        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+//        ref.queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { snapshot in
+        ref.observeSingleEvent(of: .value, with: { snapshot in
             var tempPoint = [PointDetail]()
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,

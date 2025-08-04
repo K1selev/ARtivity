@@ -200,6 +200,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     
     private var createEvent = UIButton()
     private var addPoint = UIButton()
+    private var editTable = UIButton()
     private var imageArray: [UIImage?] = []
     
     let scrollView: UIScrollView = {
@@ -338,6 +339,7 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
          imagesStackView,
          collectionViewPhotos,
          addPoint,
+         editTable,
          isFreeText,
          checkboxIsFree,
          mapView,
@@ -441,6 +443,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         pointsMainText.snp.makeConstraints { make in
             make.top.equalTo(eventNameTextView.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(34)
+            make.height.equalTo(20)
+        }
+        
+        editTable.snp.makeConstraints { make in
+            make.top.equalTo(eventNameTextView.snp.bottom).offset(15)
+//            make.leading.equalTo(pointsMainText.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().offset(-34)
+            make.width.equalTo(20)
             make.height.equalTo(20)
         }
         
@@ -584,6 +594,12 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         addPoint.tintColor = UIColor.black
         addPoint.isUserInteractionEnabled = true
         
+        editTable.setTitle("", for: .normal)
+        editTable.setImage(UIImage(systemName: "arrow.2.squarepath"), for: .normal)
+        editTable.tintColor = UIColor.black
+        editTable.addTarget(self, action: #selector(self.toggleEditMode), for: .touchUpInside)
+        editTable.isUserInteractionEnabled = true
+        
     }
     
     func setupDataInf() {
@@ -637,6 +653,10 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
         self.addPoint.menu = UIMenu(
             title: "",
             children: [cameraAction, galleryAction])
+    }
+    
+    @objc func toggleEditMode() {
+        tableView.setEditing(!tableView.isEditing, animated: true)
     }
 
     private func presentCamera() {
@@ -692,14 +712,14 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
                                 self.pointInf.append(post)
                                 if self.isLogin {
                                     self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    if post.isFirstPoint ?? false {
+//                                    if post.isFirstPoint ?? false {
                                         self.setupMap(latitude:post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, delta: 1)
                                         self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    }
+//                                    }
                                 } else {
-                                    if post.isFirstPoint ?? false {
+//                                    if post.isFirstPoint ?? false {
                                         self.addPlacemarkOnMap(latitude: post.latitude ?? 0.0, longitude: post.longitude ?? 0.0, name: post.name ?? "smth")
-                                    }
+//                                    }
                                 }
                             }
                         }
@@ -886,11 +906,13 @@ class EventCreationViewController: UIViewController, UIScrollViewDelegate, UITab
     private func uploadData() {
         StorageService.shared.uploadPostImages(self.images, imageCategory: "events") { urls in
             print(urls)
-            var pointsArray = [""]
-            for point in self.pointInf {
-                pointsArray.append(point.id ?? "")
-            }
-            pointsArray.removeFirst()
+//            var pointsArray = [""]
+//            for point in self.pointInf {
+//                pointsArray.append(point.id ?? "")
+//            }
+//            pointsArray.removeFirst()
+            let pointsArray = self.pointInf.compactMap { $0.id }
+            
             let id = self.randomAlphanumericString(15)
             let user = Auth.auth().currentUser
             let author = EventAuthorModel (authorId: user?.uid ?? "smbd", authorName: user?.displayName ?? "smbd")

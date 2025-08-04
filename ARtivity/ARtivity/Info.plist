@@ -28,5 +28,9 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Мы используем ваше местоположение для AR-навигации</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Мы используем камеру для AR-навигации</string>
 </dict>
 </plist>

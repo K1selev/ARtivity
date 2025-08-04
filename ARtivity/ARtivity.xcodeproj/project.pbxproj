@@ -56,6 +56,9 @@
 		A5478E302CEF5FDC003D479B /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5478E2F2CEF5FD5003D479B /* StorageService.swift */; };
 		A58725082D4392EA00139658 /* CreateQuestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58725072D4392E900139658 /* CreateQuestViewController.swift */; };
 		A587250A2D43AE8200139658 /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58725092D43AE8100139658 /* CustomAlertView.swift */; };
+		A5B3C9AB2E1FF34B001E8F96 /* ARNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B3C9AA2E1FF349001E8F96 /* ARNavigationViewController.swift */; };
+		A5B3C9AD2E1FF381001E8F96 /* DoubleExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B3C9AC2E1FF372001E8F96 /* DoubleExt.swift */; };
+		A5B3C9AF2E203FEF001E8F96 /* CLLocationCoordinate2D+Bearing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B3C9AE2E203FEE001E8F96 /* CLLocationCoordinate2D+Bearing.swift */; };
 		A5D2EED62B17300C00B0151A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED52B17300C00B0151A /* AuthViewController.swift */; };
 		A5D2EED92B17356F00B0151A /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EED82B17356F00B0151A /* CustomButton.swift */; };
 		A5D2EEDB2B1735A800B0151A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */; };
@@ -139,6 +142,9 @@
 		A5478E2F2CEF5FD5003D479B /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		A58725072D4392E900139658 /* CreateQuestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateQuestViewController.swift; sourceTree = "<group>"; };
 		A58725092D43AE8100139658 /* CustomAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertView.swift; sourceTree = "<group>"; };
+		A5B3C9AA2E1FF349001E8F96 /* ARNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNavigationViewController.swift; sourceTree = "<group>"; };
+		A5B3C9AC2E1FF372001E8F96 /* DoubleExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleExt.swift; sourceTree = "<group>"; };
+		A5B3C9AE2E203FEE001E8F96 /* CLLocationCoordinate2D+Bearing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Bearing.swift"; sourceTree = "<group>"; };
 		A5D2EED52B17300C00B0151A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A5D2EED82B17356F00B0151A /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		A5D2EEDA2B1735A800B0151A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -308,6 +314,7 @@
 		A53248862B159D3F008AD9DF /* Events */ = {
 			isa = PBXGroup;
 			children = (
+				A5B3C9AA2E1FF349001E8F96 /* ARNavigationViewController.swift */,
 				A5327BA82B224D1200E40ABE /* EventsViewController.swift */,
 				A5327BAC2B2254BB00E40ABE /* EventsTableViewCell.swift */,
 				A5327BAE2B2258DA00E40ABE /* EventsModel.swift */,
@@ -333,6 +340,8 @@
 		A543C8BA2C2AB30D00B1CD49 /* Extentions */ = {
 			isa = PBXGroup;
 			children = (
+				A5B3C9AE2E203FEE001E8F96 /* CLLocationCoordinate2D+Bearing.swift */,
+				A5B3C9AC2E1FF372001E8F96 /* DoubleExt.swift */,
 				A5D2EF072B1B937E00B0151A /* UIViewController+Extension.swift */,
 				A543C8BB2C2AB32200B1CD49 /* UIView+extention.swift */,
 			);
@@ -530,11 +539,14 @@
 				A5327BBC2B2312CD00E40ABE /* ImageService.swift in Sources */,
 				A5054D832D3BDC1300C09CD8 /* CircularProgressView.swift in Sources */,
 				A5D2EF062B1B91D000B0151A /* RegView.swift in Sources */,
+				A5B3C9AF2E203FEF001E8F96 /* CLLocationCoordinate2D+Bearing.swift in Sources */,
 				A5D2EEFC2B175E5700B0151A /* CauseOfError.swift in Sources */,
 				A5327BAF2B2258DA00E40ABE /* EventsModel.swift in Sources */,
+				A5B3C9AD2E1FF381001E8F96 /* DoubleExt.swift in Sources */,
 				A53166AC2B4B44D100A8B64F /* UserInfoHeader.swift in Sources */,
 				A532487F2B159AD5008AD9DF /* TabBar.swift in Sources */,
 				A5F30EE02B3BC88800241D40 /* PhotoCell.swift in Sources */,
+				A5B3C9AB2E1FF34B001E8F96 /* ARNavigationViewController.swift in Sources */,
 				A5F2E4BF2D099516002F00EA /* WaveformView.swift in Sources */,
 				A543C8BE2C2AFF9A00B1CD49 /* CustomChipsFilterButton.swift in Sources */,
 				A53166A42B4B2A1800A8B64F /* PointViewController.swift in Sources */,
