@@ -11,8 +11,21 @@
 
 ## Скриншоты
 
-| Главная | Карта | Экскурсии | Поиск | Достижения |
-|------|-------|---------|---------|
-| ![Home](Screen/main.png) | ![map](Screen/map.png) | ![exc](Screen/exc.png) | ![search](Screen/search.png) | ![achivement](Screen/achivement.png) |
-
----
+<table>
+  <tr>
+    <th>Главная</th>
+    <th>Карта</th>
+    <th>Экскурсии</th>
+    <th>Поиск</th>
+    <th>Достижения</th>
+    <th>Профиль</th>
+  </tr>
+  <tr>
+    <td><img src="Screen/main.png" width="150"/></td>
+    <td><img src="Screen/map.png" width="150"/></td>
+    <td><img src="Screen/exc.png" width="150"/></td>
+    <td><img src="Screen/search.png" width="150"/></td>
+    <td><img src="Screen/achivement.png" width="150"/></td>
+    <td><img src="Screen/profile.png" width="150"/></td>
+  </tr>
+</table>
